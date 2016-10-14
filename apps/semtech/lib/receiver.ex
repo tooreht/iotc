@@ -11,8 +11,9 @@ defmodule Receiver do
 
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
     import Semtech.Decoder
+    binary = to_string(data)
     IO.puts inspect(data)
-    parse_pkt_fwd_packet(data)
+    parse_pkt_fwd_packet(binary)
     {:noreply, state}
   end
 
