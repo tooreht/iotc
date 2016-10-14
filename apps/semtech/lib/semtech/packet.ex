@@ -1,9 +1,9 @@
 defmodule Semtech.Packet do
-  defstruct(
-    version: 0,
-    token: 0,
-    identifier: 0,
-    gateway_id: 0,
-    payload: "{}"
-  )
+  defstruct [
+    version: nil,
+    token: nil,
+    identifier: nil,
+    gateway_id: nil,
+    payload: nil
+  ]
 end
