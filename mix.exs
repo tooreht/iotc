@@ -21,6 +21,6 @@ defmodule Iotc.Mixfile do
   # Dependencies listed here are available only for this project
   # and cannot be accessed from applications inside the apps folder
   defp deps do
-    []
+    [{:ex_doc, "~> 0.14", only: :dev}]
   end
 end
