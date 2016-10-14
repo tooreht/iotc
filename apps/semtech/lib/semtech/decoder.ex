@@ -1,20 +1,20 @@
 defmodule Semtech.Decoder do
 
   def parse_pkt_fwd_packet(<<
-      version       :: size(8),
-      random_token  :: size(16),
-      type          :: size(8),
-      mac           :: size(64),
-      json          :: binary
+      version     :: size(8),
+      token       :: size(16),
+      identifier  :: size(8),
+      gateway_id  :: size(64),
+      payload     :: binary
     >>) do
-    IO.puts version
-    IO.puts random_token
-    IO.puts type
-    IO.puts mac
-    IO.puts json
-  end
 
-  def parse_push_data(version, random_token, type, reminder) do
-    IO.puts inspect({version, random_token, type, reminder})
+    # PUSH_DATA packet
+    %Semtech.Packet{
+      version: version,
+      token: token,
+      identifier: identifier,
+      gateway_id: gateway_id,
+      payload: payload
+    }
   end
 end
