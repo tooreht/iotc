@@ -1,6 +1,9 @@
 defmodule Semtech.RXPK do
   @derive [Poison.Encoder]
-  defstruct [rxpk: []]
+  defstruct [
+    rxpk: [],
+    stat: nil
+  ]
 end
 
 defmodule Semtech.RXPK.Item do

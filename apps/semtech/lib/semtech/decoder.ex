@@ -8,7 +8,6 @@ defmodule Semtech.Decoder do
       payload     :: binary
     >>) do
 
-    IO.puts payload
     # PUSH_DATA packet
     %Semtech.Packet{
       version: version,
@@ -16,7 +15,8 @@ defmodule Semtech.Decoder do
       identifier: identifier,
       gateway_id: gateway_id,
       payload: Poison.decode!(payload, as: %Semtech.RXPK{
-        rxpk: [%Semtech.RXPK.Item{}]
+        rxpk: [%Semtech.RXPK.Item{}],
+        stat: %Semtech.Status{}
       })
     }
   end
