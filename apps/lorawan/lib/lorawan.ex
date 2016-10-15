@@ -1,2 +1,2 @@
-defmodule Lorawan do
+defmodule LoRaWAN do
 end

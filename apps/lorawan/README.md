@@ -1,4 +1,4 @@
-# Lorawan
+# LoRaWAN
 
 **TODO: Add description**
 

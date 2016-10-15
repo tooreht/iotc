@@ -1,4 +1,4 @@
-defmodule Lorawan.Mixfile do
+defmodule LoRaWAN.Mixfile do
   use Mix.Project
 
   def project do
