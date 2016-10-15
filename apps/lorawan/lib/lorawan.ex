@@ -1,0 +1,2 @@
+defmodule Lorawan do
+end
