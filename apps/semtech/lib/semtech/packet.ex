@@ -62,11 +62,11 @@ defmodule Semtech.Packet do
   end
 
   def json_decode(identifier, payload) do
-    cond do
-      identifier == 0x00 -> Poison.decode!(payload, as: %RXPK{rxpk: [%RXPK.Item{}], stat: %RXPK.Status{}})
-      identifier == 0x03 -> Poison.decode!(payload, as: %TXPK{})
-      identifier == 0x05 -> Poison.decode!(payload, as: %TXPK_ACK{})
-      true               -> payload
+    case identifier do
+      0x00 -> Poison.decode!(payload, as: %RXPK{rxpk: [%RXPK.Item{}], stat: %RXPK.Status{}})
+      0x03 -> Poison.decode!(payload, as: %TXPK{})
+      0x05 -> Poison.decode!(payload, as: %TXPK_ACK{})
+      _    -> payload
     end
   end
 end
