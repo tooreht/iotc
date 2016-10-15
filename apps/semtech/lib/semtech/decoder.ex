@@ -127,10 +127,7 @@ defmodule Semtech.Decoder do
       token: token,
       identifier: 0x00,
       gateway_id: gateway_id,
-      payload: Poison.decode!(payload, as: %Semtech.RXPK{
-        rxpk: [%Semtech.RXPK.Item{}],
-        stat: %Semtech.RXPK.Status{}
-      })
+      payload: payload
     }
   end
 
@@ -186,7 +183,7 @@ defmodule Semtech.Decoder do
       version: version,
       token: token,
       identifier: 0x03,
-      payload: Poison.decode!(payload, as: %Semtech.TXPK{})
+      payload: payload
     }
   end
 
@@ -201,7 +198,7 @@ defmodule Semtech.Decoder do
       version: version,
       token: token,
       identifier: 0x05,
-      payload: Poison.decode!(payload, as: %Semtech.TXPK_ACK{})
+      payload: payload
     }
   end
 
