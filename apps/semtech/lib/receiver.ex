@@ -12,7 +12,7 @@ defmodule Receiver do
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
     import Semtech.Decoder
     
-    binary = :erlang.list_to_binary(data)
+    binary = :erlang.list_to_binary(data) # Or in elixir: binary = IO.iodata_to_binary(data)
     packet = parse_pkt_fwd_packet(binary)
     IO.puts inspect(packet)
     {:noreply, state}
