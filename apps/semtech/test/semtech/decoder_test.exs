@@ -112,7 +112,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
           data: "QCzC4xwAAAADbFcgZjcC"
         }
       ],
-      stat: %Semtech.Status{
+      stat: %Semtech.RXPK.Status{
         time: "2014-01-12 08:59:28 GMT",
         lati: 46.24000,
         long: 3.25230,
@@ -138,7 +138,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.identifier == 0
     assert packet.gateway_id == 13269834311797778098
     assert packet.payload == %Semtech.RXPK{
-      stat: %Semtech.Status{
+      stat: %Semtech.RXPK.Status{
         time: "2014-01-12 08:59:28 GMT",
         lati: 46.24000,
         long: 3.25230,

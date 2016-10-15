@@ -129,7 +129,7 @@ defmodule Semtech.Decoder do
       gateway_id: gateway_id,
       payload: Poison.decode!(payload, as: %Semtech.RXPK{
         rxpk: [%Semtech.RXPK.Item{}],
-        stat: %Semtech.Status{}
+        stat: %Semtech.RXPK.Status{}
       })
     }
   end
