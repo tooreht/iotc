@@ -167,19 +167,6 @@ defmodule Semtech.Decoder do
   def parse_pkt_fwd_packet(<<
       version     :: size(8),
       token       :: size(16),
-      0x04        :: size(8)
-    >>) do
-
-    %Semtech.PullAck{
-      version: version,
-      token: token,
-      identifier: 0x04
-    }
-  end
-
-  def parse_pkt_fwd_packet(<<
-      version     :: size(8),
-      token       :: size(16),
       0x03        :: size(8),
       payload     :: binary
     >>) do
@@ -189,6 +176,19 @@ defmodule Semtech.Decoder do
       token: token,
       identifier: 0x03,
       payload: Poison.decode!(payload, as: %Semtech.PullResp.TxPk{})
+    }
+  end
+
+  def parse_pkt_fwd_packet(<<
+      version     :: size(8),
+      token       :: size(16),
+      0x04        :: size(8)
+    >>) do
+
+    %Semtech.PullAck{
+      version: version,
+      token: token,
+      identifier: 0x04
     }
   end
 
