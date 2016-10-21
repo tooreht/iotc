@@ -12,7 +12,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
 
     udp_payload = @version <> @token <> @identifier <> @gateway_id <> payload
 
-    packet = Semtech.Decoder.parse_pkt_fwd_packet(udp_payload)
+    packet = Semtech.Decoder.decode(udp_payload)
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
@@ -43,7 +43,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
 
     udp_payload = @version <> @token <> @identifier <> @gateway_id <> payload
 
-    packet = Semtech.Decoder.parse_pkt_fwd_packet(udp_payload)
+    packet = Semtech.Decoder.decode(udp_payload)
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
@@ -89,7 +89,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
 
     udp_payload = @version <> @token <> @identifier <> @gateway_id <> payload
 
-    packet = Semtech.Decoder.parse_pkt_fwd_packet(udp_payload)
+    packet = Semtech.Decoder.decode(udp_payload)
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
@@ -132,7 +132,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
 
     udp_payload = @version <> @token <> @identifier <> @gateway_id <> payload
 
-    packet = Semtech.Decoder.parse_pkt_fwd_packet(udp_payload)
+    packet = Semtech.Decoder.decode(udp_payload)
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0

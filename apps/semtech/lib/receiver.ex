@@ -13,7 +13,7 @@ defmodule Receiver do
     import Semtech.Decoder
     
     binary = :erlang.list_to_binary(data) # Or in elixir: binary = IO.iodata_to_binary(data)
-    packet = parse_pkt_fwd_packet(binary)
+    packet = decode(binary)
     IO.puts inspect(packet)
     {:noreply, state}
   end

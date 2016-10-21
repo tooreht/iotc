@@ -114,7 +114,7 @@ defmodule Semtech.Decoder do
 
   Return `:error` with error message `:unknown_pkt_fwd_packet` and unknown packet as binary data.
   """
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x00        :: size(8),
@@ -136,7 +136,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x01        :: size(8)
@@ -149,7 +149,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x02        :: size(8),
@@ -164,7 +164,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x03        :: size(8),
@@ -179,7 +179,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x04        :: size(8)
@@ -192,7 +192,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(<<
+  def decode(<<
       version     :: size(8),
       token       :: size(16),
       0x05        :: size(8),
@@ -207,7 +207,7 @@ defmodule Semtech.Decoder do
     }
   end
 
-  def parse_pkt_fwd_packet(unknown) do
+  def decode(unknown) do
     {:error, {:unknown_pkt_fwd_packet, unknown}}
   end
 end
