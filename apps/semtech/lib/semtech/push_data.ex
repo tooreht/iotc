@@ -1,13 +1,29 @@
-defmodule Semtech.Packet do
+defmodule Semtech.PushData do
+  @moduledoc """
+  This module represents the Semtech PUSH_DATA packet type.
+  
+  ## PUSH_DATA packet (0x00)
+
+  That packet type is used by the gateway mainly to forward the RF packets
+  received, and associated metadata, to the server.
+
+       Bytes  | Function
+      :------:|---------------------------------------------------------------------
+       0      | protocol version = 2
+       1-2    | random token
+       3      | PUSH_DATA identifier 0x00
+       4-11   | Gateway unique identifier (MAC address)
+       12-end | JSON object, starting with {, ending with }
+  """
   defstruct [
     version: nil,
     token: nil,
-    identifier: nil,
+    identifier: 0x00,
     gateway_id: nil,
     payload: nil
   ]
 
-  defmodule RXPK do
+  defmodule RxPk do
     @derive [Poison.Encoder]
     defstruct [
       rxpk: [],
@@ -50,44 +66,23 @@ defmodule Semtech.Packet do
       ]
     end
   end
-
-  defmodule TXPK do
-    # TODO: Implement!
-    defstruct []
-  end
-
-  defmodule TXPK_ACK do
-    # TODO: Implement!
-    defstruct []
-  end
-
-  def json_decode(identifier, payload) do
-    case identifier do
-      0x00 -> Poison.decode!(payload, as: %RXPK{rxpk: [%RXPK.Item{}], stat: %RXPK.Status{}})
-      0x03 -> Poison.decode!(payload, as: %TXPK{})
-      0x05 -> Poison.decode!(payload, as: %TXPK_ACK{})
-      _    -> payload
-    end
-  end
 end
 
-
-
-defimpl Inspect, for: Semtech.Packet do
-  def inspect(%Semtech.Packet{
+defimpl Inspect, for: Semtech.PushData do
+  def inspect(%Semtech.PushData{
                 version: version,
                 token: token,
                 identifier: identifier,
                 gateway_id: gateway_id,
                 payload: payload}, _) do
-    payload = inspect(Semtech.Packet.json_decode(identifier, payload))
-    gateway_id = inspect(Integer.to_char_list(gateway_id, 16))
-    identifier = inspect(identifier)
-    token = inspect(token)
     version  = inspect(version)
+    token = inspect(token)
+    identifier = inspect(identifier)
+    gateway_id = inspect(gateway_id)
+    payload = inspect(payload)
     
     """
-    #Semtech.Packet<
+    #Semtech.PushData<
       version: #{version},
       token: #{token},
       identifier: #{identifier},

@@ -33,7 +33,7 @@ defmodule Semtech.Decoder do
        1-2    | random token
        3      | PUSH_DATA identifier 0x00
        4-11   | Gateway unique identifier (MAC address)
-       12-end | JSON object, starting with {, ending with }, see section 4
+       12-end | JSON object, starting with {, ending with }
 
 
   ## PUSH_ACK packet (0x01)
@@ -122,12 +122,17 @@ defmodule Semtech.Decoder do
       payload     :: binary
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.PushData{
       version: version,
       token: token,
       identifier: 0x00,
-      gateway_id: gateway_id,
-      payload: payload
+      gateway_id: Integer.to_char_list(gateway_id, 16),
+      payload: Poison.decode!(payload, as: 
+        %Semtech.PushData.RxPk{
+          rxpk: [%Semtech.PushData.RxPk.Item{}],
+          stat: %Semtech.PushData.RxPk.Status{}
+        }
+      )
     }
   end
 
@@ -137,7 +142,7 @@ defmodule Semtech.Decoder do
       0x01        :: size(8)
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.PushAck{
       version: version,
       token: token,
       identifier: 0x01
@@ -151,11 +156,11 @@ defmodule Semtech.Decoder do
       gateway_id  :: size(64)
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.PullData{
       version: version,
       token: token,
       identifier: 0x02,
-      gateway_id: gateway_id
+      gateway_id: Integer.to_char_list(gateway_id, 16)
     }
   end
 
@@ -165,7 +170,7 @@ defmodule Semtech.Decoder do
       0x04        :: size(8)
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.PullAck{
       version: version,
       token: token,
       identifier: 0x04
@@ -179,11 +184,11 @@ defmodule Semtech.Decoder do
       payload     :: binary
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.PullResp{
       version: version,
       token: token,
       identifier: 0x03,
-      payload: payload
+      payload: Poison.decode!(payload, as: %Semtech.PullResp.TxPk{})
     }
   end
 
@@ -194,11 +199,11 @@ defmodule Semtech.Decoder do
       payload     :: binary
     >>) do
 
-    %Semtech.Packet{
+    %Semtech.TxAck{
       version: version,
       token: token,
       identifier: 0x05,
-      payload: payload
+      payload: Poison.decode!(payload, as: %Semtech.TxAck.TxPk{})
     }
   end
 

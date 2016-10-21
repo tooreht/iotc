@@ -1,7 +1,5 @@
 defmodule SemtechTest.Decoder.PUSH_DATA do
   use ExUnit.Case
-  import Semtech.Packet
-  alias Semtech.Packet, as: Packet
 
   @version <<1>>
   @token <<56, 225>>
@@ -18,11 +16,10 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 13269834311797778098
-    assert packet.payload == payload
-    assert json_decode(packet.identifier, packet.payload) == %Packet.RXPK{
+    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
-        %Packet.RXPK.Item{
+        %Semtech.PushData.RxPk.Item{
           tmst: 3059580787,
           time: "2016-09-17T20:39:56.971512Z",
           chan: 4,
@@ -50,11 +47,10 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 13269834311797778098
-    assert packet.payload == payload
-    assert json_decode(packet.identifier, packet.payload) == %Packet.RXPK{
+    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
-        %Packet.RXPK.Item{
+        %Semtech.PushData.RxPk.Item{
           tmst: 3059580787,
           time: "2016-09-17T20:39:56.971512Z",
           chan: 4,
@@ -69,7 +65,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
           size: 15,
           data: "QCzC4xwAAAADbFcgZjcC"
         },
-        %Packet.RXPK.Item{
+        %Semtech.PushData.RxPk.Item{
           tmst: 3059580787,
           time: "2016-09-17T20:39:56.971512Z",
           chan: 4,
@@ -97,11 +93,10 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 13269834311797778098
-    assert packet.payload == payload
-    assert json_decode(packet.identifier, packet.payload) == %Packet.RXPK{
+    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
-        %Packet.RXPK.Item{
+        %Semtech.PushData.RxPk.Item{
           tmst: 3059580787,
           time: "2016-09-17T20:39:56.971512Z",
           chan: 4,
@@ -117,7 +112,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
           data: "QCzC4xwAAAADbFcgZjcC"
         }
       ],
-      stat: %Packet.RXPK.Status{
+      stat: %Semtech.PushData.RxPk.Status{
         time: "2014-01-12 08:59:28 GMT",
         lati: 46.24000,
         long: 3.25230,
@@ -141,10 +136,9 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 13269834311797778098
-    assert packet.payload == payload
-    assert json_decode(packet.identifier, packet.payload) == %Packet.RXPK{
-      stat: %Packet.RXPK.Status{
+    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.payload == %Semtech.PushData.RxPk{
+      stat: %Semtech.PushData.RxPk.Status{
         time: "2014-01-12 08:59:28 GMT",
         lati: 46.24000,
         long: 3.25230,
@@ -160,27 +154,27 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
   end
 end
 
-defmodule SemtechTest.Decoder.PUSH_ACK do
+defmodule SemtechTest.Decoder.PushAck do
   use ExUnit.Case
   # TODO: Implement!
 end
 
-defmodule SemtechTest.Decoder.PULL_DATA do
+defmodule SemtechTest.Decoder.PullData do
   use ExUnit.Case
   # TODO: Implement!
 end
 
-defmodule SemtechTest.Decoder.PULL_ACK do
+defmodule SemtechTest.Decoder.PullAck do
   use ExUnit.Case
   # TODO: Implement!
 end
 
-defmodule SemtechTest.Decoder.PULL_RESP do
+defmodule SemtechTest.Decoder.PullResp do
   use ExUnit.Case
   # TODO: Implement!
 end
 
-defmodule SemtechTest.Decoder.TX_ACK do
+defmodule SemtechTest.Decoder.TxAck do
   use ExUnit.Case
   # TODO: Implement!
 end
