@@ -1,3 +1,10 @@
 defmodule LoRaWAN.MACPayload do
-  # TODO: Implement!
+  defstruct [
+    devAddr: nil,
+    fCtrl: nil,
+    fCnt: nil,
+    fOpts: nil,
+    fPort: nil,
+    payload: nil
+  ]
 end

@@ -1,3 +1,7 @@
 defmodule LoRaWAN.PHYPayload do
-  # TODO: Implement!
+   defstruct [
+    mhdr: nil,
+    payload: nil,
+    mic: nil
+  ]
 end
