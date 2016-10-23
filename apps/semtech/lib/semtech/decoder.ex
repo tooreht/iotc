@@ -1,16 +1,14 @@
 defmodule Semtech.Decoder do
   @moduledoc """
-  This module implements the basic communication protocol between Lora gateway and server.
-
-  ## References:
-    * [Protocol](https://github.com/Lora-net/packet_forwarder/blob/master/PROTOCOL.TXT)
+  This module is responsible for the decoding of the different packet types.
   """
 
-
   @doc """
-  Multi-clause function to parse packets depending on their size and identifier.
+  Encodes packets from binary to internal data structure depending on their size and identifier.
 
-  Identifiers:
+  ## Packet Types
+
+  Pattern matching with a multi-clause function is used to differentiate the following packet types.
 
        Identifier  | Hex
       :-----------:|------
@@ -112,7 +110,7 @@ defmodule Semtech.Decoder do
 
   ## Default clause for unknown packets
 
-  Return `:error` with error message `:unknown_pkt_fwd_packet` and unknown packet as binary data.
+  Return `:error` with error message `:unknown_packet` and unknown packet as binary data.
   """
   def decode(<<
       version     :: size(8),
@@ -203,11 +201,11 @@ defmodule Semtech.Decoder do
       version: version,
       token: token,
       identifier: 0x05,
-      payload: Poison.decode!(payload, as: %Semtech.TxAck.TxPk{})
+      payload: Poison.decode!(payload, as: %Semtech.TxAck.TxPkAck{})
     }
   end
 
   def decode(unknown) do
-    {:error, {:unknown_pkt_fwd_packet, unknown}}
+    {:error, {:unknown_packet, unknown}}
   end
 end
