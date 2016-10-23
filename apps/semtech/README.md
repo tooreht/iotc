@@ -1,6 +1,6 @@
 # Semtech
 
-**TODO: Add description**
+This module implements the Semtech basic communication protocol between LoraWAN gateway and server as described [here](https://github.com/Lora-net/packet_forwarder/blob/master/PROTOCOL.TXT).
 
 ## Installation
 
