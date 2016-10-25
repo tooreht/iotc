@@ -70,11 +70,12 @@ defmodule Semtech.Handler do
         Logger.debug "Sent packet: " <> inspect(tx_packet)
         data = encode(tx_packet)
 
+        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
+        
         # Process packets after ack.
         # TODO: Implement!
 
 
-        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
         {:reply, data, state}
       0x02 -> 
         # Acknowledge immediately all the PullData packets received with a PullAck packet.
