@@ -48,7 +48,7 @@ defmodule Semtech.Handler do
   end
 
   def handle_call({:send, {socket, gateway_ip, port}, data}, _from, state) do
-    UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
+    UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
     {:reply, data, state}
   end
 
@@ -74,7 +74,7 @@ defmodule Semtech.Handler do
         # TODO: Implement!
 
 
-        UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
+        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
         {:reply, data, state}
       0x02 -> 
         # Acknowledge immediately all the PullData packets received with a PullAck packet.
@@ -85,7 +85,7 @@ defmodule Semtech.Handler do
         Logger.debug "Sent packet: " <> inspect(tx_packet)
         data = encode(tx_packet)
 
-        UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
+        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
         {:reply, data, state}
       _ -> {:reply, data, state}
     end

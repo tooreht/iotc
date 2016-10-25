@@ -15,10 +15,10 @@ defmodule UDP.Server do
   end
 
   @doc """
-  Transmit UDP datagrams.
+  Send UDP datagrams.
   """
-  def tx(server, {socket, ip, port}, data) do
-    GenServer.cast(server, {:tx, {socket, ip, port}, data})
+  def send(server, {socket, ip, port}, data) do
+    GenServer.cast(server, {:send, {socket, ip, port}, data})
   end
 
   ## Server Callbacks
@@ -33,7 +33,7 @@ defmodule UDP.Server do
     {:ok, {socket, handlers, refs}}
   end
 
-  def handle_cast({:tx, {socket, ip, port}, data}, state) do
+  def handle_cast({:send, {socket, ip, port}, data}, state) do
     :ok = :gen_udp.send(socket, ip, port, data)
     {:noreply, state}
   end
