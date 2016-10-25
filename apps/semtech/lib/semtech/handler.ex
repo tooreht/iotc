@@ -44,6 +44,7 @@ defmodule Semtech.Handler do
   def init({:ok, gateway_ip}) do
     {:ok, _} = KV.Registry.create(KV.Registry, gateway_ip)
     {:ok, bucket} = KV.Registry.lookup(KV.Registry, gateway_ip)
+    KV.Bucket.put(bucket, "stats", [])
     {:ok, %{gateway_ip: gateway_ip, bucket: bucket}}
   end
 
@@ -72,8 +73,15 @@ defmodule Semtech.Handler do
 
         UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
         
-        # Process packets after ack.
-        # TODO: Implement!
+        # Further packet processing after ack.
+
+        # Store stats data in bucket
+        if rx_packet.payload.stat !== nil do
+          stats = KV.Bucket.get(state.bucket, "stats")
+          KV.Bucket.put(state.bucket, "stats", [rx_packet.payload.stat | stats])
+        end
+
+        # TODO: Send to lorawan app!
 
 
         {:reply, data, state}
