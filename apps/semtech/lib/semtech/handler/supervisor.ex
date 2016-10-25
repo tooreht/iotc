@@ -11,8 +11,8 @@ defmodule Semtech.Handler.Supervisor do
     Supervisor.start_link(__MODULE__, :ok, name: @name)
   end
 
-  def start_handler do
-    Supervisor.start_child(@name, [])
+  def start_handler(gateway_ip) do
+    Supervisor.start_child(@name, [gateway_ip])
   end
 
   def init(:ok) do

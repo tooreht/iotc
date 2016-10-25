@@ -10,8 +10,8 @@ defmodule Semtech.Handler do
   @doc """
   Starts the registry with the given `name`.
   """
-  def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, opts)
+  def start_link(gateway_ip, opts \\ []) do
+    GenServer.start_link(__MODULE__, {:ok, gateway_ip}, opts)
   end
 
   @doc """
@@ -19,8 +19,8 @@ defmodule Semtech.Handler do
 
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
-  def send(server, {socket, ip, port}, data) do
-    GenServer.call(server, {:send, {socket, ip, port}, data})
+  def send(server, {socket, gateway_ip, port}, data) do
+    GenServer.call(server, {:send, {socket, gateway_ip, port}, data})
   end
 
   @doc """
@@ -28,8 +28,8 @@ defmodule Semtech.Handler do
 
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
-  def receive(server, {socket, ip, port}, data) do
-    GenServer.call(server, {:receive, {socket, ip, port}, data})
+  def receive(server, {socket, gateway_ip, port}, data) do
+    GenServer.call(server, {:receive, {socket, gateway_ip, port}, data})
   end
 
   @doc """
@@ -41,19 +41,21 @@ defmodule Semtech.Handler do
 
   ## Server Callbacks
 
-  def init(:ok) do
-    {:ok, %{}}
+  def init({:ok, gateway_ip}) do
+    {:ok, _} = KV.Registry.create(KV.Registry, gateway_ip)
+    {:ok, bucket} = KV.Registry.lookup(KV.Registry, gateway_ip)
+    {:ok, %{gateway_ip: gateway_ip, bucket: bucket}}
   end
 
-  def handle_call({:send, {socket, ip, port}, data}, _from, state) do
-    UDP.Server.tx(UDP.Server, {socket, ip, port}, data)
+  def handle_call({:send, {socket, gateway_ip, port}, data}, _from, state) do
+    UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
     {:reply, data, state}
   end
 
-  def handle_call({:receive, {socket, ip, port}, data}, _from, state) do
+  def handle_call({:receive, {socket, gateway_ip, port}, data}, _from, state) do
     import Semtech.Encoder
     import Semtech.Decoder
-    
+
     # Decode the packet received from the gateway
     rx_packet = decode(data)
     Logger.debug "Received packet: " <> inspect(rx_packet)
@@ -72,7 +74,7 @@ defmodule Semtech.Handler do
         # TODO: Implement!
 
 
-        UDP.Server.tx(UDP.Server, {socket, ip, port}, data)
+        UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
         {:reply, data, state}
       0x02 -> 
         # Acknowledge immediately all the PullData packets received with a PullAck packet.
@@ -83,7 +85,7 @@ defmodule Semtech.Handler do
         Logger.debug "Sent packet: " <> inspect(tx_packet)
         data = encode(tx_packet)
 
-        UDP.Server.tx(UDP.Server, {socket, ip, port}, data)
+        UDP.Server.tx(UDP.Server, {socket, gateway_ip, port}, data)
         {:reply, data, state}
       _ -> {:reply, data, state}
     end

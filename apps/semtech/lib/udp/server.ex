@@ -39,16 +39,11 @@ defmodule UDP.Server do
   end
 
   def handle_info({:udp, socket, ip, port, data}, {socket, handlers, refs}) do
-    {:ok, _} = KV.Registry.create(KV.Registry, ip)
-    
     result = Map.fetch(handlers, ip)
     {handler, handlers, refs} = case result do
       {:ok, handler} -> {handler, handlers, refs}
       :error ->
-        # {:ok, bucket} = KV.Registry.lookup(registry, ip)
-        # KV.Bucket.put(bucket, "clients", %{socket, ip, port})
-
-        {:ok, handler} = Semtech.Handler.Supervisor.start_handler
+        {:ok, handler} = Semtech.Handler.Supervisor.start_handler(ip)
         ref = Process.monitor(handler)
         refs = Map.put(refs, ref, ip)
         handlers = Map.put(handlers, ip, handler)
