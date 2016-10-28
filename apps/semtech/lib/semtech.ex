@@ -9,16 +9,8 @@ defmodule Semtech do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    udp_host = Application.get_env(:semtech, :UDP_HOST)
-    udp_port = Application.get_env(:semtech, :UDP_PORT)
-
-    server_settings = %{
-      host: udp_host,
-      port: udp_port
-    }
-
     children = [
-      worker(UDP.Server, [server_settings, [name: UDP.Server]]),
+      worker(UDP.Server, [[name: UDP.Server]]),
       supervisor(Semtech.Handler.Supervisor, [])
     ]
 

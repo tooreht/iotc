@@ -3,6 +3,7 @@ defmodule UDP.Server do
   This module dispatches UDP packets.
   """
   use GenServer
+  alias Core.Config
   require Logger
 
   ## Client API
@@ -10,8 +11,8 @@ defmodule UDP.Server do
   @doc """
   Starts the UDP server.
   """
-  def start_link(settings, opts \\ []) do
-    GenServer.start_link(__MODULE__, settings, opts)
+  def start_link(opts \\ []) do
+    GenServer.start_link(__MODULE__, :ok, opts)
   end
 
   @doc """
@@ -23,13 +24,17 @@ defmodule UDP.Server do
 
   ## Server Callbacks
 
-  def init(settings) do
+  def init(:ok) do
     handlers = %{}
     refs = %{}
-    {:ok, socket} = :gen_udp.open(settings.port, [:binary, :inet,
-                                               {:ip, settings.host},
+
+    ip = Config.get_ip(:semtech, :udp_host, {0,0,0,0})
+    port = Config.get_integer(:semtech, :udp_port, 1700)
+
+    {:ok, socket} = :gen_udp.open(port, [:binary, :inet,
+                                               {:ip, ip},
                                                {:active, true}])
-    Logger.debug("Listening on #{:inet_parse.ntoa(settings.host)}:#{settings.port}")
+    Logger.debug("UDP server listening on #{:inet_parse.ntoa(ip)}:#{port}")
     {:ok, {socket, handlers, refs}}
   end
 
