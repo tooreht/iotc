@@ -10,32 +10,39 @@
   end
 
   def handle_call(payload, _from, nil) do
-    phy_payload = parse_packet(payload)
+    packet = parse_packet(payload)
 
-    {:reply, "Packed handled", nil}
+    Logger.debug "Received Packet: " <> inspect(packet)
+
+    {:reply, packet, nil}
   end
 
-  @doc """
-  Multi-clause function to parse packets depending on their MHDR and Major.
-
-  """
   defp parse_packet(<<
     0x00    :: size(3), # MType Join Request
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
     data    :: binary
     >>) do 
+    alias LoRaWAN.JoinRequest, as: JR
 
-    payload_size = bit_size(data) - 32
-    Logger.info "this is a Join Request Packet"
+    payload_size = byte_size(data) - 4
+    <<
+      payload ::  bytes-size(payload_size), 
+      mic     ::  bytes-size(4)
+    >> = data
 
     <<
-      payload ::  size(payload_size), 
-      mic     ::  size(32)
-    >> = data
+      appEUI    :: little-size(1)-unit(64),
+      devEUI    :: little-size(1)-unit(64),
+      devNonce  :: little-size(1)-unit(16)
+    >> = payload
     
-    %LoRaWAN.JoinRequest{
-      payload: payload,
+    %JR{
+      payload: %JR.MACPayload{
+          appEUI: << appEUI :: size(8)-unit(8) >>,
+          devEUI: << devEUI :: size(8)-unit(8) >>,
+          devNonce: << devNonce :: size(2)-unit(8) >>  
+        },
       mic: mic
     }
   end
@@ -46,17 +53,42 @@
     0x00    :: size(2), # Major (0 = 1.0)
     data    :: binary
     >>) do
+    alias LoRaWAN.UnconfirmedDataUp, as: UDU
 
-    payload_size = bit_size(data) - 32
-    Logger.info "this is an Unconfirmed Data Up Packet"
+    payload_size = byte_size(data) - 4
+    <<
+      payload ::  bytes-size(payload_size), 
+      mic     ::  bytes-size(4)
+    >> = data
 
     <<
-      payload ::  size(payload_size), 
-      mic     ::  size(32)
-    >> = data
+      devIntAddr :: little-size(1)-unit(32), 
+      adr        :: size(1),
+      adrAckReq  :: size(1),
+      ack        :: size(1),
+      rfu        :: size(1),
+      fOptsLen   :: size(4),
+      fCnt       :: little-size(1)-unit(16),
+      fOpts      :: bytes-size(fOptsLen),
+      fPort      :: bytes-size(1),
+      dataFrame  :: binary 
+    >> = payload
     
-    %LoRaWAN.UnconfirmedDataUp{
-      payload: payload,
+    %UDU{
+      payload: %UDU.MACPayload{
+        devAddr: << devIntAddr :: size(4)-unit(8) >>, # HACK to get a binary and not an int
+        fCtrl: %UDU.MACPayload.FCtrl {
+            adr: adr,
+            adrAckReq: adrAckReq,
+            ack: ack,
+            rfu: rfu,
+            fOptsLen: fOptsLen
+          },        
+          fCnt: fCnt,
+          fOpts: fOpts,
+          fPort: fPort,
+          frmPayload: dataFrame
+        },
       mic: mic
     }
   end
@@ -66,18 +98,43 @@
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
     data    :: binary
-    >>) do 
+    >>) do
+    alias LoRaWAN.ConfirmedDataUp, as: CDU 
 
-    payload_size = bit_size(data) - 32
-    Logger.info "this is an Confirmed Data Up Packet"
-
+    payload_size = byte_size(data) - 4
     <<
-      payload ::  size(payload_size),
-      mic     ::  size(32)
+      payload ::  bytes-size(payload_size), 
+      mic     ::  bytes-size(4)
     >> = data
 
-    %LoRaWAN.ConfirmedDataUp{
-      payload: payload,
+    <<
+      devIntAddr :: little-size(1)-unit(32), 
+      adr        :: size(1),
+      adrAckReq  :: size(1),
+      ack        :: size(1),
+      rfu        :: size(1),
+      fOptsLen   :: size(4),
+      fCnt       :: little-size(1)-unit(16),
+      fOpts      :: bytes-size(fOptsLen),
+      fPort      :: bytes-size(1),
+      dataFrame  :: binary 
+    >> = payload
+    
+    %CDU{
+      payload: %CDU.MACPayload{
+        devAddr: << devIntAddr :: size(4)-unit(8) >>, # HACK to get a binary and not an int
+        fCtrl: %CDU.MACPayload.FCtrl {
+            adr: adr,
+            adrAckReq: adrAckReq,
+            ack: ack,
+            rfu: rfu,
+            fOptsLen: fOptsLen
+          },        
+          fCnt: fCnt,
+          fOpts: fOpts,
+          fPort: fPort,
+          frmPayload: dataFrame
+        },
       mic: mic
     }
   end
@@ -88,16 +145,15 @@
     0x00    :: size(2), # Major (0 = 1.0)
     data    :: binary
     >>) do
+    alias LoRaWAN.Proprietary, as: PPY
 
-    payload_size = bit_size(data) - 32
-    Logger.info "this is a Proprietary Packet"
-
+    payload_size = byte_size(data) - 4
     <<
-      payload ::  size(payload_size),
-      mic     ::  size(32)
+      payload ::  bytes-size(payload_size), 
+      mic     ::  bytes-size(4)
     >> = data
-
-    %LoRaWAN.Proprietary{
+    
+    %PPY{
       payload: payload,
       mic: mic
     }
