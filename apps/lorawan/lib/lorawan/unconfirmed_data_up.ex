@@ -15,4 +15,46 @@ defmodule LoRaWAN.UnconfirmedDataUp do
     payload: nil,
     mic: nil
   ]
+
+  defmodule MACPayload do
+    defstruct [
+      devAddr: nil,
+      fCtrl: nil,
+      fCnt: nil,
+      fOpts: nil,
+      fPort: nil,
+      frmPayload: nil
+    ]
+
+    defmodule FCtrl do
+      defstruct [
+        adr: nil,
+        adrAckReq: nil,
+        ack: nil,
+        rfu: nil,
+        fOptsLen: nil
+      ]
+    end
+  end
+end
+
+defimpl Inspect, for: LoRaWAN.UnconfirmedDataUp do
+  def inspect(%LoRaWAN.UnconfirmedDataUp{
+                mtype: mtype,
+                rfu: rfu,
+                payload: payload,
+                mic: mic}, _) do
+    mtype  = inspect(mtype)
+    rfu = inspect(rfu)
+    payload = inspect(payload)
+    mic = inspect(mic)
+    
+    """
+    #LoRaWAN.UnconfirmedDataUp<
+      mtype: #{mtype},
+      payload: #{payload},
+      mic: #{mic}
+    >
+    """
+  end
 end
