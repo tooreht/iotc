@@ -1,0 +1,48 @@
+version: '2'
+services:
+  iotc:
+    build: .
+    ports:
+     - "1700:1700/udp"
+     - "4242:4242"
+     - "4369:4369"
+    depends_on:
+     - vernemq0
+     - vernemq1
+     - vernemq2
+    networks:
+     - backend
+  prometheus:
+    image: prom/prometheus
+    ports:
+     - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+     - backend
+  vernemq0:
+    image: erlio/docker-vernemq:latest
+    ports:
+     - "1883:1883"
+     - "8883:8883"
+     - "8080:8080"
+    depends_on:
+     - prometheus
+    networks:
+     - backend
+  vernemq1:
+    image: erlio/docker-vernemq:latest
+    depends_on:
+     - vernemq0
+    networks:
+     - backend
+  vernemq2:
+    image: erlio/docker-vernemq:latest
+    depends_on:
+     - vernemq0
+    networks:
+     - backend
+
+networks:
+  backend:
+    driver: bridge
