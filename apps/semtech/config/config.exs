@@ -21,8 +21,8 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
-config :semtech, udp_host: {:system, "UDP_HOST"},
-                 udp_port: {:system, "UDP_PORT"}
+config :semtech, udp_host: "${UDP_HOST}",
+                 udp_port: "${UDP_PORT}"
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
