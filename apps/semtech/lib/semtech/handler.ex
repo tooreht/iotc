@@ -81,8 +81,9 @@ defmodule Semtech.Handler do
           KV.Bucket.put(state.bucket, "stats", [rx_packet.payload.stat | stats])
         end
 
-        # TODO: Send to lorawan app!
-
+        if rx_packet.payload.rxpk !== [] do
+          LoRaWAN.Handler.receive(LoRaWAN.Handler, {socket, gateway_ip, port}, rx_packet.payload.rxpk)
+        end
 
         {:reply, data, state}
       0x02 -> 
