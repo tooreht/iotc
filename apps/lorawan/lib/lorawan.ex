@@ -5,7 +5,7 @@ defmodule LoRaWAN do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(Handler, [LoRaWAN.Handler])
+      worker(LoRaWAN.Handler, [LoRaWAN.Handler])
     ]
 
     # Start the main supervisor, and restart failed children individually

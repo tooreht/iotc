@@ -1,35 +1,21 @@
- defmodule Handler do
+defmodule LoRaWAN.Decoder do
   @moduledoc """
-  This module implements the LoRaWAN communication protocol between LoRa mote and server.
+  This module is responsible for the decoding of the different packet types.
   """
-  use GenServer
-  require Logger
 
-  def start_link(name) do
-    GenServer.start_link(__MODULE__, nil, [name: name])
-  end
-
-  def handle_call(payload, _from, nil) do
-    packet = parse_packet(payload)
-
-    Logger.debug "Received Packet: " <> inspect(packet)
-
-    {:reply, packet, nil}
-  end
-
-  defp parse_packet(<<
+  def decode(<<
     0x00    :: size(3), # MType Join Request
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
-    data    :: binary
+    payload :: binary
     >>) do 
     alias LoRaWAN.JoinRequest, as: JR
 
-    payload_size = byte_size(data) - 4
+    payload_size = byte_size(payload) - 4
     <<
       payload ::  bytes-size(payload_size), 
       mic     ::  bytes-size(4)
-    >> = data
+    >> = payload
 
     <<
       appEUI    :: little-size(1)-unit(64),
@@ -47,19 +33,19 @@
     }
   end
 
-  defp parse_packet(<<
+  def decode(<<
     0x02    :: size(3), # MType Unconfirmed Data Up
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
-    data    :: binary
+    payload :: binary
     >>) do
     alias LoRaWAN.UnconfirmedDataUp, as: UDU
 
-    payload_size = byte_size(data) - 4
+    payload_size = byte_size(payload) - 4
     <<
       payload ::  bytes-size(payload_size), 
       mic     ::  bytes-size(4)
-    >> = data
+    >> = payload
 
     <<
       devIntAddr :: little-size(1)-unit(32), 
@@ -93,19 +79,19 @@
     }
   end
 
-  defp parse_packet(<<
+  def decode(<<
     0x04    :: size(3), # MType Confirmed Data Up
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
-    data    :: binary
+    payload :: binary
     >>) do
     alias LoRaWAN.ConfirmedDataUp, as: CDU 
 
-    payload_size = byte_size(data) - 4
+    payload_size = byte_size(payload) - 4
     <<
       payload ::  bytes-size(payload_size), 
       mic     ::  bytes-size(4)
-    >> = data
+    >> = payload
 
     <<
       devIntAddr :: little-size(1)-unit(32), 
@@ -139,19 +125,19 @@
     }
   end
 
-  defp parse_packet(<<
+  def decode(<<
     0x07    :: size(3), # MType Proprietary
     0x00    :: size(3), # RFU
     0x00    :: size(2), # Major (0 = 1.0)
-    data    :: binary
+    payload :: binary
     >>) do
     alias LoRaWAN.Proprietary, as: PPY
 
-    payload_size = byte_size(data) - 4
+    payload_size = byte_size(payload) - 4
     <<
       payload ::  bytes-size(payload_size), 
       mic     ::  bytes-size(4)
-    >> = data
+    >> = payload
     
     %PPY{
       payload: payload,

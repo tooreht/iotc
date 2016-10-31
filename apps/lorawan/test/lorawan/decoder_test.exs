@@ -28,7 +28,7 @@ defmodule HandlerTest do
   @fOptsLen 0
 
   test "It should extract an UnconfirmedDataUp packet." do
-    packet = GenServer.call LoRaWAN.Handler, @message
+    packet = LoRaWAN.Decoder.decode @message
     assert packet.mtype == @mtype
     assert packet.rfu == @rfu
     assert packet.major == @major
@@ -68,7 +68,7 @@ defmodule HandlerTest do
   @devNonce <<18, 61>>
 
   test "It should extract an JoinRequest packet." do
-    packet = GenServer.call LoRaWAN.Handler, @message
+    packet = LoRaWAN.Decoder.decode @message
 
     assert packet.mtype == @mtype
     assert packet.rfu == @rfu
