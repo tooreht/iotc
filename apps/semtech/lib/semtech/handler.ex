@@ -29,7 +29,7 @@ defmodule Semtech.Handler do
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
   def receive(server, {socket, gateway_ip, port}, data) do
-    GenServer.call(server, {:receive, {socket, gateway_ip, port}, data})
+    GenServer.cast(server, {:receive, {socket, gateway_ip, port}, data})
   end
 
   @doc """
@@ -53,7 +53,7 @@ defmodule Semtech.Handler do
     {:reply, data, state}
   end
 
-  def handle_call({:receive, {socket, gateway_ip, port}, data}, _from, state) do
+  def handle_cast({:receive, {socket, gateway_ip, port}, data}, state) do
     import Semtech.Encoder
     import Semtech.Decoder
 
@@ -85,7 +85,7 @@ defmodule Semtech.Handler do
           LoRaWAN.Handler.receive(LoRaWAN.Handler, {socket, gateway_ip, port}, rx_packet.payload.rxpk)
         end
 
-        {:reply, data, state}
+        {:noreply, state}
       0x02 -> 
         # Acknowledge immediately all the PullData packets received with a PullAck packet.
         tx_packet = %Semtech.PullAck{
@@ -96,8 +96,8 @@ defmodule Semtech.Handler do
         data = encode(tx_packet)
 
         UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
-        {:reply, data, state}
-      _ -> {:reply, data, state}
+        {:noreply, state}
+      _ -> {:noreply, state}
     end
   end
 end
