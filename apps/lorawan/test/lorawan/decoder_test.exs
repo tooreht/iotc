@@ -1,5 +1,5 @@
 defmodule HandlerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # Origin Base64 Message:  QOvHuxwAAAADifcrgYr0
   # HEX:                    0x40 0xEB 0xC7 0xBB 0x1C 0x00 0x00 0x00 0x03 0x89 0xF7 0x2B 0x81 0x8A 0xF4
   # Binary:                 <<64, 235, 199, 187, 28, 0, 0, 0, 3, 137, 247, 43, 129, 138, 244>>
