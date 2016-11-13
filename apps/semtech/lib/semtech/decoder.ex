@@ -124,7 +124,7 @@ defmodule Semtech.Decoder do
       version: version,
       token: token,
       identifier: 0x00,
-      gateway_id: Integer.to_char_list(gateway_id, 16),
+      gateway_id: Integer.to_string(gateway_id, 16),
       payload: Poison.decode!(payload, as: 
         %Semtech.PushData.RxPk{
           rxpk: [%Semtech.PushData.RxPk.Item{}],
@@ -158,7 +158,7 @@ defmodule Semtech.Decoder do
       version: version,
       token: token,
       identifier: 0x02,
-      gateway_id: Integer.to_char_list(gateway_id, 16)
+      gateway_id: Integer.to_string(gateway_id, 16)
     }
   end
 

@@ -42,10 +42,10 @@ defmodule Semtech.Handler do
   ## Server Callbacks
 
   def init({:ok, gateway_ip}) do
-    {:ok, _} = KV.Registry.create(KV.Registry, gateway_ip)
-    {:ok, bucket} = KV.Registry.lookup(KV.Registry, gateway_ip)
-    KV.Bucket.put(bucket, "stats", [])
-    {:ok, %{gateway_ip: gateway_ip, bucket: bucket}}
+    {:ok, handler} = LoRaWAN.Gateway.Handler.Supervisor.start_handler(gateway_ip)
+    ref = Process.monitor(handler)
+
+    {:ok, {handler, ref, gateway_ip}}
   end
 
   def handle_call({:send, {socket, gateway_ip, port}, data}, _from, state) do
@@ -53,51 +53,54 @@ defmodule Semtech.Handler do
     {:reply, data, state}
   end
 
-  def handle_cast({:receive, {socket, gateway_ip, port}, data}, state) do
+  def handle_cast({:receive, {socket, gateway_ip, port}, data}, state = {handler, _, _}) do
     import Semtech.Encoder
     import Semtech.Decoder
 
-    # Decode the packet received from the gateway
+    # Decode the packet received from the gateway.
     rx_packet = decode(data)
-    Logger.debug "Received packet: " <> inspect(rx_packet)
+    Logger.debug "Received packet: #{inspect(rx_packet)}from #{inspect(gateway_ip)}:#{inspect(port)}"
 
-    case rx_packet.identifier do
-      0x00 -> 
-        # Acknowledge immediately all the PushData packets received with a PushAck packet.
-        tx_packet = %Semtech.PushAck{
-          version: rx_packet.version,
-          token: rx_packet.token,
-        }
-        Logger.debug "Sent packet: " <> inspect(tx_packet)
-        data = encode(tx_packet)
+    # Harmonize Semtech packet to internal format.
+    packet = Semtech.Harmonizer.harmonize(gateway_ip, rx_packet)
 
-        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
-        
-        # Further packet processing after ack.
+    # Let the gateway handler validate the packet.
+    response = LoRaWAN.Gateway.Handler.receive(handler, packet)
 
-        # Store stats data in bucket
-        if rx_packet.payload.stat !== nil do
-          stats = KV.Bucket.get(state.bucket, "stats")
-          KV.Bucket.put(state.bucket, "stats", [rx_packet.payload.stat | stats])
+    case response do
+      {:ok, true} ->
+        case rx_packet.identifier do
+          0x00 ->
+            tx_packet = %Semtech.PushAck{
+              version: rx_packet.version,
+              token: rx_packet.token,
+            }
+            Logger.debug "Sent packet: #{inspect(tx_packet)}to #{inspect(gateway_ip)}:#{inspect(port)}"
+            # Ecode the PushAck packet
+            data = encode(tx_packet)
+            # Send ack if the packet is accepted by the gateway handler.
+            UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
+            {:noreply, state}
+          0x02 ->
+            # Acknowledge immediately all the PullData packets received with a PullAck packet.
+            tx_packet = %Semtech.PullAck{
+              version: rx_packet.version,
+              token: rx_packet.token,
+            }
+            Logger.debug "Sent packet: #{inspect(tx_packet)}to #{inspect(gateway_ip)}:#{inspect(port)}"
+            data = encode(tx_packet)
+            UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
+            {:noreply, state}
+          _ -> {:noreply, state}
         end
-
-        if rx_packet.payload.rxpk !== [] do
-          LoRaWAN.Handler.receive(LoRaWAN.Handler, {socket, gateway_ip, port}, rx_packet.payload.rxpk)
-        end
-
+      _ ->
+        Logger.warn "Drop packet: #{inspect(rx_packet)}from #{inspect(gateway_ip)}:#{inspect(port)}"
         {:noreply, state}
-      0x02 -> 
-        # Acknowledge immediately all the PullData packets received with a PullAck packet.
-        tx_packet = %Semtech.PullAck{
-          version: rx_packet.version,
-          token: rx_packet.token,
-        }
-        Logger.debug "Sent packet: " <> inspect(tx_packet)
-        data = encode(tx_packet)
-
-        UDP.Server.send(UDP.Server, {socket, gateway_ip, port}, data)
-        {:noreply, state}
-      _ -> {:noreply, state}
     end
+  end
+
+  def handle_info({:DOWN, _ref, :process, _pid, _reason}, state) do
+    Process.exit(self(), :normal)
+    {:noreply, state}
   end
 end

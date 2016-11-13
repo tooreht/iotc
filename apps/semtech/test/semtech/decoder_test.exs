@@ -1,5 +1,5 @@
 defmodule SemtechTest.Decoder.PUSH_DATA do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   @version <<1>>
   @token <<56, 225>>
@@ -16,7 +16,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.gateway_id == "B827EBFFFEFF26B2"
     assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
         %Semtech.PushData.RxPk.Item{
@@ -47,7 +47,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.gateway_id == "B827EBFFFEFF26B2"
     assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
         %Semtech.PushData.RxPk.Item{
@@ -93,7 +93,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.gateway_id == "B827EBFFFEFF26B2"
     assert packet.payload == %Semtech.PushData.RxPk{
       rxpk: [
         %Semtech.PushData.RxPk.Item{
@@ -136,7 +136,7 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
     assert packet.version == 1
     assert packet.token == 14561
     assert packet.identifier == 0
-    assert packet.gateway_id == 'B827EBFFFEFF26B2'
+    assert packet.gateway_id == "B827EBFFFEFF26B2"
     assert packet.payload == %Semtech.PushData.RxPk{
       stat: %Semtech.PushData.RxPk.Status{
         time: "2014-01-12 08:59:28 GMT",
@@ -155,26 +155,26 @@ defmodule SemtechTest.Decoder.PUSH_DATA do
 end
 
 defmodule SemtechTest.Decoder.PushAck do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # TODO: Implement!
 end
 
 defmodule SemtechTest.Decoder.PullData do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # TODO: Implement!
 end
 
 defmodule SemtechTest.Decoder.PullAck do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # TODO: Implement!
 end
 
 defmodule SemtechTest.Decoder.PullResp do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # TODO: Implement!
 end
 
 defmodule SemtechTest.Decoder.TxAck do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # TODO: Implement!
 end

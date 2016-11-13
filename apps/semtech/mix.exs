@@ -20,7 +20,7 @@ defmodule Semtech.Mixfile do
   def application do
     [
       mod: {Semtech, []},
-      applications: [:logger, :kv],
+      applications: [:logger],
       included_applications: [:core, :poison]
     ]
   end
@@ -41,7 +41,6 @@ defmodule Semtech.Mixfile do
   defp deps do
     [
       {:core, in_umbrella: true},
-      {:kv, in_umbrella: true},
       {:poison, "~> 3.0"},
     ]
   end
