@@ -16,6 +16,7 @@ config :ex_admin,
     Core.ExAdmin.Dashboard,
     Core.ExAdmin.User,
     Core.ExAdmin.LoRaWAN.Gateway,
+    Core.ExAdmin.LoRaWAN.Gateway.Statistics,
   ]
 
 # Configures the endpoint
