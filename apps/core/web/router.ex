@@ -69,5 +69,6 @@ defmodule Core.Router do
 
     resources "/users", UserController, except: [:new, :edit]
     resources "/lorawan/lorawan_gateways", LoRaWAN.GatewayController, except: [:new, :edit]
+    resources "/lorawan/gateway/lorawan_gateway_statistics", LoRaWAN.Gateway.StatisticsController, except: [:new, :edit]
   end
 end
