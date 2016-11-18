@@ -9,6 +9,14 @@ use Mix.Config
 config :core,
   ecto_repos: [Core.Repo]
 
+config :ex_admin,
+  repo: Core.Repo,
+  module: Core,
+  modules: [
+    Core.ExAdmin.Dashboard,
+    Core.ExAdmin.User,
+  ]
+
 # Configures the endpoint
 config :core, Core.Endpoint,
   url: [host: "localhost"],
@@ -25,3 +33,5 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+config :xain, :after_callback, {Phoenix.HTML, :raw}
