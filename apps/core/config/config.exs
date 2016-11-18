@@ -20,6 +20,7 @@ config :ex_admin,
     Core.ExAdmin.LoRaWAN.Application,
     Core.ExAdmin.LoRaWAN.DeviceAddress,
     Core.ExAdmin.LoRaWAN.Node,
+    Core.ExAdmin.LoRaWAN.Packet,
   ]
 
 # Configures the endpoint
