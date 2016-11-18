@@ -1,6 +1,10 @@
 defmodule Core.Router do
   use Core.Web, :router
 
+  #
+  # Pipelines
+  #
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -13,6 +17,11 @@ defmodule Core.Router do
     plug :accepts, ["json"]
   end
 
+  #
+  # Scopes
+  #
+
+  # App
   scope "/", Core do
     pipe_through :browser # Use the default browser stack
 
@@ -20,7 +29,10 @@ defmodule Core.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Core do
-  #   pipe_through :api
-  # end
+  scope "/api", Core do
+    pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
+    resources "/sessions", SessionController, only: [:create]
+  end
 end
