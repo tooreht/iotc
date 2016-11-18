@@ -68,5 +68,6 @@ defmodule Core.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    resources "/lorawan/lorawan_gateways", LoRaWAN.GatewayController, except: [:new, :edit]
   end
 end
