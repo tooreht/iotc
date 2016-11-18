@@ -1,5 +1,6 @@
 defmodule Core.Router do
   use Core.Web, :router
+  use ExAdmin.Router
 
   #
   # Pipelines
@@ -26,6 +27,13 @@ defmodule Core.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+  end
+
+  # Admin
+  scope "/admin", ExAdmin do
+    pipe_through :browser
+
+    admin_routes
   end
 
   # Other scopes may use custom stacks.
