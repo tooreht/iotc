@@ -41,7 +41,7 @@ defmodule Semtech.Mixfile do
   defp deps do
     [
       {:core, in_umbrella: true},
-      {:poison, "~> 3.0"},
+      {:poison, "~> 2.0"},
     ]
   end
 end

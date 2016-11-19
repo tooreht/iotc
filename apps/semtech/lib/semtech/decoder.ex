@@ -120,18 +120,67 @@ defmodule Semtech.Decoder do
       payload     :: binary
     >>) do
 
-    %Semtech.PushData{
-      version: version,
-      token: token,
-      identifier: 0x00,
-      gateway_id: Integer.to_string(gateway_id, 16),
-      payload: Poison.decode!(payload, as: 
-        %Semtech.PushData.RxPk{
-          rxpk: [%Semtech.PushData.RxPk.Item{}],
-          stat: %Semtech.PushData.RxPk.Status{}
+    # Workaround for poison < 3.0, remove when phoenix supports poison 3.0
+    has_rxpk = String.contains?(payload, "\"rxpk\":[")
+    has_stat = String.contains?(payload, "\"stat\":{")
+
+    cond do
+      has_rxpk and has_stat ->
+        %Semtech.PushData{
+          version: version,
+          token: token,
+          identifier: 0x00,
+          gateway_id: Integer.to_string(gateway_id, 16),
+          payload: Poison.decode!(payload, as:
+            %Semtech.PushData.RxPk{
+              rxpk: [%Semtech.PushData.RxPk.Item{}],
+              stat: %Semtech.PushData.RxPk.Status{}
+            }
+          )
         }
-      )
-    }
+      has_rxpk ->
+        %Semtech.PushData{
+          version: version,
+          token: token,
+          identifier: 0x00,
+          gateway_id: Integer.to_string(gateway_id, 16),
+          payload: Poison.decode!(payload, as:
+            %Semtech.PushData.RxPk{
+              rxpk: [%Semtech.PushData.RxPk.Item{}],
+              stat: nil
+            }
+          )
+        }
+      has_stat ->
+        %Semtech.PushData{
+          version: version,
+          token: token,
+          identifier: 0x00,
+          gateway_id: Integer.to_string(gateway_id, 16),
+          payload: Poison.decode!(payload, as:
+            %Semtech.PushData.RxPk{
+              rxpk: [],
+              stat: %Semtech.PushData.RxPk.Status{}
+            }
+          )
+        }
+      true -> nil
+    end
+    # End workaround
+
+    # Uncomment when phoenix supports poison 3.0
+    # %Semtech.PushData{
+    #   version: version,
+    #   token: token,
+    #   identifier: 0x00,
+    #   gateway_id: Integer.to_string(gateway_id, 16),
+    #   payload: Poison.decode!(payload, as:
+    #     %Semtech.PushData.RxPk{
+    #       rxpk: [%Semtech.PushData.RxPk.Item{}],
+    #       stat: %Semtech.PushData.RxPk.Status{}
+    #     }
+    #   )
+    # }
   end
 
   def decode(<<
