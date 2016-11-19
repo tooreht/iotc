@@ -74,5 +74,6 @@ defmodule Core.Router do
     resources "/lorawan/lorawan_device_addresses", LoRaWAN.DeviceAddressController, except: [:new, :edit]
     resources "/lorawan/lorawan_nodes", LoRaWAN.NodeController, except: [:new, :edit]
     resources "/lorawan/lorawan_packets", LoRaWAN.PacketController, except: [:new, :edit]
+    resources "/lorawan/lorawan_gateways_packets", LoRaWAN.GatewayPacketController, except: [:new, :edit]
   end
 end

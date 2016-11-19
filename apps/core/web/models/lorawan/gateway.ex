@@ -1,5 +1,7 @@
 defmodule Core.LoRaWAN.Gateway do
   use Core.Web, :model
+  alias Core.LoRaWAN.Packet
+  alias Core.LoRaWAN.GatewayPacket
 
   schema "lorawan_gateways" do
     field :gw_eui, :string
@@ -10,6 +12,7 @@ defmodule Core.LoRaWAN.Gateway do
     field :longitude, :decimal
     field :altitude, :decimal
     belongs_to :user, Core.User
+    many_to_many :lorawan_gateways, Packet, join_through: GatewayPacket
 
     timestamps()
   end
