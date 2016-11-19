@@ -1,5 +1,7 @@
 defmodule Core.LoRaWAN.Packet do
   use Core.Web, :model
+  alias Core.LoRaWAN.Gateway
+  alias Core.LoRaWAN.GatewayPacket
 
   schema "lorawan_packets" do
     field :number, :integer
