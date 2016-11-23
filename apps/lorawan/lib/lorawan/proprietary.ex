@@ -12,7 +12,7 @@ defmodule LoRaWAN.Proprietary do
     mtype: 0x07,
     rfu: 0x00,
     major: 0x00,
-    payload: nil,
+    mac_payload: nil,
     mic: nil
   ]
 
@@ -42,18 +42,20 @@ defimpl Inspect, for: LoRaWAN.Proprietary do
   def inspect(%LoRaWAN.Proprietary{
                 mtype: mtype,
                 rfu: rfu,
-                payload: payload,
+                major: major,
+                mac_payload: mac_payload,
                 mic: mic}, _) do
     mtype  = inspect(mtype)
     rfu = inspect(rfu)
-    payload = inspect(payload)
+    mac_payload = inspect(mac_payload)
     mic = inspect(mic)
     
     """
     #LoRaWAN.Proprietary<
       mtype: #{mtype},
       rfu: #{rfu},
-      payload: #{payload},
+      major: #{major},
+      mac_payload: #{mac_payload},
       mic: #{mic}
     >
     """

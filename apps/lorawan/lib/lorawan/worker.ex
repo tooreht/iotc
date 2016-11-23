@@ -20,11 +20,20 @@
   def handle_call({:receive, packet}, _from, state) do
     # :timer.sleep(1000)
 
+    # Decode Paket
     data = Base.decode64!(packet.payload)
-    phy_payload = LoRaWAN.Decoder.decode(data)
+    Logger.info "Received data: #{inspect(data)}"
+    frame = LoRaWAN.Decoder.decode(data)
 
-    Logger.debug "Received Packet: #{inspect(phy_payload)}"
+    Logger.info "Received Packet: #{inspect(frame)}"
 
-    {:reply, phy_payload, state}
+    if LoRaWAN.Crypto.valid_mic?(frame) do
+      IO.puts("MIC passed!")
+    else
+      Logger.warn "MIC failed!"
+    end
+    
+    {:reply, frame, state}
   end
+
 end

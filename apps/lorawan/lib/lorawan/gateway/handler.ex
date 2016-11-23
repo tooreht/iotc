@@ -47,6 +47,7 @@
           "B827EBFFFE8AA02D",
           "B827EBFFFE8F20E2",
           "B827EBFFFEFF26B2",
+          "112BFFDED3",
         ]
 
         # Store gateway_ids in KV.

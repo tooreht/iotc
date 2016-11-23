@@ -3,145 +3,129 @@ defmodule LoRaWAN.Decoder do
   This module is responsible for the decoding of the different packet types.
   """
 
-  def decode(<<
-    0x00    :: size(3), # MType Join Request
-    0x00    :: size(3), # RFU
-    0x00    :: size(2), # Major (0 = 1.0)
-    payload :: binary
-    >>) do 
-    alias LoRaWAN.JoinRequest, as: JR
+  alias LoRaWAN.Frame
+  require Integer
 
-    payload_size = byte_size(payload) - 4
-    <<
-      payload ::  bytes-size(payload_size), 
-      mic     ::  bytes-size(4)
-    >> = payload
+  @doc """
+  Decodes LoRaWAN frames into the following structures.
 
-    <<
-      appEUI    :: little-size(1)-unit(64),
-      devEUI    :: little-size(1)-unit(64),
-      devNonce  :: little-size(1)-unit(16)
-    >> = payload
-    
-    %JR{
-      payload: %JR.MACPayload{
-          appEUI: << appEUI :: size(8)-unit(8) >>,
-          devEUI: << devEUI :: size(8)-unit(8) >>,
-          devNonce: << devNonce :: size(2)-unit(8) >>  
-        },
+  ## Radio PHY layer
+
+  At this point only the PHYPayload is left, because the rest is all radio specific.
+
+      -------------------------------------------------
+      | Preamble | PHDR | PHDR_CRC | PHYPayload | CRC |
+      -------------------------------------------------
+
+  ## PHYPayload
+
+      ---------------------------
+      | MHDR | MACPayload | MIC |
+      ---------------------------
+
+  ## MACPayload
+
+      -----------------------------
+      | FHDR | FPort | FRMPayload |
+      -----------------------------
+  
+  """
+  def decode(phy_payload) do
+    <<mhdr::binary-size(1), rest::binary>> = phy_payload
+    IO.puts "MHDR #{inspect(mhdr)}"
+    <<m_type::3 , rfu::3 , major::2>> = mhdr
+    IO.puts "MType #{inspect(m_type)}"
+    IO.puts "RFU #{inspect(rfu)}"
+    IO.puts "Major #{inspect(major)}"
+    mac_payload_len = byte_size(rest) - 4
+    IO.puts "MAC Payload Length #{inspect(mac_payload_len)}"
+    <<mac_payload::binary-size(mac_payload_len), mic::binary>> = rest
+    IO.puts "MAC Payload #{inspect(mac_payload)}"
+    IO.puts "MIC #{inspect(mic)}"
+
+    <<dev_addr::binary-size(4), f_ctrl::binary-size(1), f_cnt::little-unsigned-integer-size(16), rest::binary>> = mac_payload
+
+    IO.puts "DevAddr #{inspect(String.reverse(dev_addr))}"
+    IO.puts "FCtrl #{inspect(f_ctrl)}"
+    IO.puts "FCnt #{inspect(f_cnt)}"
+
+    <<adr::1, adr_ack_req::1, ack::1, rfu_or_f_pending::1, f_opts_len::integer-size(4)>> = f_ctrl
+
+    IO.puts "ADR #{inspect(adr)}"
+    IO.puts "ADR_ACK_Req #{inspect(adr_ack_req)}"
+    IO.puts "ACK #{inspect(ack)}"
+    IO.puts "RFU #{inspect(rfu)}"
+    IO.puts "FOptsLen #{inspect(f_opts_len)}"
+
+    {f_opts, f_port, frm_payload} = case f_opts_len do
+      0 ->
+        <<f_port::binary-size(1), frm_payload::binary>> = rest
+        {0, f_port, frm_payload}
+      _ -> {0, 0, 0}
+    end
+    IO.puts "FPort #{inspect(f_port)}"
+    IO.puts "FRMPayload #{inspect(frm_payload)}"
+
+    # fhdr = IO.iodata_to_binary([dev_addr, f_ctrl, <<f_cnt::little-unsigned-integer-size(16)>>, f_opts])
+    fhdr = IO.iodata_to_binary([dev_addr, f_ctrl, f_cnt, f_opts])
+    IO.puts "FHDR #{inspect(fhdr)}"
+
+    raw = %Frame.Raw{
+      phy_payload: phy_payload,
+      mhdr: mhdr,
+      mac_payload: mac_payload,
+      mic: mic,
+      fhdr: fhdr,
+      f_ctrl: f_ctrl
+    }
+
+    {key, value} = case msg_direction(m_type) do
+      :uplink -> {:rfu, rfu_or_f_pending}
+      :downlink -> {:f_pending, rfu_or_f_pending}
+    end
+
+    IO.puts "RFU/FPending #{inspect(key)} => #{value}"
+
+    f_ctrl = Map.put(%Frame.FCtrl{
+      adr: adr,
+      adr_ack_req: adr_ack_req,
+      ack: ack,
+      f_opts_len: f_opts_len,
+    }, key, value) 
+
+    fhdr = %Frame.FHDR{
+      dev_addr: dev_addr,
+      f_ctrl: f_ctrl,
+      f_cnt: f_cnt,
+      f_opts: f_opts,
+    }
+
+    mac_payload = %Frame.MACPayload{
+      fhdr: fhdr,
+      f_port: f_port,
+      frm_payload: frm_payload,
+    }
+
+    mhdr = %Frame.MHDR{
+      m_type: m_type,
+      rfu: rfu,
+      major: major,
+    }
+
+    phy_payload = %Frame.PHYPayload{
+      mhdr: mhdr,
+      mac_payload: mac_payload,
       mic: mic
+    }
+
+    %Frame{
+      phy_payload: phy_payload,
+      raw: raw
     }
   end
 
-  def decode(<<
-    0x02    :: size(3), # MType Unconfirmed Data Up
-    0x00    :: size(3), # RFU
-    0x00    :: size(2), # Major (0 = 1.0)
-    payload :: binary
-    >>) do
-    alias LoRaWAN.UnconfirmedDataUp, as: UDU
-
-    payload_size = byte_size(payload) - 4
-    <<
-      payload ::  bytes-size(payload_size), 
-      mic     ::  bytes-size(4)
-    >> = payload
-
-    <<
-      devIntAddr :: little-size(1)-unit(32), 
-      adr        :: size(1),
-      adrAckReq  :: size(1),
-      ack        :: size(1),
-      rfu        :: size(1),
-      fOptsLen   :: size(4),
-      fCnt       :: little-size(1)-unit(16),
-      fOpts      :: bytes-size(fOptsLen),
-      fPort      :: bytes-size(1),
-      dataFrame  :: binary 
-    >> = payload
-    
-    %UDU{
-      payload: %UDU.MACPayload{
-        devAddr: << devIntAddr :: size(4)-unit(8) >>, # HACK to get a binary and not an int
-        fCtrl: %UDU.MACPayload.FCtrl {
-            adr: adr,
-            adrAckReq: adrAckReq,
-            ack: ack,
-            rfu: rfu,
-            fOptsLen: fOptsLen
-          },        
-          fCnt: fCnt,
-          fOpts: fOpts,
-          fPort: fPort,
-          frmPayload: dataFrame
-        },
-      mic: mic
-    }
-  end
-
-  def decode(<<
-    0x04    :: size(3), # MType Confirmed Data Up
-    0x00    :: size(3), # RFU
-    0x00    :: size(2), # Major (0 = 1.0)
-    payload :: binary
-    >>) do
-    alias LoRaWAN.ConfirmedDataUp, as: CDU 
-
-    payload_size = byte_size(payload) - 4
-    <<
-      payload ::  bytes-size(payload_size), 
-      mic     ::  bytes-size(4)
-    >> = payload
-
-    <<
-      devIntAddr :: little-size(1)-unit(32), 
-      adr        :: size(1),
-      adrAckReq  :: size(1),
-      ack        :: size(1),
-      rfu        :: size(1),
-      fOptsLen   :: size(4),
-      fCnt       :: little-size(1)-unit(16),
-      fOpts      :: bytes-size(fOptsLen),
-      fPort      :: bytes-size(1),
-      dataFrame  :: binary 
-    >> = payload
-    
-    %CDU{
-      payload: %CDU.MACPayload{
-        devAddr: << devIntAddr :: size(4)-unit(8) >>, # HACK to get a binary and not an int
-        fCtrl: %CDU.MACPayload.FCtrl {
-            adr: adr,
-            adrAckReq: adrAckReq,
-            ack: ack,
-            rfu: rfu,
-            fOptsLen: fOptsLen
-          },        
-          fCnt: fCnt,
-          fOpts: fOpts,
-          fPort: fPort,
-          frmPayload: dataFrame
-        },
-      mic: mic
-    }
-  end
-
-  def decode(<<
-    0x07    :: size(3), # MType Proprietary
-    0x00    :: size(3), # RFU
-    0x00    :: size(2), # Major (0 = 1.0)
-    payload :: binary
-    >>) do
-    alias LoRaWAN.Proprietary, as: PPY
-
-    payload_size = byte_size(payload) - 4
-    <<
-      payload ::  bytes-size(payload_size), 
-      mic     ::  bytes-size(4)
-    >> = payload
-    
-    %PPY{
-      payload: payload,
-      mic: mic
-    }
+  def msg_direction(m_type) do
+    IO.puts IO.inspect(m_type)
+    if Integer.is_even(m_type), do: :uplink, else: :downlink
   end
 end

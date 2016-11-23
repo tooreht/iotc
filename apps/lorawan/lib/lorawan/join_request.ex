@@ -11,7 +11,7 @@ defmodule LoRaWAN.JoinRequest do
     mtype: 0x00,
     rfu: 0x00,
     major: 0x00,
-    payload: nil,
+    mac_payload: nil,
     mic: nil
   ]
 
@@ -28,18 +28,20 @@ defimpl Inspect, for: LoRaWAN.JoinRequest do
   def inspect(%LoRaWAN.JoinRequest{
                 mtype: mtype,
                 rfu: rfu,
-                payload: payload,
+                major: major,
+                mac_payload: mac_payload,
                 mic: mic}, _) do
     mtype  = inspect(mtype)
     rfu = inspect(rfu)
-    payload = inspect(payload)
+    mac_payload = inspect(mac_payload)
     mic = inspect(mic)
     
     """
     #LoRaWAN.JoinRequest<
       mtype: #{mtype},
       rfu: #{rfu},
-      payload: #{payload},
+      major: #{major},
+      mac_payload: #{mac_payload},
       mic: #{mic}
     >
     """

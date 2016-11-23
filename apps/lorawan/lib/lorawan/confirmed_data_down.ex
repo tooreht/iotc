@@ -12,48 +12,29 @@ defmodule LoRaWAN.ConfirmedDataDown do
     mtype: 0x05,
     rfu: 0x00,
     major: 0x00,
-    payload: nil,
+    mac_payload: nil,
     mic: nil
   ]
-
-   defmodule MACPayload do
-    defstruct [
-      devAddr: nil,
-      fCtrl: nil,
-      fCnt: nil,
-      fOpts: nil,
-      fPort: nil,
-      frmPayload: nil
-    ]
-
-    defmodule FCtrl do
-      defstruct [
-        adr: nil,
-        adrAckReq: nil,
-        ack: nil,
-        fPending: nil,
-        fOptsLen: nil
-      ]
-    end
-  end
 end
 
 defimpl Inspect, for: LoRaWAN.ConfirmedDataDown do
   def inspect(%LoRaWAN.ConfirmedDataDown{
                 mtype: mtype,
                 rfu: rfu,
-                payload: payload,
+                major: major,
+                mac_payload: mac_payload,
                 mic: mic}, _) do
     mtype  = inspect(mtype)
     rfu = inspect(rfu)
-    payload = inspect(payload)
+    mac_payload = inspect(mac_payload)
     mic = inspect(mic)
     
     """
     #LoRaWAN.ConfirmedDataDown<
       mtype: #{mtype},
       rfu: #{rfu},
-      payload: #{payload},
+      major: #{major},
+      mac_payload: #{mac_payload},
       mic: #{mic}
     >
     """

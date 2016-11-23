@@ -12,7 +12,7 @@ defmodule LoRaWAN.UnconfirmedDataUp do
     mtype: 0x02,
     rfu: 0x00,
     major: 0x00,
-    payload: nil,
+    mac_payload: nil,
     mic: nil
   ]
 
@@ -42,17 +42,20 @@ defimpl Inspect, for: LoRaWAN.UnconfirmedDataUp do
   def inspect(%LoRaWAN.UnconfirmedDataUp{
                 mtype: mtype,
                 rfu: rfu,
-                payload: payload,
+                major: major,
+                mac_payload: mac_payload,
                 mic: mic}, _) do
     mtype  = inspect(mtype)
     rfu = inspect(rfu)
-    payload = inspect(payload)
+    mac_payload = inspect(mac_payload)
     mic = inspect(mic)
     
     """
     #LoRaWAN.UnconfirmedDataUp<
       mtype: #{mtype},
-      payload: #{payload},
+      rfu: #{rfu},
+      major: #{major},
+      mac_payload: #{mac_payload},
       mic: #{mic}
     >
     """

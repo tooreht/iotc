@@ -12,7 +12,7 @@ defmodule LoRaWAN.UnconfirmedDataDown do
     mtype: 0x03,
     rfu: 0x00,
     major: 0x00,
-    payload: nil,
+    mac_payload: nil,
     mic: nil
   ]
 
@@ -42,18 +42,20 @@ defimpl Inspect, for: LoRaWAN.UnconfirmedDataDown do
   def inspect(%LoRaWAN.UnconfirmedDataDown{
                 mtype: mtype,
                 rfu: rfu,
-                payload: payload,
+                major: major,
+                mac_payload: mac_payload,
                 mic: mic}, _) do
     mtype  = inspect(mtype)
     rfu = inspect(rfu)
-    payload = inspect(payload)
+    mac_payload = inspect(mac_payload)
     mic = inspect(mic)
     
     """
     #LoRaWAN.UnconfirmedDataDown<
       mtype: #{mtype},
       rfu: #{rfu},
-      payload: #{payload},
+      major: #{major},
+      mac_payload: #{mac_payload},
       mic: #{mic}
     >
     """
