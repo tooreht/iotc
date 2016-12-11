@@ -2,7 +2,7 @@ defmodule Core.UserControllerTest do
   use Core.ConnCase
 
   alias Core.User
-  @valid_attrs %{email: "me@example.net", username: "me"}
+  @valid_attrs %{email: "me@example.net", username: "me", password: "secret"}
   @invalid_attrs %{email: "me.example.net"}
 
   setup %{conn: conn} do
@@ -35,6 +35,7 @@ defmodule Core.UserControllerTest do
     body = json_response(conn, 201)
     assert body["data"]["id"]
     assert body["data"]["email"]
+    refute body["data"]["password"]
     assert body["data"]["is_active"] == false
     assert body["data"]["is_superuser"] == false
     assert Repo.get_by(User, email: "me@example.net")
@@ -51,6 +52,7 @@ defmodule Core.UserControllerTest do
     body = json_response(conn, 200)
     assert body["data"]["id"]
     assert body["data"]["email"]
+    refute body["data"]["password"]
     assert body["data"]["is_active"] == false
     assert body["data"]["is_superuser"] == false
     assert Repo.get_by(User, email: "me@example.net")

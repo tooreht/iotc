@@ -3,7 +3,7 @@ defmodule Core.UserTest do
 
   alias Core.User
 
-  @valid_attrs %{username: "me", email: "me@example.net", is_active: true, is_superuser: true}
+  @valid_attrs %{username: "me", email: "me@example.net", password: "secret", is_active: true, is_superuser: true}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

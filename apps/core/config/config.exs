@@ -35,3 +35,18 @@ config :logger, :console,
 import_config "#{Mix.env}.exs"
 
 config :xain, :after_callback, {Phoenix.HTML, :raw}
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: Core.User,
+  repo: Core.Repo,
+  module: Core,
+  logged_out_url: "/",
+  email_from_name: "tooreht",
+  email_from_email: "tooreht@gmail.com",
+  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
+
+config :coherence, Core.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Local
+  # api_key: "your api key here"
+# %% End Coherence Configuration %%
