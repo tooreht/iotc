@@ -2,19 +2,30 @@ defmodule Core.LoRaWAN.GatewayPacketControllerTest do
   use Core.ConnCase
 
   alias Core.LoRaWAN.GatewayPacket
+  alias Core.User
+  alias Coherence.Authentication.Token
+
   @valid_attrs %{crc_status: 42, rf_chain: 42, rssi: 42, snr: 42, time: 42}
   @invalid_attrs %{}
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = Repo.insert! Map.merge(%User{}, %{email: "you@example.net", username: "you", password: "secret"})
+
+    token = Token.generate_token
+    Token.add_credentials(token, %{uid: user.id}, Coherence.CredentialStore.Agent)
+
+    conn = put_req_header(conn, "accept", "application/json")
+    conn = put_req_header(conn, "x-auth-token", token)
+
+    {:ok, conn: conn, user: user}
   end
 
-  test "lists all entries on index", %{conn: conn} do
+  test "lists all entries on index", %{conn: conn, user: _} do
     conn = get conn, gateway_packet_path(conn, :index)
     assert json_response(conn, 200)["data"] == []
   end
 
-  test "shows chosen resource", %{conn: conn} do
+  test "shows chosen resource", %{conn: conn, user: _} do
     gateway_packet = Repo.insert! %GatewayPacket{}
     conn = get conn, gateway_packet_path(conn, :show, gateway_packet)
     assert json_response(conn, 200)["data"] == %{"id" => gateway_packet.id,
@@ -27,37 +38,37 @@ defmodule Core.LoRaWAN.GatewayPacketControllerTest do
       "snr" => gateway_packet.snr}
   end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
+  test "renders page not found when id is nonexistent", %{conn: conn, user: _} do
     assert_error_sent 404, fn ->
       get conn, gateway_packet_path(conn, :show, -1)
     end
   end
 
-  test "creates and renders resource when data is valid", %{conn: conn} do
+  test "creates and renders resource when data is valid", %{conn: conn, user: _} do
     conn = post conn, gateway_packet_path(conn, :create), gateway_packet: @valid_attrs
     assert json_response(conn, 201)["data"]["id"]
     assert Repo.get_by(GatewayPacket, @valid_attrs)
   end
 
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
+  test "does not create resource and renders errors when data is invalid", %{conn: conn, user: _} do
     conn = post conn, gateway_packet_path(conn, :create), gateway_packet: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "updates and renders chosen resource when data is valid", %{conn: conn} do
+  test "updates and renders chosen resource when data is valid", %{conn: conn, user: _} do
     gateway_packet = Repo.insert! %GatewayPacket{}
     conn = put conn, gateway_packet_path(conn, :update, gateway_packet), gateway_packet: @valid_attrs
     assert json_response(conn, 200)["data"]["id"]
     assert Repo.get_by(GatewayPacket, @valid_attrs)
   end
 
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
+  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, user: _} do
     gateway_packet = Repo.insert! %GatewayPacket{}
     conn = put conn, gateway_packet_path(conn, :update, gateway_packet), gateway_packet: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "deletes chosen resource", %{conn: conn} do
+  test "deletes chosen resource", %{conn: conn, user: _} do
     gateway_packet = Repo.insert! %GatewayPacket{}
     conn = delete conn, gateway_packet_path(conn, :delete, gateway_packet)
     assert response(conn, 204)

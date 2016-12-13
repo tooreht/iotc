@@ -7,6 +7,8 @@ defmodule Core.Router do
   # Pipelines
   #
 
+  # Browser
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -16,17 +18,28 @@ defmodule Core.Router do
     plug Coherence.Authentication.Session
   end
 
-  pipeline :protected do
+  pipeline :session do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true
+    plug Coherence.Authentication.Session, login: true
   end
+
+  # API
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :token do
+    plug :accepts, ["json"]
+    # plug Coherence.Authentication.Token, source: :params, param: "auth_token"
+    plug Coherence.Authentication.Token,
+      source: :header,
+      param: "x-auth-token", # Must be lower case, convention in plug
+      error: ~s'{"error":"authentication required"}'
   end
 
   #
@@ -40,40 +53,48 @@ defmodule Core.Router do
   end
 
   scope "/" do
-    pipe_through :protected
+    pipe_through :session
     coherence_routes :protected
   end
 
-  # App public routes
+  # Public routes
   scope "/", Core do
     pipe_through :browser # Use the default browser stack
+
     get "/", PageController, :index
     get "/app", PageController, :app
   end
 
-  # App protected routes
+  # Session Auth routes
   scope "/", Core do
-    pipe_through :protected
+    pipe_through :session
   end
 
-  # Admin
   scope "/admin", ExAdmin do
-    pipe_through :protected
+    pipe_through :session
 
     admin_routes
   end
 
-  # Other scopes may use custom stacks.
+  # API
   scope "/api", Core do
     pipe_through :api
+    
+    post    "/auth/token", TokenController, :create
+    delete  "/auth/token/:token", TokenController, :delete
+  end
 
+  # API Token
+  scope "/api", Core do
+    pipe_through :token
+
+    resources "/lorawan/applications", LoRaWAN.ApplicationController, except: [:new, :edit]
+    resources "/lorawan/nodes", LoRaWAN.NodeController, except: [:new, :edit]
+    resources "/lorawan/device_addresses", LoRaWAN.DeviceAddressController, except: [:new, :edit]
+    resources "/lorawan/gateways", LoRaWAN.GatewayController, except: [:new, :edit]
+    resources "/lorawan/gateway/statistics", LoRaWAN.Gateway.StatisticsController, except: [:new, :edit]
+    resources "/lorawan/gateways_packets", LoRaWAN.GatewayPacketController, except: [:new, :edit]
+    resources "/lorawan/packets", LoRaWAN.PacketController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
-    resources "/lorawan/lorawan_gateways", LoRaWAN.GatewayController, except: [:new, :edit]
-    resources "/lorawan/gateway/lorawan_gateway_statistics", LoRaWAN.Gateway.StatisticsController, except: [:new, :edit]
-    resources "/lorawan/lorawan_applications", LoRaWAN.ApplicationController, except: [:new, :edit]
-    resources "/lorawan/lorawan_device_addresses", LoRaWAN.DeviceAddressController, except: [:new, :edit]
-    resources "/lorawan/lorawan_nodes", LoRaWAN.NodeController, except: [:new, :edit]
-    resources "/lorawan/lorawan_packets", LoRaWAN.PacketController, except: [:new, :edit]
-    resources "/lorawan/lorawan_gateways_packets", LoRaWAN.GatewayPacketController, except: [:new, :edit]
   end
 end
