@@ -1,10 +1,10 @@
 #
 # IoTc - Internet of Things controller
 #
-FROM msaraiva/elixir-dev:latest
+FROM msaraiva/elixir-gcc:latest
 MAINTAINER Marc Zimmermann "tooreht@gmail.com"
 
-ENV REFRESHED_AT=2016-06-21 \
+ENV REFRESHED_AT=2016-12-14 \
     BUILD_DIR=/tmp/iotc \
     APP_DIR=/opt/iotc \
     APP_VERSION=0.1.0 \
@@ -18,10 +18,10 @@ EXPOSE 4242:4242
 
 WORKDIR ${BUILD_DIR}
 COPY . .
-RUN mix do deps.get, deps.compile, compile, release.init, release --verbose --env=prod
+RUN mix do deps.get --only prod, deps.compile, compile, release.init, release --verbose --env=$MIX_ENV
 
 WORKDIR ${APP_DIR}
-RUN tar -xzf ${BUILD_DIR}/rel/iotc/releases/$APP_VERSION/iotc.tar.gz -C ${APP_DIR} && \
+RUN tar -xzf ${BUILD_DIR}/_build/$MIX_ENV/rel/iotc/releases/$APP_VERSION/iotc.tar.gz -C ${APP_DIR} && \
     chmod -R 777 ${APP_DIR} && \
     rm -rf ${BUILD_DIR}
 
