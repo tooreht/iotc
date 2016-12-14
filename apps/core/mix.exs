@@ -8,7 +8,7 @@ defmodule Core.Mixfile do
      config_path: "../../config/config.exs",
      deps_path: "../../deps",
      lockfile: "../../mix.lock",
-     elixir: "~> 1.2",
+     elixir: "~> 1.3",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -22,8 +22,9 @@ defmodule Core.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Core, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :decimal]]
+     applications: [
+      :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger,
+      :gettext, :phoenix_ecto, :postgrex, :coherence, :ex_admin, :decimal]]
   end
 
   # Specifies which paths to compile per environment.
