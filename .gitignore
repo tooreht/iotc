@@ -16,8 +16,5 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
-# Don't include rel directory from distillery for now
-/rel
-
 # Don't use my netty cat (miau)
 nc.exe
