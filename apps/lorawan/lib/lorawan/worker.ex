@@ -17,23 +17,23 @@
 
   ## Server Callbacks
 
-  def handle_call({:receive, packet}, _from, state) do
+  def handle_call({:receive, frame}, _from, state) do
     # :timer.sleep(1000)
 
     # Decode Paket
-    data = Base.decode64!(packet.payload)
+    data = Base.decode64!(frame.payload)
     Logger.info "Received data: #{inspect(data)}"
-    frame = LoRaWAN.Decoder.decode(data)
+    packet = LoRaWAN.Decoder.decode(data)
 
-    Logger.info "Received Packet: #{inspect(frame)}"
+    Logger.info "Received Packet: #{inspect(packet)}"
 
-    if LoRaWAN.Crypto.valid_mic?(frame) do
+    if LoRaWAN.Crypto.valid_mic?(packet) do
       IO.puts("MIC passed!")
     else
       Logger.warn "MIC failed!"
     end
     
-    {:reply, frame, state}
+    {:reply, packet, state}
   end
 
 end
