@@ -3,46 +3,64 @@ services:
   iotc:
     build: .
     ports:
-     - "1700:1700/udp"
-     - "4242:4242"
-     - "4369:4369"
+      - "1700:1700/udp"
+      - "4242:4242"
+      - "4369:4369"
+      - "4000:4000"
+    environment:
+      - POSTGRES_HOST=db
     depends_on:
-     - vernemq0
-     - vernemq1
-     - vernemq2
+      - db
+      # - vernemq0
+      # - vernemq1
+      # - vernemq2
     networks:
-     - backend
-  prometheus:
-    image: prom/prometheus
+      - backend
+  db:
+    image: "library/postgres:alpine" # "kiasaki/alpine-postgres"
     ports:
-     - "9090:9090"
+     - "5432"
+    environment:
+      LC_ALL: C.UTF-8
+      POSTGRES_DB: "core_prod"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - postgres-db-volume:/data/postgres
     networks:
-     - backend
-  vernemq0:
-    image: erlio/docker-vernemq:latest
-    ports:
-     - "1883:1883"
-     - "8883:8883"
-     - "8080:8080"
-    depends_on:
-     - prometheus
-    networks:
-     - backend
-  vernemq1:
-    image: erlio/docker-vernemq:latest
-    depends_on:
-     - vernemq0
-    networks:
-     - backend
-  vernemq2:
-    image: erlio/docker-vernemq:latest
-    depends_on:
-     - vernemq0
-    networks:
-     - backend
-
+      - backend
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - backend
+  # vernemq0:
+  #   image: erlio/docker-vernemq:latest
+  #   ports:
+  #     - "1883:1883"
+  #     - "8883:8883"
+  #     - "8080:8080"
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - backend
+  # vernemq1:
+  #   image: erlio/docker-vernemq:latest
+  #   depends_on:
+  #     - vernemq0
+  #   networks:
+  #     - backend
+  # vernemq2:
+  #   image: erlio/docker-vernemq:latest
+  #   depends_on:
+  #     - vernemq0
+  #   networks:
+  #     - backend
+volumes:
+  postgres-db-volume:
 networks:
   backend:
     driver: bridge
