@@ -21,7 +21,6 @@ defmodule Semtech.Mixfile do
     [
       mod: {Semtech, []},
       applications: [:logger],
-      included_applications: [:core, :poison]
     ]
   end
 
