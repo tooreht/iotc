@@ -18,7 +18,7 @@ EXPOSE 4242:4242
 
 WORKDIR ${BUILD_DIR}
 COPY . .
-RUN mix do deps.get --only prod, deps.compile, compile, release.init, release --verbose --env=$MIX_ENV
+RUN mix do deps.get --only prod, deps.compile, compile, release --profile=iotc:$MIX_ENV --verbose
 
 WORKDIR ${APP_DIR}
 RUN tar -xzf ${BUILD_DIR}/_build/$MIX_ENV/rel/iotc/releases/$APP_VERSION/iotc.tar.gz -C ${APP_DIR} && \
