@@ -14,8 +14,9 @@ use Mix.Config
 config :core, Core.Endpoint,
   http: [port: 4000], # {:system, "PORT"} or "${PORT}"
   url: [host: "localhost", port: 4000],
+  root: ".",
   cache_static_manifest: "priv/static/manifest.json",
-  server: true
+  version: Mix.Project.config[:version]
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -56,6 +57,7 @@ config :logger, level: :info
 #
 #     config :core, Core.Endpoint, server: true
 #
+config :phoenix, :serve_endpoints, true
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
