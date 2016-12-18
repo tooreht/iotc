@@ -62,7 +62,7 @@ defmodule Semtech.Handler do
     Logger.debug "Received packet: #{inspect(rx_packet)}from #{inspect(gateway_ip)}:#{inspect(port)}"
 
     # Harmonize Semtech packet to internal format.
-    packet = Semtech.Harmonizer.harmonize(gateway_ip, rx_packet)
+    packet = Semtech.Harmonizer.harmonize(rx_packet, gateway_ip)
 
     # Let the gateway handler validate the packet.
     response = LoRaWAN.Gateway.Handler.receive(handler, packet)

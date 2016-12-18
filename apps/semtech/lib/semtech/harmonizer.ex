@@ -6,7 +6,7 @@ defmodule Semtech.Harmonizer do
   @doc """
   Harmonizes formats based on the identifier.
   """
-  def harmonize(gateway_ip, packet) do
+  def harmonize(packet, gateway_ip) do
     case packet.identifier do
       0x00 ->
         # Check if packet has gateway meta data.
