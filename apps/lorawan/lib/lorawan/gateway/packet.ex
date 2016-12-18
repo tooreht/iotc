@@ -10,7 +10,7 @@ defmodule LoRaWAN.Gateway.Packet do
     },
     id: nil,
     gateway: %{
-      id: nil,
+      eui: nil,
       ip: nil,
       meta: %{
         time: nil,

@@ -69,7 +69,7 @@ defmodule Semtech.Harmonizer do
           },
           id: packet.token,
           gateway: %{
-            id: packet.gateway_id,
+            eui: packet.gateway_id,
             ip: gateway_ip,
             meta: meta
           },
@@ -84,7 +84,7 @@ defmodule Semtech.Harmonizer do
           },
           id: packet.token,
           gateway: %{
-            id: packet.gateway_id,
+            eui: packet.gateway_id,
             ip: gateway_ip,
           },
           lorawan: []
@@ -123,7 +123,7 @@ defmodule Semtech.Harmonizer do
           },
           id: packet.token,
           gateway: %{
-            id: nil,  # Not supplied by the gateway
+            eui: nil,  # Not supplied by the gateway
             ip: gateway_ip,
           },
           lorawan: [],

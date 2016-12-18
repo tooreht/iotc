@@ -40,7 +40,7 @@ defmodule LoRaWAN.Mixfile do
   defp deps do
     [
       {:poolboy, "~> 1.5"},
-      {:kv, in_umbrella: true}
+      {:core, in_umbrella: true}
     ]
   end
 end

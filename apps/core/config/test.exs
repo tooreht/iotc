@@ -17,3 +17,6 @@ config :core, Core.Repo,
   database: "core_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :core, Core.Storage.Scheduler,
+  auto_start: false

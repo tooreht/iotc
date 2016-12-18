@@ -12,8 +12,12 @@ defmodule Core do
       supervisor(Core.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Core.Endpoint, []),
+      # Start the task supervisor
+      supervisor(Task.Supervisor, [[name: Core.TaskSupervisor]]),
       # Start your own worker by calling: Core.Worker.start_link(arg1, arg2, arg3)
       # worker(Core.Worker, [arg1, arg2, arg3]),
+      worker(Core.Storage, [Core.Storage]),
+      worker(Core.Storage.Scheduler, [Core.Storage.Scheduler])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

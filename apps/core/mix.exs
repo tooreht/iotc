@@ -48,6 +48,7 @@ defmodule Core.Mixfile do
       # Core
       {:coherence, "~> 0.3"},
       {:ex_admin, github: "smpallen99/ex_admin"},
+      {:kv, in_umbrella: true}
     ]
   end
 
