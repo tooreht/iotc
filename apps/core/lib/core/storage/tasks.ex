@@ -8,6 +8,6 @@ defmodule Core.Storage.Tasks do
   Fetch list of registered gateway ids from db and update bucket.
   """
   def refresh_gateway_euis_from_db do
-    KV.Bucket.put(Storage.LoRaWAN.get_gateway_eui_bucket, "gateway_euis", Storage.LoRaWAN.query_gateway_euis)
+    KV.Bucket.put(Storage.LoRaWAN.get_gateway_eui_cache, "gateway_euis", Storage.LoRaWAN.query_gateway_euis)
   end
 end
