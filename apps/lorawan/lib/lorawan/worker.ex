@@ -4,6 +4,7 @@
   """
   use GenServer
   require Logger
+  alias Core.Storage
 
   ## Client API
 
@@ -17,13 +18,13 @@
 
   ## Server Callbacks
 
-  def handle_call({:receive, frame}, _from, state) do
+  def handle_call({:receive, data}, _from, state) do
     # :timer.sleep(1000)
 
     # Decode Paket
-    data = Base.decode64!(frame.payload)
-    Logger.info "Received data: #{inspect(data)}"
-    packet = LoRaWAN.Decoder.decode(data)
+    raw = Base.decode64!(data.payload)
+    Logger.info "Received raw: #{inspect(raw)}"
+    packet = LoRaWAN.Decoder.decode(raw)
 
     Logger.info "Received Packet: #{inspect(packet)}"
 
