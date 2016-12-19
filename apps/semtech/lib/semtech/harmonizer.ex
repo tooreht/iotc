@@ -11,7 +11,7 @@ defmodule Semtech.Harmonizer do
       0x00 ->
         # Check if packet has gateway meta data.
         meta = case packet.payload.stat do
-          true ->
+          %Semtech.PushData.RxPk.Status{} ->
             %{
               time: packet.payload.stat.time,
               lat: packet.payload.stat.lati,
@@ -63,7 +63,6 @@ defmodule Semtech.Harmonizer do
 
         # Assemble internal gateway packet
         %LoRaWAN.Gateway.Packet{
-          adapter: "Semtech",
           protocol: %{
             version: packet.version
           },
@@ -71,6 +70,7 @@ defmodule Semtech.Harmonizer do
           gateway: %{
             eui: packet.gateway_id,
             ip: gateway_ip,
+            adapter: "Semtech",
             meta: meta
           },
           lorawan: packets
@@ -78,7 +78,6 @@ defmodule Semtech.Harmonizer do
       0x02 ->
         # Assemble internal gateway packet
         %LoRaWAN.Gateway.Packet{
-          adapter: "Semtech",
           protocol: %{
             version: packet.version
           },
@@ -86,6 +85,7 @@ defmodule Semtech.Harmonizer do
           gateway: %{
             eui: packet.gateway_id,
             ip: gateway_ip,
+            adapter: "Semtech",
           },
           lorawan: []
         }
@@ -117,7 +117,6 @@ defmodule Semtech.Harmonizer do
       0x05 ->
         # Assemble internal gateway packet
         %LoRaWAN.Gateway.Packet{
-          adapter: "Semtech",
           protocol: %{
             version: packet.version
           },
@@ -125,6 +124,7 @@ defmodule Semtech.Harmonizer do
           gateway: %{
             eui: nil,  # Not supplied by the gateway
             ip: gateway_ip,
+            adapter: "Semtech",
           },
           lorawan: [],
           error: packet.payload.txpk_ack.error
