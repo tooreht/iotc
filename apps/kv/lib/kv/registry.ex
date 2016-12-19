@@ -9,8 +9,8 @@ defmodule KV.Registry do
   @doc """
   Starts the registry with the given `name`.
   """
-  def start_link(name, opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, Enum.concat(opts, name: name))
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
   @doc """
