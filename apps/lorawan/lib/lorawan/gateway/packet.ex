@@ -4,7 +4,6 @@ defmodule LoRaWAN.Gateway.Packet do
   """
 
   defstruct [
-    adapter: nil,
     protocol: %{
       version: nil,
     },
@@ -12,6 +11,7 @@ defmodule LoRaWAN.Gateway.Packet do
     gateway: %{
       eui: nil,
       ip: nil,
+      adapter: nil,
       meta: %{
         time: nil,
         lat: nil,
