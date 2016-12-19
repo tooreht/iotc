@@ -15,6 +15,12 @@ defmodule LoRaWAN.Decoder do
     <<raw_mhdr::binary-size(1), rest::binary>> = phy_payload
     <<m_type::3 , rfu::3 , major::2>> = raw_mhdr
 
+    if major != 0x00 do
+      IO.puts inspect(major)
+      Logger.warn "Packet has Major: " <> inspect(major) <> " which is unsupported"
+      exit :normal
+    end
+
     mac_payload_len = byte_size(rest) - 4
     <<raw_mac_payload::binary-size(mac_payload_len), mic::binary>> = rest
 
@@ -27,7 +33,8 @@ defmodule LoRaWAN.Decoder do
       6 ->
         decode_proprietary_mac(raw_mac_payload)
       _ ->
-        Logger.warn "Received Packet with MType not defined -> Drop"
+        Logger.warn "Received packet with MType not defined -> Drop"
+        exit :normal
     end
 
     mhdr = %Packet.MHDR{
@@ -41,7 +48,10 @@ defmodule LoRaWAN.Decoder do
       mhdr: mhdr,
       mac_payload: mac_payload,
       mic: mic,
-      raw: phy_payload
+      raw: phy_payload,
+      node: %Packet.Node{
+        dev_eui: nil
+      }
     }
   end
 
@@ -64,19 +74,20 @@ defmodule LoRaWAN.Decoder do
   def decode_data_mac(raw_mac_payload, m_type) do
     Logger.info "this is a Data Message"
     <<dev_addr::binary-size(4), raw_f_ctrl::binary-size(1), f_cnt::little-unsigned-integer-size(16), rest::binary>> = raw_mac_payload
-    <<adr::1, adr_ack_req::1, ack::1, rfu_or_f_pending::1, f_opts_len::integer-size(4)>> = raw_f_ctrl
+    <<adr::1, adr_ack_req::1, ack::1, rfu_or_f_pending::1, f_opts_len::4>> = raw_f_ctrl
 
     {f_opts, f_port, frm_payload} = case f_opts_len do
       0 ->
         <<f_port::binary-size(1), frm_payload::binary>> = rest
         {<<0::0>>, f_port, frm_payload}
-      _ -> {0, 0, 0} # TODO IMPLEMENT CORRECT reading of FOpts!
+      _ ->
+        <<f_opts::binary-size(f_opts_len), f_port::binary-size(1), frm_payload::binary>> = rest
+        {f_opts, f_port, frm_payload}
     end
 
-    # fhdr = IO.iodata_to_binary([dev_addr, f_ctrl, <<f_cnt::little-unsigned-integer-size(16)>>, f_opts])
-    #raw_fhdr = IO.iodata_to_binary([dev_addr, raw_f_ctrl, f_cnt, f_opts])
-    raw_fhdr = dev_addr <> raw_f_ctrl <> <<f_cnt::little-unsigned-integer-size(16)>> <> f_opts
-
+    raw_fhdr = IO.iodata_to_binary([dev_addr, raw_f_ctrl, <<f_cnt::little-unsigned-integer-size(16)>>, f_opts])
+    # raw_fhdr = IO.iodata_to_binary([dev_addr, raw_f_ctrl, f_cnt, f_opts])
+    # raw_fhdr = dev_addr <> raw_f_ctrl <> <<f_cnt::little-unsigned-integer-size(16)>> <> f_opts
 
     {key, value} = case msg_direction(m_type) do
       :uplink -> {:rfu, rfu_or_f_pending}

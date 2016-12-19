@@ -34,7 +34,7 @@ defmodule LoRaWAN.Crypto do
 
   The direction field (Dir) is 0 for uplink packets and 1 for downlink packets.
   """
-  def valid_mic?(packet) do
+  def valid_mic(packet) do
     case packet.mhdr.m_type do
       0x00 -> # Join Request
         app_eui = packet.mac_payload.app_eui
@@ -50,7 +50,7 @@ defmodule LoRaWAN.Crypto do
         cmac = AesCmac.aes_cmac(app_key, msg)
         <<computed_mic::binary-size(4), _::binary>> = cmac
 
-        computed_mic == mic_raw
+        {computed_mic == mic_raw, packet}
       n when n in [0x02, 0x04] -> # Unconfirmed Data Up
         mhdr_raw = packet.mhdr.raw
         mic_raw = packet.mic
@@ -63,15 +63,23 @@ defmodule LoRaWAN.Crypto do
         msg = IO.iodata_to_binary [mhdr_raw, fhdr_raw, f_port, frm_payload]
         b0 = IO.iodata_to_binary [0x49, 0, 0, 0, 0, 0, fhdr.dev_addr, <<fhdr.f_cnt::little-unsigned-integer-size(32)>>, 0, <<byte_size(msg)::8>>]
 
-        nws_key = get_nws_key(fhdr.dev_addr)        
+        {nws_key, dev_eui} = get_nws_key(fhdr.dev_addr)
 
         cmac = AesCmac.aes_cmac(nws_key, IO.iodata_to_binary [b0, msg])
         <<computed_mic::binary-size(4), _::binary>> = cmac
 
-        computed_mic == mic_raw
+        mic_check = computed_mic == mic_raw
+
+        packet = if mic_check do
+          # packet = putpacket.node.dev_eui = dev_eui
+          # packet = Map.put(%LoRaWAN.Packet.Node{}, :dev_eui, <<0>>)
+          Map.put(packet, :node, %LoRaWAN.Packet.Node{dev_eui: <<0>>})
+        end
+
+        {mic_check, packet}
       _ ->
         Logger.warn "no valid m_type"
-        false
+        {false, nil}
     end
   end
 
@@ -79,14 +87,14 @@ defmodule LoRaWAN.Crypto do
     # TODO: lookup dev_addr in DB and get nws_key
     case dev_addr do
       <<121, 210, 161, 70>> ->
-        <<131, 132, 1, 172,  17, 228, 225, 223, 76, 106, 213, 106, 7,  71, 210, 196>>
+        {<<131, 132, 1, 172,  17, 228, 225, 223, 76, 106, 213, 106, 7,  71, 210, 196>>, <<0>>}
       <<208, 246, 125, 29>> ->
-        <<121, 91, 177, 245, 56, 223, 79, 142, 120, 116, 172, 170, 82, 95, 205, 204>>
+        {<<121, 91, 177, 245, 56, 223, 79, 142, 120, 116, 172, 170, 82, 95, 205, 204>>, <<0>>}
       <<70, 161, 210, 121>> ->
-        <<131, 132, 1, 172, 17, 228, 225, 223, 76, 106, 213, 106, 7, 71, 210, 196>>
+        {<<131, 132, 1, 172, 17, 228, 225, 223, 76, 106, 213, 106, 7, 71, 210, 196>>, <<0>>}
       _ ->
         Logger.warn "No NwkSKey found!"
-        <<0x00000000000000000000000000000000::128>>
+        {<<0x00000000000000000000000000000000::128>>, <<0>>}
     end
   end
 
