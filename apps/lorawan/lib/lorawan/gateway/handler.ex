@@ -49,11 +49,11 @@
     # Verify that the gateway is registered in the system.
     in_system = Storage.lookup_gateway_eui(Storage, packet.gateway.eui)
     if in_system do
-      if is_list(packet.lorawan) do
+      if %LoRaWAN.Gateway.Packet{} = packet do
         # Send all packets coming from this gateway to the pool.
         LoRaWAN.parallel_pool(packet.lorawan, &LoRaWAN.Worker.receive/2)
+        Storage.store_gateway_meta(Storage, packet.gateway)
       end
-      # TODO: Implement storing of statistics
     else
        Logger.warn "Unregistered gateway #{inspect(packet.gateway.ip)} #{inspect(packet.gateway.eui)}"
     end
