@@ -9,7 +9,7 @@ defmodule Core.ExAdmin.LoRaWAN.Node do
         raw Phoenix.HTML.Link.link(node.id, to: admin_resource_path(node, :show))
       end
       column :dev_eui
-      column :dev_addr
+      column :device_address
       column :last_seen
       column :application
       column :user
