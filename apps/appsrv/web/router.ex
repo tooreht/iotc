@@ -86,6 +86,7 @@ defmodule Appsrv.Router do
   scope "/api", Appsrv do
     pipe_through :token
 
+    resources "/lorawan/applications", LoRaWAN.ApplicationController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
   end
 end
