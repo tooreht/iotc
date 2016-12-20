@@ -49,22 +49,22 @@ defmodule Core.Storage do
   end
 
   def handle_call({:lookup_gateway_eui, gateway_eui}, _from, state) do
-    response = Storage.LoRaWAN.lookup_gateway_eui(gateway_eui)
+    response = Storage.LoRaWAN.Gateway.lookup_gateway_eui(gateway_eui)
     {:reply, response, state}
   end
 
   def handle_call({:store_gateway_meta, meta}, _from, state) do
-    response = Storage.LoRaWAN.store_gateway_meta(meta)
+    response = Storage.LoRaWAN.Gateway.store_gateway_meta(meta)
     {:reply, response, state}
   end
 
   def handle_call({:store_packet, packet}, _from, state) do
-    response = Storage.LoRaWAN.store_packet(packet)
+    response = Storage.Utils.store_packet(packet)
     {:reply, response, state}
   end
 
   def handle_call({:store_packet_meta, meta}, _from, state) do
-    response = Storage.LoRaWAN.store_packet_meta(meta)
+    response = Storage.Utils.store_packet_meta(meta)
     {:reply, response, state}
   end
 end

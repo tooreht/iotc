@@ -1,59 +1,27 @@
-defmodule Core.Storage.LoRaWAN do
+defmodule Core.Storage.Utils do
   @doc """
   Storage utilities for LoRaWAN
 
   - Ecto queries for persistence
   - KV store for caching
   """
-  alias Core.Repo
-  alias Core.LoRaWAN.Gateway
-  alias Core.LoRaWAN.Node
 
-  import Ecto.Query
+  def insert_existing_device(dev_eui, dev_addr, nw_key) do
+    # Insert Device 1 <<70, 161, 210, 121>>
+    device_addr = Core.Repo.get_by(Core.LoRaWAN.DeviceAddress, dev_addr: Base.encode16(dev_addr))
+    %{id: dev_addr_id} = if device_addr do
+      device_addr
+    else
+      Core.LoRaWAN.DeviceAddress.changeset(%Core.LoRaWAN.DeviceAddress{}, %{dev_addr: Base.encode16(dev_addr), last_assigned: Ecto.DateTime.utc}) # TODO: change milli_seconds to milliseconds when upgrading to elrang 19
+      |> Core.Repo.insert!
+    end
 
-  def query_gateway_euis do
-    from(g in Gateway, select: g.gw_eui)
-    |> Repo.all()
-  end
-
-  def lookup_gateway_eui(gateway_eui) do
-    gateway_eui in KV.Bucket.get(get_gateway_eui_cache, "gateway_euis")
-  end
-
-  def store_gateway_meta(gw) do
-    if gw.meta do
-      # Gateway
-      gateway = %Gateway{
-        adapter: gw.adapter,
-        gw_eui: gw.eui,
-        ip: gw.ip,
-        last_seen: gw.meta.time,
-        latitude: gw.meta.lat,
-        longitude: gw.meta.lng,
-        altitude: gw.meta.alt
-      }
-      # Overwrite gateway information with latest data
-      KV.Bucket.put(get_gateway_cache, "gateways",
-        Map.put(
-          KV.Bucket.get(get_gateway_cache, "gateways"),
-          gw.eui,
-          gateway
-        )
-      )
-      gateway_stat = %Gateway.Statistics{
-        ack_rate: gw.meta.ack_rate,
-        latitude: gw.meta.lat,
-        longitude: gw.meta.lng,
-        altitude: gw.meta.alt,
-        rx_forwarded: gw.meta.rx.forwarded,
-        rx_total: gw.meta.rx.total,
-        rx_valid: gw.meta.rx.valid,
-        tx_emitted: gw.meta.tx.emitted,
-        tx_received: gw.meta.tx.received
-      }
-      KV.Bucket.put(get_gateway_stats_cache, "stats",
-        [gateway_stat | KV.Bucket.get(get_gateway_stats_cache, "stats")]
-      )
+    device = Core.Repo.get_by(Core.LoRaWAN.Node, dev_eui: Base.encode16(dev_eui))
+    %{id: dev_id} = if device do
+      device
+    else
+      Core.LoRaWAN.Node.changeset(%Core.LoRaWAN.Node{}, %{dev_eui: Base.encode16(dev_eui), nw_key:  Base.encode16(nw_key), device_address_id: dev_addr_id})
+      |> Core.Repo.insert!
     end
   end
 
