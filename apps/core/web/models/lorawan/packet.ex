@@ -1,10 +1,9 @@
 defmodule Core.LoRaWAN.Packet do
   use Core.Web, :model
-  alias Core.LoRaWAN.Gateway
-  alias Core.LoRaWAN.GatewayPacket
 
   schema "lorawan_packets" do
     field :number, :integer
+    field :dev_nonce, :string
     field :type, :integer
     field :frequency, :decimal
     field :channel, :integer
@@ -22,7 +21,7 @@ defmodule Core.LoRaWAN.Packet do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:number, :type, :frequency, :channel, :modulation, :data_rate, :code_rate, :size])
-    |> validate_required([:number, :type, :frequency, :channel, :modulation, :data_rate, :code_rate, :size])
+    |> cast(params, [:number, :dev_nonce, :type, :frequency, :channel, :modulation, :data_rate, :code_rate, :size, :node_id])
+    |> validate_required([:type, :frequency, :channel, :modulation, :data_rate, :code_rate, :size, :node_id])
   end
 end

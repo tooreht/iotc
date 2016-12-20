@@ -3,7 +3,17 @@ defmodule Core.LoRaWAN.PacketTest do
 
   alias Core.LoRaWAN.Packet
 
-  @valid_attrs %{channel: 42, code_rate: "4/5", data_rate: "SF7BW125", frequency: "120.5", modulation: "LORA", number: 42, size: 42, type: 42}
+  @valid_attrs %{
+    channel: 42,
+    code_rate: "4/5",
+    data_rate: "SF7BW125",
+    frequency: "120.5",
+    modulation: "LORA",
+    number: 42,
+    size: 42,
+    type: 42,
+    node_id: 1
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -13,7 +13,8 @@ defmodule Core.LoRaWAN.Application do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:app_eui])
-    |> validate_required([:app_eui])
+    |> cast(params, [:app_eui, :user_id])
+    |> validate_required([:app_eui, :user_id])
+    |> unique_constraint(:app_eui)
   end
 end

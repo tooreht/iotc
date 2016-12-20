@@ -8,9 +8,13 @@ defmodule Core.Storage.LoRaWAN.Gateway do
   alias Core.Storage
   alias Core.Repo
   alias Core.LoRaWAN.Gateway
-  alias Core.LoRaWAN.Node
 
   import Ecto.Query
+    def create_gateway(gateway_eui, adapter, user_id, latitude, longitude, altitude)     do
+      Core.Repo.get_by(Core.LoRaWAN.Gateway, gw_eui: gateway_eui) ||
+      Core.LoRaWAN.Gateway.changeset(%Core.LoRaWAN.Gateway{}, %{gw_eui: gateway_eui, adapter: adapter, user_id: user_id, latitude: latitude, longitude: longitude, altitude: altitude}) 
+      |> Core.Repo.insert!
+  end
 
   def query_gateway_euis do
     from(g in Gateway, select: g.gw_eui)

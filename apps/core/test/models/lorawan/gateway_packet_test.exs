@@ -3,7 +3,15 @@ defmodule Core.LoRaWAN.GatewayPacketTest do
 
   alias Core.LoRaWAN.GatewayPacket
 
-  @valid_attrs %{crc_status: 42, rf_chain: 42, rssi: 42, snr: 42, time: 42}
+  @valid_attrs %{
+    crc_status: 42,
+    rf_chain: 42,
+    rssi: 42,
+    snr: 42,
+    time: 42,
+    gateway_id: 42,
+    packet_id: 42
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

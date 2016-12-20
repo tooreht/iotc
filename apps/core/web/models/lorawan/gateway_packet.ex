@@ -18,7 +18,7 @@ defmodule Core.LoRaWAN.GatewayPacket do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:time, :rf_chain, :crc_status, :rssi, :snr])
-    |> validate_required([:time, :rf_chain, :crc_status, :rssi, :snr])
+    |> cast(params, [:time, :rf_chain, :crc_status, :rssi, :snr, :gateway_id, :packet_id])
+    |> validate_required([:time, :rf_chain, :crc_status, :rssi, :snr, :gateway_id, :packet_id])
   end
 end

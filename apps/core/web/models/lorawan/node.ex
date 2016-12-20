@@ -20,7 +20,8 @@ defmodule Core.LoRaWAN.Node do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:dev_eui, :nwk_s_key, :last_seen, :frames_up, :frames_down, :status])
-    |> validate_required([:dev_eui, :nwk_s_key, :last_seen, :frames_up, :frames_down, :status])
+    |> cast(params, [:dev_eui, :nwk_s_key, :last_seen, :frames_up, :frames_down, :status, :application_id, :device_address_id, :user_id])
+    |> validate_required([:dev_eui, :nwk_s_key, :user_id])
+    |> unique_constraint(:dev_eui)
   end
 end
