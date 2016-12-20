@@ -22,7 +22,7 @@ defmodule Core.Storage.LoRaWAN.Gateway do
   end
 
   def store_gateway_meta(gw) do
-    if gw.meta do
+    if Map.has_key?(gw, :meta) and gw.meta do
       # Gateway
       gateway = %Gateway{
         adapter: gw.adapter,
