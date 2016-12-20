@@ -3,7 +3,7 @@ defmodule Core.LoRaWAN.ApplicationTest do
 
   alias Core.LoRaWAN.Application
 
-  @valid_attrs %{app_eui: "some content", name: "some content"}
+  @valid_attrs %{app_eui: "some content", name: "some content", user_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

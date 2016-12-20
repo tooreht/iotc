@@ -15,5 +15,6 @@ defmodule Core.LoRaWAN.DeviceAddress do
     struct
     |> cast(params, [:dev_addr, :last_assigned])
     |> validate_required([:dev_addr, :last_assigned])
+    |> unique_constraint(:dev_addr)
   end
 end
