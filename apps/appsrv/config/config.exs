@@ -25,3 +25,28 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+config :xain, :after_callback, {Phoenix.HTML, :raw}
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: Appsrv.User,
+  repo: Appsrv.Repo,
+  module: Appsrv,
+  logged_out_url: "/",
+  email_from_name: "tooreht",
+  email_from_email: "tooreht@gmail.com",
+  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
+
+config :coherence, Appsrv.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Local
+  # api_key: "your api key here"
+# %% End Coherence Configuration %%
+
+config :ex_admin,
+  repo: Appsrv.Repo,
+  module: Appsrv,
+  modules: [
+    Appsrv.ExAdmin.Dashboard,
+    Appsrv.ExAdmin.User,
+  ]
