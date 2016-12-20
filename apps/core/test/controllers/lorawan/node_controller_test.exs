@@ -16,6 +16,8 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
+    %{id: application_id} = Core.Storage.LoRaWAN.Application.create_application(<<200, 21, 12, 26, 46, 212, 79, 112>>, "MyApp", user.id)
+
     valid_attrs = %{
       dev_eui: "2A2B3D4E5F66778A",
       frames_down: 42,
@@ -23,7 +25,8 @@ defmodule Core.LoRaWAN.NodeControllerTest do
       last_seen: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010},
       nw_key: "54C90E4A5174CBC18423213153B97A62",
       status: 42,
-      user_id: user.id
+      user_id: user.id,
+      application_id: application_id
     }
 
     {:ok, conn: conn, valid_attrs: valid_attrs}
