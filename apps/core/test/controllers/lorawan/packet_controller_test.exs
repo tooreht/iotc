@@ -16,7 +16,8 @@ defmodule Core.LoRaWAN.PacketControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    node = Core.Storage.LoRaWAN.Node.create_node(<<231, 34, 74, 5, 34, 154, 23, 41>>, <<232, 234, 74, 52>>, <<161, 42, 19, 172, 109, 233, 95, 72, 202, 181, 213, 90, 178, 90, 57, 122>>, user.id)
+    %{id: application_id} = Core.Storage.LoRaWAN.Application.create_application(<<200, 21, 12, 26, 46, 212, 79, 112>>, "MyApp", user.id)
+    node = Core.Storage.LoRaWAN.Node.create_node(<<231, 34, 74, 5, 34, 154, 23, 41>>, <<232, 234, 74, 52>>, <<161, 42, 19, 172, 109, 233, 95, 72, 202, 181, 213, 90, 178, 90, 57, 122>>, application_id, user.id)
 
     valid_attrs = %{
       channel: 42,

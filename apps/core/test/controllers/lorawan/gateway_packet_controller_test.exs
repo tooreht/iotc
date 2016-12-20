@@ -17,7 +17,8 @@ defmodule Core.LoRaWAN.GatewayPacketControllerTest do
     conn = put_req_header(conn, "x-auth-token", token)
 
     %{id: gateway_id} = Core.Storage.LoRaWAN.Gateway.create_gateway("B827EBFFFE7FE413", "semtech", user.id, 0, 0, 0)
-    %{id: node_id} = Core.Storage.LoRaWAN.Node.create_node(<<138, 119, 102, 95, 78, 61, 43, 42>>, <<2, 0, 0, 0>>, <<98, 122, 185, 83, 49, 33, 35, 132, 193, 203, 116, 81, 74, 14, 201, 84>>, user.id)
+    %{id: application_id} = Core.Storage.LoRaWAN.Application.create_application(<<200, 21, 12, 26, 46, 212, 79, 112>>, "MyApp", user.id)
+    %{id: node_id} = Core.Storage.LoRaWAN.Node.create_node(<<138, 119, 102, 95, 78, 61, 43, 42>>, <<2, 0, 0, 0>>, <<98, 122, 185, 83, 49, 33, 35, 132, 193, 203, 116, 81, 74, 14, 201, 84>>, application_id, user.id)
     %{id: packet_id} = Core.Storage.LoRaWAN.Packet.create_data_packet(3, 123, "868.0", 42, "LORA" , "SF7BW125", "4/5", 42, node_id)
 
     valid_attrs = %{
