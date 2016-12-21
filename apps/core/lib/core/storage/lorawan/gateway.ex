@@ -1,31 +1,76 @@
 defmodule Core.Storage.LoRaWAN.Gateway do
-  @doc """
-  Gateway storage for LoRaWAN
+  @moduledoc """
+  CRUD operations for LoRaWAN.Gateway
 
   - Ecto queries for persistence
   - KV store for caching
   """
+
+  import Ecto.Query, only: [from: 2]
+
   alias Core.Storage
   alias Core.Repo
   alias Core.LoRaWAN.Gateway
 
-  import Ecto.Query
-    def create_gateway(gateway_eui, adapter, user_id, latitude, longitude, altitude)     do
-      Core.Repo.get_by(Core.LoRaWAN.Gateway, gw_eui: gateway_eui) ||
-      Core.LoRaWAN.Gateway.changeset(%Core.LoRaWAN.Gateway{}, %{gw_eui: gateway_eui, adapter: adapter, user_id: user_id, latitude: latitude, longitude: longitude, altitude: altitude}) 
-      |> Core.Repo.insert!
+  #
+  # CHANGESET
+  #
+
+  def changeset(struct, params \\ %{}) do
+    Gateway.changeset(struct, params)
   end
+
+  #
+  # GET
+  #
+
+  def get(%{gw_eui: gw_eui}) do
+    Repo.get_by(Gateway, gw_eui: gw_eui)
+  end
+
+  #
+  # CREATE
+  #
+
+  def create(%{gw_eui: _, adapter: _, user_id: _} = params) do
+    get(params) ||
+    changeset(%Gateway{}, params)
+    |> Repo.insert!
+  end
+
+  #
+  # UPDATE
+  #
+
+  def update(%{gw_eui: gw_eui} = struct, params) do
+    get(%{gw_eui: gw_eui})
+    |> changeset(params)
+    |> Repo.update
+  end
+
+  #
+  # DELETE
+  #
+
+  def delete(%{gw_eui: gw_eui}) do
+    get(%{gw_eui: gw_eui})
+    |> Repo.delete!
+  end
+
+  #
+  # HELPERS
+  #
 
   def query_gateway_euis do
     from(g in Gateway, select: g.gw_eui)
     |> Repo.all()
   end
 
-  def lookup_gateway_eui(gateway_eui) do
+  def lookup_by_eui(gateway_eui) do
     gateway_eui in KV.Bucket.get(Storage.Utils.get_gateway_eui_cache, "gateway_euis")
   end
 
-  def store_gateway_meta(gw) do
+  def store_meta(gw) do
     if Map.has_key?(gw, :meta) and gw.meta do
       # Gateway
       gateway = %Gateway{

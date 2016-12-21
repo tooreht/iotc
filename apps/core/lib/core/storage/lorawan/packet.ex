@@ -1,22 +1,74 @@
 defmodule Core.Storage.LoRaWAN.Packet do
-  @doc """
-  Packet storage for LoRaWAN
-
-  - Ecto queries for persistence
-  - KV store for caching
+  @moduledoc """
+  CRUD operations for LoRaWAN.Packet
   """
-    def exists_data_packet?(number, node_id) do
-      if Core.Repo.get_by(Core.LoRaWAN.Packet, number: number, node_id: node_id) do
-        true
-      else
-        false
-      end
-    end
+  import Ecto.Query, only: [from: 2]
 
-    def create_data_packet(type, number, frequency, channel, modulation, data_rate, code_rate, size, node_id) do
-      Core.Repo.get_by(Core.LoRaWAN.Packet, number: number, node_id: node_id) ||
-      Core.LoRaWAN.Packet.changeset(%Core.LoRaWAN.Packet{}, %{number: number, type: type, frequency: frequency, channel: channel, modulation: modulation, data_rate: data_rate, code_rate: code_rate, size: size, node_id: node_id}) 
-      |> Core.Repo.insert!
+  alias Core.LoRaWAN.Packet
+  alias Core.Repo
+
+  #
+  # CHANGESET
+  #
+
+  def changeset(struct, params \\ %{}) do
+    Packet.changeset(struct, params)
   end
 
+  #
+  # GET
+  #
+
+  def get(%{number: number, node_id: node_id}) do
+    Repo.get_by(Packet, number: number, node_id: node_id)
+  end
+
+  #
+  # CREATE
+  #
+
+  def create(%{
+    type: type,
+    number: number,
+    frequency: frequency,
+    channel: channel,
+    modulation: modulation,
+    data_rate: data_rate,
+    code_rate: code_rate,
+    size: size,
+    node_id: node_id
+  }) do
+    Repo.get_by(Core.LoRaWAN.Packet, number: number, node_id: node_id) ||
+    changeset(%Packet{}, %{
+      number: number,
+      type: type,
+      frequency: frequency,
+      channel: channel,
+      modulation: modulation,
+      data_rate: data_rate,
+      code_rate: code_rate,
+      size: size,
+      node_id: node_id
+    }) 
+    |> Core.Repo.insert!
+  end
+
+  #
+  # UPDATE
+  #
+
+  #
+  # DELETE
+  #
+
+  #
+  # HELPERS
+  #
+
+  def exists?(number, node_id) do
+    [] != from(p in Packet,
+      select: p.id,
+      where: [number: ^number, node_id: ^node_id])
+      |> Repo.all
+  end
 end

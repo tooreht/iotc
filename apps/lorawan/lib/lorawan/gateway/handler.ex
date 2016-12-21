@@ -47,12 +47,12 @@
   """
   def handle_call({:receive, packet}, _from, state) do
     # Verify that the gateway is registered in the system.
-    in_system = Storage.lookup_gateway_eui(Storage, packet.gateway.eui)
+    in_system = Storage.LoRaWAN.Gateway.lookup_by_eui(packet.gateway.eui)
     if in_system do
       if %LoRaWAN.Gateway.Packet{} = packet do
         # Send all packets coming from this gateway to the pool.
         LoRaWAN.parallel_pool(packet.lorawan, &LoRaWAN.Worker.receive/2)
-        Storage.store_gateway_meta(Storage, packet.gateway)
+        Storage.LoRaWAN.Gateway.store_meta(packet.gateway)
       end
     else
        Logger.warn "Unregistered gateway #{inspect(packet.gateway.ip)} #{inspect(packet.gateway.eui)}"

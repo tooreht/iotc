@@ -33,7 +33,13 @@ defmodule Core.Storage.Utils do
     # TODO: Store gateway_packets
   end
 
-  # HELPERS
+  # LORAWAN HELPERS
+
+  def rev_bytes_to_base16(bytes) do
+    Base.encode16(bytes) |> String.reverse
+  end
+
+  # CACHE HELPERS
 
   def get_packet_cache do
     get_or_create_cache("packet_registry", "packets", %{})

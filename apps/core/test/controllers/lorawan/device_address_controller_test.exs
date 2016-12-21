@@ -9,7 +9,7 @@ defmodule Core.LoRaWAN.DeviceAddressControllerTest do
   @invalid_attrs %{}
 
   setup %{conn: conn} do
-    user = Repo.insert! Map.merge(%User{}, %{name: "You", email: "you@example.net", username: "you", password: "secret"})
+    user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
     token = Token.generate_token
     Token.add_credentials(token, %{uid: user.id}, Coherence.CredentialStore.Agent)

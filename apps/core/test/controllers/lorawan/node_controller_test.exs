@@ -8,7 +8,7 @@ defmodule Core.LoRaWAN.NodeControllerTest do
   @invalid_attrs %{}
 
   setup %{conn: conn} do
-    user = Repo.insert! Map.merge(%User{}, %{name: "You", email: "you@example.net", username: "you", password: "secret"})
+    user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
     token = Token.generate_token
     Token.add_credentials(token, %{uid: user.id}, Coherence.CredentialStore.Agent)
@@ -16,7 +16,10 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    %{id: application_id} = Core.Storage.LoRaWAN.Application.create_application(<<200, 21, 12, 26, 46, 212, 79, 112>>, "MyApp", user.id)
+    %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
+                              rev_app_eui: <<200, 21, 12, 26, 46, 212, 79, 112>>,
+                              user_id: user.id
+                            })
 
     valid_attrs = %{
       dev_eui: "2A2B3D4E5F66778A",

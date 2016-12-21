@@ -1,26 +1,110 @@
 defmodule Core.Storage.LoRaWAN.Node do
-  @doc """
-  Node storage for LoRaWAN
-
-  - Ecto queries for persistence
-  - KV store for caching
+  @moduledoc """
+  CRUD operations for LoRaWAN.Node
   """
-  
-  def create_node(rev_dev_eui, rev_dev_addr, rev_nwk_s_key, application_id, user_id) do
-    dev_eui = Base.encode16(String.reverse(rev_dev_eui))
-    dev_addr = Base.encode16(String.reverse(rev_dev_addr))
-    nwk_s_key = Base.encode16(String.reverse(rev_nwk_s_key))
 
-    %{id: dev_addr_id}  = Core.Repo.get_by(Core.LoRaWAN.DeviceAddress, dev_addr: dev_addr) ||
-      Core.LoRaWAN.DeviceAddress.changeset(%Core.LoRaWAN.DeviceAddress{}, %{dev_addr: dev_addr, last_assigned: Ecto.DateTime.utc}) 
-      |> Core.Repo.insert!
+  alias Core.LoRaWAN.Node
+  alias Core.Repo
+  alias Core.Storage.Utils
 
-    node = Core.Repo.get_by(Core.LoRaWAN.Node, dev_eui: dev_eui) ||
+  #
+  # CHANGESET
+  #
 
-      Core.LoRaWAN.Node.changeset(%Core.LoRaWAN.Node{}, %{dev_eui: dev_eui, nwk_s_key:  nwk_s_key, device_address_id: dev_addr_id, application_id: application_id, user_id: user_id})
-      |> Core.Repo.insert!
-
-    node
+  def changeset(struct, params \\ %{}) do
+    Node.changeset(struct, params)
   end
-  
+
+  #
+  # GET
+  #
+
+  def get(%{dev_eui: dev_eui}) do
+    Repo.get_by(Node, dev_eui: dev_eui)
+  end
+
+  def get(%{rev_dev_eui: rev_dev_eui}) do
+    get(%{dev_eui: Utils.rev_bytes_to_base16(rev_dev_eui)})
+  end
+
+  #
+  # CREATE
+  #
+
+  def create(%{
+    dev_eui: _,
+    nwk_s_key: _,
+    application_id: _,
+    user_id: _} = params)
+  do
+    get(params) ||
+    changeset(%Node{}, params)
+    |> Repo.insert!
+  end
+
+  def create(%{
+    rev_dev_eui: rev_dev_eui,
+    rev_nwk_s_key: rev_nwk_s_key,
+    application_id: _,
+    user_id: _} = params)
+  do
+    {_, params} = Map.pop(params, :rev_dev_eui)
+    params = Map.put(params, :dev_eui, Utils.rev_bytes_to_base16(rev_dev_eui))
+
+    {_, params} = Map.pop(params, :rev_nwk_s_key)
+    params = Map.put(params, :nwk_s_key, Utils.rev_bytes_to_base16(rev_nwk_s_key))
+
+    params = if Map.has_key?(params, :rev_dev_addr) do
+      {param, params} = Map.pop(params, :rev_dev_addr)
+      Map.put(params, :dev_addr, Utils.rev_bytes_to_base16(param))
+    else
+      params
+    end
+
+    create(params)
+  end
+
+  #
+  # UPDATE
+  #
+
+  def update(%{dev_eui: dev_eui}, params) do
+    get(%{dev_eui: dev_eui})
+    |> changeset(params)
+    |> Repo.update
+  end
+
+  def update(%{rev_dev_eui: rev_dev_eui} = struct, params) do
+    {param, params} = Map.pop(params, :rev_dev_eui)
+    params = Map.put(params, :dev_eui, Utils.rev_bytes_to_base16(param))
+
+    params = if Map.has_key?(params, :rev_nwk_s_key) do
+      {param, params} = Map.pop(params, :rev_nwk_s_key)
+      Map.put(params, :nwk_s_key, Utils.rev_bytes_to_base16(param))
+    else
+      params
+    end
+
+    params = if Map.has_key?(params, :rev_dev_addr) do
+      {param, params} = Map.pop(params, :rev_dev_addr)
+      Map.put(params, :dev_addr, Utils.rev_bytes_to_base16(param))
+    else
+      params
+    end
+
+    update(Map.put(struct, :dev_eui, Utils.rev_bytes_to_base16(rev_dev_eui)), params)
+  end
+
+  #
+  # DELETE
+  #
+
+  def delete(%{dev_eui: dev_eui}) do
+    get(%{dev_eui: dev_eui})
+    |> Repo.delete!
+  end
+
+  def delete(%{rev_dev_eui: rev_dev_eui}) do
+    delete(%{dev_eui: Utils.rev_bytes_to_base16(rev_dev_eui)})
+  end
 end

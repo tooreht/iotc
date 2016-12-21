@@ -8,7 +8,7 @@ defmodule Core.UserControllerTest do
   @invalid_attrs %{email: "me.example.net"}
 
   setup %{conn: conn} do
-    user = Repo.insert! Map.merge(%User{}, %{name: "You", email: "you@example.net", username: "you", password: "secret"})
+    user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
     token = Token.generate_token
     Token.add_credentials(token, %{uid: user.id}, Coherence.CredentialStore.Agent)

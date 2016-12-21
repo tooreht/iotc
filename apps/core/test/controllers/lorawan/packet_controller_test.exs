@@ -8,7 +8,7 @@ defmodule Core.LoRaWAN.PacketControllerTest do
   @invalid_attrs %{}
 
   setup %{conn: conn} do
-    user = Repo.insert! Map.merge(%User{}, %{name: "You", email: "you@example.net", username: "you", password: "secret"})
+    user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
     token = Token.generate_token
     Token.add_credentials(token, %{uid: user.id}, Coherence.CredentialStore.Agent)
@@ -16,8 +16,17 @@ defmodule Core.LoRaWAN.PacketControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    %{id: application_id} = Core.Storage.LoRaWAN.Application.create_application(<<200, 21, 12, 26, 46, 212, 79, 112>>, "MyApp", user.id)
-    node = Core.Storage.LoRaWAN.Node.create_node(<<231, 34, 74, 5, 34, 154, 23, 41>>, <<232, 234, 74, 52>>, <<161, 42, 19, 172, 109, 233, 95, 72, 202, 181, 213, 90, 178, 90, 57, 122>>, application_id, user.id)
+    %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
+                              rev_app_eui: <<200, 21, 12, 26, 46, 212, 79, 112>>,
+                              user_id: user.id
+                            })
+    node = Core.Storage.LoRaWAN.Node.create(%{
+            rev_dev_eui: <<138, 119, 102, 95, 78, 61, 43, 42>>,
+            rev_dev_addr: <<2, 0, 0, 0>>,
+            rev_nwk_s_key: <<98, 122, 185, 83, 49, 33, 35, 132, 193, 203, 116, 81, 74, 14, 201, 84>>,
+            application_id: application_id,
+            user_id: user.id
+          })
 
     valid_attrs = %{
       channel: 42,
