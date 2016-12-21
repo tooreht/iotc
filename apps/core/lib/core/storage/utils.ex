@@ -6,25 +6,6 @@ defmodule Core.Storage.Utils do
   - KV store for caching
   """
 
-  def insert_existing_device(dev_eui, dev_addr, nw_key) do
-    # Insert Device 1 <<70, 161, 210, 121>>
-    device_addr = Core.Repo.get_by(Core.LoRaWAN.DeviceAddress, dev_addr: Base.encode16(dev_addr))
-    %{id: dev_addr_id} = if device_addr do
-      device_addr
-    else
-      Core.LoRaWAN.DeviceAddress.changeset(%Core.LoRaWAN.DeviceAddress{}, %{dev_addr: Base.encode16(dev_addr), last_assigned: Ecto.DateTime.utc}) # TODO: change milli_seconds to milliseconds when upgrading to elrang 19
-      |> Core.Repo.insert!
-    end
-
-    device = Core.Repo.get_by(Core.LoRaWAN.Node, dev_eui: Base.encode16(dev_eui))
-    %{id: dev_id} = if device do
-      device
-    else
-      Core.LoRaWAN.Node.changeset(%Core.LoRaWAN.Node{}, %{dev_eui: Base.encode16(dev_eui), nw_key:  Base.encode16(nw_key), device_address_id: dev_addr_id})
-      |> Core.Repo.insert!
-    end
-  end
-
   def store_packet(packet) do
     # TODO: Store packets
   end
