@@ -29,23 +29,8 @@ defmodule Core.Storage.LoRaWAN.NodeTest do
     assert Storage.LoRaWAN.Node.get(valid_attrs) == node
   end
 
-  test "get with reverse dev_eui", %{valid_attrs: valid_attrs} do
-    node = Repo.insert! Node.changeset(%Node{}, valid_attrs)
-    assert Storage.LoRaWAN.Node.get(%{rev_dev_eui: String.reverse(valid_attrs.dev_eui) |> Base.decode16!}) == node
-  end
-
   test "create", %{valid_attrs: valid_attrs} do
     assert Storage.LoRaWAN.Node.create(valid_attrs) == Repo.get_by(Node, dev_eui: valid_attrs.dev_eui)
-  end
-
-  test "create with reverse dev_eui", %{valid_attrs: valid_attrs} do
-    attrs = %{
-      rev_dev_eui: String.reverse(valid_attrs.dev_eui) |> Base.decode16!,
-      rev_nwk_s_key: String.reverse(valid_attrs.nwk_s_key) |> Base.decode16!,
-      application_id: valid_attrs.application_id,
-      user_id: valid_attrs.user_id
-    }
-    assert Storage.LoRaWAN.Node.create(attrs) == Repo.get_by(Node, dev_eui: valid_attrs.dev_eui)
   end
 
   test "update", %{valid_attrs: valid_attrs} do
@@ -56,23 +41,9 @@ defmodule Core.Storage.LoRaWAN.NodeTest do
     assert node.dev_eui != updated.dev_eui
   end
 
-  test "update with reverse dev_eui", %{valid_attrs: valid_attrs} do
-    node = Repo.insert! Node.changeset(%Node{}, valid_attrs)
-    params = %{rev_dev_eui: String.reverse("FFFFFFFFFFFFFFFF") |> Base.decode16!, user_id: valid_attrs.user_id}
-    {:ok, updated} = Storage.LoRaWAN.Node.update(%{rev_dev_eui: String.reverse(valid_attrs.dev_eui) |> Base.decode16!}, params)
-    assert node.id == updated.id
-    assert node.dev_eui != updated.dev_eui
-  end
-
   test "delete", %{valid_attrs: valid_attrs} do
     node = Repo.insert! Node.changeset(%Node{}, valid_attrs)
     Storage.LoRaWAN.Node.delete(valid_attrs)
-    refute Repo.get(Node, node.id)
-  end
-
-  test "delete with reverse dev_eui", %{valid_attrs: valid_attrs} do
-    node = Repo.insert! Node.changeset(%Node{}, valid_attrs)
-    Storage.LoRaWAN.Node.delete(%{rev_dev_eui: String.reverse(valid_attrs.dev_eui) |> Base.decode16!})
     refute Repo.get(Node, node.id)
   end
 end

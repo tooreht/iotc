@@ -8,13 +8,13 @@ defmodule Core.Storage.LoRaWAN.PacketTest do
   setup do
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
     %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
-                              rev_app_eui: <<200, 21, 12, 26, 46, 212, 79, 112>>,
+                              app_eui: "70D5B37ED0000E36",
                               user_id: user.id
                             })
     %{id: node_id} = Core.Storage.LoRaWAN.Node.create(%{
-                        rev_dev_eui: <<138, 119, 102, 95, 78, 61, 43, 42>>,
-                        rev_dev_addr: <<2, 0, 0, 0>>,
-                        rev_nwk_s_key: <<98, 122, 185, 83, 49, 33, 35, 132, 193, 203, 116, 81, 74, 14, 201, 84>>,
+                        dev_eui: "2A2B3D4E5F66778A",
+                        dev_addr: "00000002",
+                        nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
                         application_id: application_id,
                         user_id: user.id
                       })

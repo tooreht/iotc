@@ -36,7 +36,7 @@ defmodule Core.Storage.Utils do
   # LORAWAN HELPERS
 
   def rev_bytes_to_base16(bytes) do
-    Base.encode16(bytes) |> String.reverse
+    String.reverse(bytes) |> Base.encode16
   end
 
   # CACHE HELPERS
