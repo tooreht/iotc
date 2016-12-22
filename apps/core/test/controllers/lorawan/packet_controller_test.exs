@@ -54,6 +54,7 @@ defmodule Core.LoRaWAN.PacketControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => packet.id,
       "number" => packet.number,
+      "dev_nonce" => nil,
       "type" => packet.type,
       "frequency" => packet.frequency,
       "channel" => packet.channel,
