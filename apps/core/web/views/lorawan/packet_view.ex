@@ -12,6 +12,7 @@ defmodule Core.LoRaWAN.PacketView do
   def render("packet.json", %{packet: packet}) do
     %{id: packet.id,
       number: packet.number,
+      dev_nonce: packet.dev_nonce,
       type: packet.type,
       frequency: packet.frequency,
       channel: packet.channel,

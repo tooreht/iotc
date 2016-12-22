@@ -37,14 +37,6 @@ defmodule LoRaWAN.Packet do
   #   phy_payload: nil,
   # ]
 
-  defmodule Node do
-    defstruct [
-      dev_eui:    nil,
-      app_eui:    nil,
-      target:     nil
-    ]
-  end
-
   defmodule FCtrl do
     defstruct [
       adr:          nil,
@@ -112,7 +104,6 @@ defmodule LoRaWAN.Packet do
       mac_payload:  nil, #Either DataMacPayload or JoinMACPayload or ProprietaryMACPayload
       mic:          nil,
       raw:          nil,
-      node:         %Node{}
     ]
 
   end

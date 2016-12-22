@@ -28,7 +28,7 @@
 
     Logger.info "Received Packet: #{inspect(packet)}"
 
-    {mic_check, packet} = LoRaWAN.Crypto.valid_mic(packet)
+    {mic_check, node} = LoRaWAN.Crypto.valid_mic(packet)
     if mic_check do
       IO.puts("MIC passed!")
     else
@@ -38,7 +38,7 @@
 
     LoRaWAN.MACHandler.handle_mac_commands(packet)
 
-    LoRaWAN.Dedup.dedup_packet(packet)
+    LoRaWAN.Dedup.dedup_packet(packet, node)
     
     {:reply, packet, state}
   end

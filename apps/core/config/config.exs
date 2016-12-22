@@ -18,7 +18,7 @@ config :core, Core.Endpoint,
            adapter: Phoenix.PubSub.PG2]
 
 config :core, Core.Storage.Scheduler,
-  auto_start: true
+  auto_start: false
 
 # Configures Elixir's Logger
 config :logger, :console,

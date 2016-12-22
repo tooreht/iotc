@@ -3,7 +3,6 @@ defmodule LoRaWAN.Crypto do
   This module is responsible for the crypto part of LoRaWAN.
   """
   alias LoRaWAN.Crypto.AesCmac
-  alias LoRaWAN.Packet
   require Logger
 
   @doc """
@@ -70,13 +69,13 @@ defmodule LoRaWAN.Crypto do
 
         mic_check = computed_mic == mic_raw
 
-        packet = if mic_check do
+        node = if mic_check do
           # packet = putpacket.node.dev_eui = dev_eui
           # packet = Map.put(%LoRaWAN.Packet.Node{}, :dev_eui, <<0>>)
-          Map.put(packet, :node, %LoRaWAN.Packet.Node{dev_eui: <<0>>})
+         node
         end
 
-        {mic_check, packet}
+        {mic_check, node}
       _ ->
         Logger.warn "no valid m_type"
         {false, nil}

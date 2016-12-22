@@ -21,5 +21,9 @@ defmodule Core.Storage.LoRaWAN.Node do
 
     node
   end
+
+  def get_notes_by_dev_addr(dev_addr) do
+    
+  end
   
 end
