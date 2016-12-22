@@ -10,11 +10,11 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-Core.Repo.delete_all Core.LoRaWAN.Application
 Core.Repo.delete_all Core.LoRaWAN.Gateway
 Core.Repo.delete_all Core.LoRaWAN.Packet
 Core.Repo.delete_all Core.LoRaWAN.Node
 Core.Repo.delete_all Core.LoRaWAN.DeviceAddress
+Core.Repo.delete_all Core.LoRaWAN.Application
 Core.Repo.delete_all Core.User
 
 %{id: user_id} = 
