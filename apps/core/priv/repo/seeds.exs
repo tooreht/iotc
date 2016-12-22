@@ -21,18 +21,19 @@ Core.Repo.delete_all Core.User
 Core.User.changeset(%Core.User{}, %{name: "Admin", email: "admin@example.net", username: "admin", password: "secret", password_confirmation: "secret"})
 |> Core.Repo.insert!
 
-%{id: tresh_application_id} = Core.Storage.LoRaWAN.Application.create(%{rev_app_eui: <<124, 23, 0, 208, 126, 213, 179, 112>>, user_id: user_id})
-%{id: allo_application_id} = Core.Storage.LoRaWAN.Application.create(%{rev_app_eui: <<54, 14, 0, 208, 126, 213, 179, 112>>, user_id: user_id})
+%{id: tresh_application_id} = Core.Storage.LoRaWAN.Application.create(%{app_eui: "70B3D57ED000177C", user_id: user_id})
+%{id: allo_application_id} = Core.Storage.LoRaWAN.Application.create(%{app_eui: "70B3D57ED0000E36", user_id: user_id})
 
-%{id: dev_addr70} = Core.Storage.LoRaWAN.DeviceAddress.create(%{rev_dev_addr: <<70, 161, 210, 121>>})
-%{id: dev_addr232} = Core.Storage.LoRaWAN.DeviceAddress.create(%{rev_dev_addr: <<232, 234, 74, 5>>})
-%{id: dev_addr1} = Core.Storage.LoRaWAN.DeviceAddress.create(%{rev_dev_addr: <<1, 0, 0, 0>>})
-%{id: dev_addr2} = Core.Storage.LoRaWAN.DeviceAddress.create(%{rev_dev_addr: <<2, 0, 0, 0>>})
+%{id: dev_addr70} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "79D2A146"})
+%{id: dev_addr232} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "054AEAE8"})
+%{id: dev_addr1} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "01010101"})
+%{id: dev_addr2} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "00000002"})
 
-Core.Storage.LoRaWAN.Node.create(%{rev_dev_eui: <<70, 161, 210, 121, 0, 0, 0, 0>>, device_address_id: dev_addr70, rev_nwk_s_key: <<131, 132, 1, 172, 17, 228, 225, 223, 76, 106, 213, 106, 7, 71, 210, 196>>, application_id: allo_application_id, user_id: user_id})
-Core.Storage.LoRaWAN.Node.create(%{rev_dev_eui: <<232, 234, 74, 5, 0, 0, 0, 0>>, device_address_id: dev_addr232, rev_nwk_s_key: <<161, 42, 191, 172, 19, 233, 95, 48, 212, 181, 23, 190, 178, 90, 57, 122>>, application_id: tresh_application_id, user_id: user_id})
-Core.Storage.LoRaWAN.Node.create(%{rev_dev_eui: <<139, 119, 102, 95, 78, 61, 43, 42>>, device_address_id: dev_addr1, rev_nwk_s_key: <<17, 30, 241, 28, 88, 191, 249, 198, 210, 135, 184, 116, 102, 146, 64, 223>>, application_id: allo_application_id, user_id: user_id})
-Core.Storage.LoRaWAN.Node.create(%{rev_dev_eui: <<138, 119, 102, 95, 78, 61, 43, 42>>, device_address_id: dev_addr2, rev_nwk_s_key: <<98, 122, 185, 83, 49, 33, 35, 132, 193, 203, 116, 81, 74, 14, 201, 84>>, application_id: allo_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "0000000079D2A146", device_address_id: dev_addr70, nwk_s_key: "838401AC11E4E1DF4C6AD56A0747D2C4", application_id: allo_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "00000000054AEAE8", device_address_id: dev_addr232, nwk_s_key: "7A395AB2BE17D4B5305FE913ACBF2AA1", application_id: tresh_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "2A2B3D4E5F66778B", device_address_id: dev_addr1, nwk_s_key: "DF40926674B8D287C6F9BF581CF11E11", application_id: allo_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "2A2B3D4E5F66778A", device_address_id: dev_addr2, nwk_s_key: "54C90E4A5174CBC18423213153B97A62", application_id: allo_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "0101010101010101", device_address_id: dev_addr2, nwk_s_key: "44C01B3B2171BAC334123231BA5221DF", application_id: allo_application_id, user_id: user_id})
 
 Core.Storage.LoRaWAN.Gateway.create(%{gw_eui: "B827EBFFFE7FE413", adapter: "Semtech", user_id: user_id, latitude: 0, longitude: 1, altitude: 2})
 Core.Storage.LoRaWAN.Gateway.create(%{gw_eui: "B827EBFFFE8AA02D", adapter: "Semtech", user_id: user_id, latitude: 3, longitude: 4, altitude: 5})
