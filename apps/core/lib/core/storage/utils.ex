@@ -39,6 +39,11 @@ defmodule Core.Storage.Utils do
     String.reverse(bytes) |> Base.encode16
   end
 
+  def rev_bytes_from_base16(bytes) do
+     Base.decode16!(bytes) |> String.reverse
+  end
+
+
   # CACHE HELPERS
 
   def get_packet_cache do
