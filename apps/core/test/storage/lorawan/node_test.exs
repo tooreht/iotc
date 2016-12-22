@@ -15,6 +15,8 @@ defmodule Core.Storage.LoRaWAN.NodeTest do
                     dev_eui: "2A2B3D4E5F66778A",
                     dev_addr: "1CF3BA77",
                     nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
+                    frames_down: 0,
+                    frames_up: 0,
                     application_id: application_id,
                     user_id: user.id
                   }

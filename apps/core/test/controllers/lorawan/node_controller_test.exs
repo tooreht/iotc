@@ -6,6 +6,7 @@ defmodule Core.LoRaWAN.NodeControllerTest do
   alias Coherence.Authentication.Token
 
   @invalid_attrs %{}
+  @dev_addr "81D2A146"
 
   setup %{conn: conn} do
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
@@ -17,17 +18,21 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "x-auth-token", token)
 
     %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
-                              rev_app_eui: <<200, 21, 12, 26, 46, 212, 79, 112>>,
+                              app_eui: "704FD42E1A0C15C8",
                               user_id: user.id
                             })
 
+    %{id: dev_addr_id} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: @dev_addr})
+
     valid_attrs = %{
-      dev_eui: "2A2B3D4E5F66778A",
+      dev_eui: "5B2B3D4E5F66728C",
+      device_address_id: dev_addr_id,
       frames_down: 42,
       frames_up: 42,
-      last_seen: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010},
-      nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
+      nwk_s_key: "54C90E4A5174CBC18423113153B97A62",
       status: 42,
+      frames_down: 0,
+      frames_up: 0,
       user_id: user.id,
       application_id: application_id
     }
@@ -40,8 +45,8 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     assert json_response(conn, 200)["data"] == []
   end
 
-  test "shows chosen resource", %{conn: conn, valid_attrs: _} do
-    node = Repo.insert! %Node{}
+  test "shows chosen resource", %{conn: conn, valid_attrs: valid_attrs} do
+    node = Repo.insert! Node.changeset(%Node{}, valid_attrs)
     conn = get conn, node_path(conn, :show, node)
     assert json_response(conn, 200)["data"] == %{"id" => node.id,
       "dev_eui" => node.dev_eui,
