@@ -17,7 +17,7 @@ Core.Repo.delete_all Core.LoRaWAN.DeviceAddress
 Core.Repo.delete_all Core.LoRaWAN.Application
 Core.Repo.delete_all Core.User
 
-user = Core.Repo.insert! %Core.User{name: "Admin", email: "admin@example.net", username: "admin", password: "secret", password_confirmation: "secret"}
+user = Core.Repo.insert! Core.User.changeset(%Core.User{}, %{name: "Admin", email: "admin@example.net", username: "admin", password: "secret"})
  
 tresh_application = Core.Repo.insert! %Core.LoRaWAN.Application{app_eui: "70B3D57ED000177C", user_id: user.id}
 allo_application = Core.Repo.insert! %Core.LoRaWAN.Application{app_eui: "70B3D57ED0000E36", user_id: user.id}
