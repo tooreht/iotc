@@ -16,29 +16,30 @@ defmodule Core.LoRaWAN.GatewayPacketControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    %{id: gateway_id} = Core.Storage.LoRaWAN.Gateway.create(%{gw_eui: "B827EBFFFE7FE413", adapter: "Semtech", user_id: user.id})
-    %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
+    gateway = Repo.insert! %Core.LoRaWAN.Gateway{gw_eui: "B827EBFFFE7FE413", adapter: "Semtech", user_id: user.id}
+    application = Repo.insert! %Core.LoRaWAN.Application{
                               app_eui: "704FD42E1A0C15C8",
                               user_id: user.id
-                            })
-    %{id: node_id} = Core.Storage.LoRaWAN.Node.create(%{
+                            }
+    device_address = Core.Repo.insert! %Core.LoRaWAN.DeviceAddress{dev_addr: "79D2A146", last_assigned: Ecto.DateTime.utc}
+    node = Repo.insert! %Core.LoRaWAN.Node{
                         dev_eui: "2A2B3D4E5F66778A",
-                        dev_addr: "00000002",
+                        device_address_id: device_address.id,
                         nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
-                        application_id: application_id,
+                        application_id: application.id,
                         user_id: user.id
-                      })
-    %{id: packet_id} = Core.Storage.LoRaWAN.Packet.create(%{
+                      }
+    packet = Repo.insert! %Core.LoRaWAN.Packet{
                          type: 3,
                          number: 123,
-                         frequency: "868.0",
+                         frequency: Decimal.new("868.0"),
                          channel: 42,
                          modulation: "LORA" ,
                          data_rate: "SF7BW125",
                          code_rate: "4/5",
                          size: 42,
-                         node_id: node_id
-                       })
+                         node_id: node.id
+                       }
 
     valid_attrs = %{
       crc_status: 42,
@@ -46,8 +47,8 @@ defmodule Core.LoRaWAN.GatewayPacketControllerTest do
       rssi: 42,
       snr: 42,
       time: 42,
-      gateway_id: gateway_id,
-      packet_id: packet_id
+      gateway_id: gateway.id,
+      packet_id: packet.id
     }
 
     {:ok, conn: conn, valid_attrs: valid_attrs}

@@ -16,17 +16,18 @@ defmodule Core.LoRaWAN.PacketControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
+    application = Repo.insert! %Core.LoRaWAN.Application{
                               app_eui: "704FD42E1A0C15C8",
                               user_id: user.id
-                            })
-    node = Core.Storage.LoRaWAN.Node.create(%{
-            dev_eui: "2A2B3D4E5F66778A",
-            dev_addr: "00000002",
-            nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
-            application_id: application_id,
-            user_id: user.id
-          })
+                            }
+    device_address = Core.Repo.insert! %Core.LoRaWAN.DeviceAddress{dev_addr: "79D2A146", last_assigned: Ecto.DateTime.utc}
+    node = Repo.insert! %Core.LoRaWAN.Node{
+                        dev_eui: "2A2B3D4E5F66778A",
+                        device_address_id: device_address.id,
+                        nwk_s_key: "54C90E4A5174CBC18423213153B97A62",
+                        application_id: application.id,
+                        user_id: user.id
+                      }
 
     valid_attrs = %{
       channel: 42,

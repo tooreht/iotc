@@ -17,16 +17,16 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    %{id: application_id} = Core.Storage.LoRaWAN.Application.create(%{
+    gateway = Repo.insert! %Core.LoRaWAN.Gateway{gw_eui: "B827EBFFFE7FE413", adapter: "Semtech", user_id: user.id}
+    application = Repo.insert! %Core.LoRaWAN.Application{
                               app_eui: "704FD42E1A0C15C8",
                               user_id: user.id
-                            })
-
-    %{id: dev_addr_id} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: @dev_addr})
+                            }
+    device_address = Core.Repo.insert! %Core.LoRaWAN.DeviceAddress{dev_addr: "79D2A146", last_assigned: Ecto.DateTime.utc}
 
     valid_attrs = %{
       dev_eui: "5B2B3D4E5F66728C",
-      device_address_id: dev_addr_id,
+      device_address_id: device_address.id,
       frames_down: 42,
       frames_up: 42,
       nwk_s_key: "54C90E4A5174CBC18423113153B97A62",
@@ -34,7 +34,7 @@ defmodule Core.LoRaWAN.NodeControllerTest do
       frames_down: 0,
       frames_up: 0,
       user_id: user.id,
-      application_id: application_id
+      application_id: application.id
     }
 
     {:ok, conn: conn, valid_attrs: valid_attrs}
