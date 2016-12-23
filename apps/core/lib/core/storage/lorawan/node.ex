@@ -3,9 +3,12 @@ defmodule Core.Storage.LoRaWAN.Node do
   CRUD operations for LoRaWAN.Node
   """
 
+  import Ecto.Query, only: [from: 2]
+
   alias Core.LoRaWAN.Node
   alias Core.Repo
   alias Core.Storage.Utils
+  alias Core.LoRaWAN.DeviceAddress
 
   #
   # CHANGESET
@@ -55,5 +58,20 @@ defmodule Core.Storage.LoRaWAN.Node do
   def delete(%{dev_eui: dev_eui}) do
     get(%{dev_eui: dev_eui})
     |> Repo.delete!
+  end
+
+  #
+  # HELPERS
+  #
+
+  def get_nodes(%{dev_addr: dev_addr, f_cnt: f_cnt}) do
+    from(n in Node,
+      join: d in DeviceAddress,
+      on: n.device_address_id == d.id,
+      # where: n.frames_up == ^f_cnt,
+      where: d.dev_addr == ^dev_addr,
+      # preload: [:device_address],
+      select: n)
+    |> Repo.all
   end
 end
