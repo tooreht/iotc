@@ -1,4 +1,4 @@
-defmodule Core.Storage.LoRaWAN.GatewayTest do
+defmodule Core.Storage.DB.LoRaWAN.GatewayTest do
   use Core.ModelCase
 
   alias Core.LoRaWAN.Gateway
@@ -24,24 +24,25 @@ defmodule Core.Storage.LoRaWAN.GatewayTest do
 
   test "get", %{valid_attrs: valid_attrs} do
     application = Repo.insert! Gateway.changeset(%Gateway{}, valid_attrs)
-    assert Storage.LoRaWAN.Gateway.get(valid_attrs) == application
+    assert application == Storage.DB.LoRaWAN.Gateway.get(valid_attrs)
   end
 
   test "create", %{valid_attrs: valid_attrs} do
-    assert Storage.LoRaWAN.Gateway.create(valid_attrs) == Repo.get_by(Gateway, gw_eui: valid_attrs.gw_eui)
+    {:ok, created} = Storage.DB.LoRaWAN.Gateway.create(valid_attrs)
+    assert created == Repo.get_by(Gateway, gw_eui: valid_attrs.gw_eui)
   end
 
   test "update", %{valid_attrs: valid_attrs} do
     application = Repo.insert! Gateway.changeset(%Gateway{}, valid_attrs)
     params = %{gw_eui: "FFFFFFFFFFFFFFFF", user_id: valid_attrs.user_id}
-    {:ok, updated} = Storage.LoRaWAN.Gateway.update(%{gw_eui: application.gw_eui}, params)
+    {:ok, updated} = Storage.DB.LoRaWAN.Gateway.update(%{gw_eui: application.gw_eui}, params)
     assert application.id == updated.id
     assert application.gw_eui != updated.gw_eui
   end
 
   test "delete", %{valid_attrs: valid_attrs} do
     application = Repo.insert! Gateway.changeset(%Gateway{}, valid_attrs)
-    Storage.LoRaWAN.Gateway.delete(valid_attrs)
+    Storage.DB.LoRaWAN.Gateway.delete(valid_attrs)
     refute Repo.get(Gateway, application.id)
   end
 end

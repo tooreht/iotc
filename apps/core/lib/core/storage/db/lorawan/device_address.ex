@@ -1,10 +1,11 @@
-defmodule Core.Storage.LoRaWAN.DeviceAddress do
+defmodule Core.Storage.DB.LoRaWAN.DeviceAddress do
   @moduledoc """
   CRUD operations for LoRaWAN.Node
   """
+  @behaviour Core.Storage
+
   alias Core.LoRaWAN.DeviceAddress
   alias Core.Repo
-  alias Core.Storage.Utils
 
   #
   # CHANGESET
@@ -29,7 +30,7 @@ defmodule Core.Storage.LoRaWAN.DeviceAddress do
   def create(%{dev_addr: _} = params) do
     get(params) ||
     changeset(%DeviceAddress{}, Map.put(params, :last_assigned, DateTime.utc_now))
-    |> Repo.insert!
+    |> Repo.insert
   end
 
   #
@@ -48,6 +49,6 @@ defmodule Core.Storage.LoRaWAN.DeviceAddress do
 
   def delete(%{dev_addr: dev_addr}) do
     get(%{dev_addr: dev_addr})
-    |> Repo.delete!
+    |> Repo.delete
   end
 end

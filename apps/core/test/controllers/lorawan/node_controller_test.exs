@@ -17,7 +17,6 @@ defmodule Core.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    gateway = Repo.insert! %Core.LoRaWAN.Gateway{gw_eui: "B827EBFFFE7FE413", adapter: "Semtech", user_id: user.id}
     application = Repo.insert! %Core.LoRaWAN.Application{
                               app_eui: "704FD42E1A0C15C8",
                               user_id: user.id

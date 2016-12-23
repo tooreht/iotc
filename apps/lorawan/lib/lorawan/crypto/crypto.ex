@@ -76,7 +76,7 @@ defmodule LoRaWAN.Crypto do
 
   defp get_nodes(rev_dev_addr, f_cnt) do
     dev_addr = Utils.rev_bytes_to_base16(rev_dev_addr)
-    nodes = Storage.LoRaWAN.Node.get_nodes(%{dev_addr: dev_addr, f_cnt: f_cnt})
+    nodes = Storage.DB.LoRaWAN.Node.get_nodes(%{dev_addr: dev_addr, f_cnt: f_cnt})
     if nodes == [] do
       Logger.warn "no device with dev_addr " <> inspect(dev_addr) <> " found!"
       nodes

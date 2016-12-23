@@ -1,7 +1,9 @@
-defmodule Core.Storage.LoRaWAN.Packet do
+defmodule Core.Storage.DB.LoRaWAN.Packet do
   @moduledoc """
   CRUD operations for LoRaWAN.Packet
   """
+  @behaviour Core.Storage
+
   import Ecto.Query, only: [from: 2]
 
   alias Core.LoRaWAN.Packet
@@ -50,16 +52,27 @@ defmodule Core.Storage.LoRaWAN.Packet do
       size: size,
       node_id: node_id
     }) 
-    |> Core.Repo.insert!
+    |> Core.Repo.insert
   end
 
   #
   # UPDATE
   #
 
+  def update(%{number: number, node_id: node_id}, params) do
+    get(%{number: number, node_id: node_id})
+    |> changeset(params)
+    |> Repo.update
+  end
+
   #
   # DELETE
   #
+
+  def delete(%{number: number, node_id: node_id}) do
+    get(%{number: number, node_id: node_id})
+    |> Repo.delete
+  end
 
   #
   # HELPERS

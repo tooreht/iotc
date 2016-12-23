@@ -1,16 +1,17 @@
-defmodule Core.Storage.LoRaWAN.Gateway do
+defmodule Core.Storage.DB.LoRaWAN.Gateway do
   @moduledoc """
   CRUD operations for LoRaWAN.Gateway
 
   - Ecto queries for persistence
   - KV store for caching
   """
+  @behaviour Core.Storage
 
   import Ecto.Query, only: [from: 2]
 
-  alias Core.Storage
-  alias Core.Repo
   alias Core.LoRaWAN.Gateway
+  alias Core.Repo
+  alias Core.Storage
 
   #
   # CHANGESET
@@ -35,14 +36,14 @@ defmodule Core.Storage.LoRaWAN.Gateway do
   def create(%{gw_eui: _, adapter: _, user_id: _} = params) do
     get(params) ||
     changeset(%Gateway{}, params)
-    |> Repo.insert!
+    |> Repo.insert
   end
 
   #
   # UPDATE
   #
 
-  def update(%{gw_eui: gw_eui} = struct, params) do
+  def update(%{gw_eui: gw_eui}, params) do
     get(%{gw_eui: gw_eui})
     |> changeset(params)
     |> Repo.update
@@ -54,7 +55,7 @@ defmodule Core.Storage.LoRaWAN.Gateway do
 
   def delete(%{gw_eui: gw_eui}) do
     get(%{gw_eui: gw_eui})
-    |> Repo.delete!
+    |> Repo.delete
   end
 
   #

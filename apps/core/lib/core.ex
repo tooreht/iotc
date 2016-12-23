@@ -16,7 +16,7 @@ defmodule Core do
       supervisor(Task.Supervisor, [[name: Core.TaskSupervisor]]),
       # Start your own worker by calling: Core.Worker.start_link(arg1, arg2, arg3)
       # worker(Core.Worker, [arg1, arg2, arg3]),
-      worker(Core.Storage, [Core.Storage]),
+      worker(Core.Storage.DB, [Core.Storage.DB]),
       worker(Core.Storage.Scheduler, [Core.Storage.Scheduler])
     ]
 

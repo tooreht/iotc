@@ -1,11 +1,11 @@
-defmodule Core.Storage.LoRaWAN.Application do
+defmodule Core.Storage.DB.LoRaWAN.Application do
   @moduledoc """
   CRUD operations for LoRaWAN.Application
   """
+  @behaviour Core.Storage
 
   alias Core.LoRaWAN.Application
   alias Core.Repo
-  alias Core.Storage.Utils
 
   #
   # CHANGESET
@@ -30,7 +30,7 @@ defmodule Core.Storage.LoRaWAN.Application do
   def create(%{app_eui: _} = params) do
     get(params) ||
     changeset(%Application{}, params)
-    |> Repo.insert!
+    |> Repo.insert
   end
 
   #
@@ -49,6 +49,6 @@ defmodule Core.Storage.LoRaWAN.Application do
 
   def delete(%{app_eui: app_eui}) do
     get(%{app_eui: app_eui})
-    |> Repo.delete!
+    |> Repo.delete
   end
 end

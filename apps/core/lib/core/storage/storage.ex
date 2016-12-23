@@ -1,21 +1,14 @@
 defmodule Core.Storage do
   @moduledoc """
-  Storage API for LoRaWAN related data.
+  Defines a CRUD behaviour for different storage API implementations.
   """
-  use GenServer
 
-  ## Client API
-
-  @doc """
-  Starts the storage API with the given `name`.
-  """
-  def start_link(name) do
-    GenServer.start_link(__MODULE__, :ok, name: name)
-  end
-
-  ## Server Callbacks
-
-  def init(:ok) do
-    {:ok, {}}
-  end
+  @doc "Receive resource"
+  @callback get(uid :: Map.t) :: Struct.t | nil
+  @doc "Create resource"
+  @callback create(uid :: Map.t) :: {:ok, Struct.t} | {:error, any}
+  @doc "Update resource"
+  @callback update(uid :: Map.t, params :: Map.t) :: {:ok, Struct.t} | {:error, any}
+  @doc "Delete resource"
+  @callback delete(uid :: Map.t) :: {:ok, Struct.t} | {:error, any}
 end

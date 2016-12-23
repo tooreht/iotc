@@ -1,14 +1,14 @@
-defmodule Core.Storage.LoRaWAN.Node do
+defmodule Core.Storage.DB.LoRaWAN.Node do
   @moduledoc """
   CRUD operations for LoRaWAN.Node
   """
+  @behaviour Core.Storage
 
   import Ecto.Query, only: [from: 2]
 
+  alias Core.LoRaWAN.DeviceAddress
   alias Core.LoRaWAN.Node
   alias Core.Repo
-  alias Core.Storage.Utils
-  alias Core.LoRaWAN.DeviceAddress
 
   #
   # CHANGESET
@@ -38,7 +38,7 @@ defmodule Core.Storage.LoRaWAN.Node do
   do
     get(params) ||
     changeset(%Node{}, params)
-    |> Repo.insert!
+    |> Repo.insert
   end
 
   #
@@ -57,7 +57,7 @@ defmodule Core.Storage.LoRaWAN.Node do
 
   def delete(%{dev_eui: dev_eui}) do
     get(%{dev_eui: dev_eui})
-    |> Repo.delete!
+    |> Repo.delete
   end
 
   #
