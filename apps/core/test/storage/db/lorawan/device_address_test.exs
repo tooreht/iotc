@@ -1,4 +1,4 @@
-defmodule Core.Storage.LoRaWAN.DeviceAddressTest do
+defmodule Core.Storage.DB.LoRaWAN.DeviceAddressTest do
   use Core.ModelCase
 
   alias Core.LoRaWAN.DeviceAddress
@@ -16,24 +16,25 @@ defmodule Core.Storage.LoRaWAN.DeviceAddressTest do
 
   test "get", %{valid_attrs: valid_attrs} do
     device_address = Repo.insert! DeviceAddress.changeset(%DeviceAddress{}, valid_attrs)
-    assert Storage.LoRaWAN.DeviceAddress.get(valid_attrs) == device_address
+    assert Storage.DB.LoRaWAN.DeviceAddress.get(valid_attrs) == device_address
   end
 
   test "create", %{valid_attrs: valid_attrs} do
-    assert Storage.LoRaWAN.DeviceAddress.create(valid_attrs) == Repo.get_by(DeviceAddress, dev_addr: valid_attrs.dev_addr)
+    {:ok, created} = Storage.DB.LoRaWAN.DeviceAddress.create(valid_attrs)
+    assert created == Repo.get_by(DeviceAddress, dev_addr: valid_attrs.dev_addr)
   end
 
   test "update", %{valid_attrs: valid_attrs} do
     device_address = Repo.insert! DeviceAddress.changeset(%DeviceAddress{}, valid_attrs)
     params = %{dev_addr: "FFFFFFFF"}
-    {:ok, updated} = Storage.LoRaWAN.DeviceAddress.update(%{dev_addr: device_address.dev_addr}, params)
+    {:ok, updated} = Storage.DB.LoRaWAN.DeviceAddress.update(%{dev_addr: device_address.dev_addr}, params)
     assert device_address.id == updated.id
     assert device_address.dev_addr != updated.dev_addr
   end
 
   test "delete", %{valid_attrs: valid_attrs} do
     device_address = Repo.insert! DeviceAddress.changeset(%DeviceAddress{}, valid_attrs)
-    Storage.LoRaWAN.DeviceAddress.delete(valid_attrs)
+    Storage.DB.LoRaWAN.DeviceAddress.delete(valid_attrs)
     refute Repo.get(DeviceAddress, device_address.id)
   end
 end
