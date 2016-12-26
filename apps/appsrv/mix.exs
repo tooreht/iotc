@@ -46,7 +46,8 @@ defmodule Appsrv.Mixfile do
       {:cowboy, "~> 1.0"},
       # Appsrv
       {:coherence, "~> 0.3"},
-      {:ex_admin, github: "smpallen99/ex_admin"}
+      {:ex_admin, github: "smpallen99/ex_admin"},
+      {:core, in_umbrella: true}
     ]
   end
 
