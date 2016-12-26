@@ -13,4 +13,9 @@ defmodule Appsrv.Authentication do
   def current_user(conn) do
     Coherence.current_user(conn)
   end
+
+  def get_user_data(conn) do
+    {_conn, token} = Coherence.Authentication.Token.get_token_from_header(conn, "x-auth-token")
+    Coherence.CredentialStore.Agent.get_user_data(token)
+  end
 end
