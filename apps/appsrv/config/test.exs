@@ -17,3 +17,5 @@ config :appsrv, Appsrv.Repo,
   database: "appsrv_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :appsrv, :core_api, Appsrv.Mocks.Storage.DB
