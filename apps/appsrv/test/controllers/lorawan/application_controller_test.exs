@@ -8,6 +8,8 @@ defmodule Appsrv.LoRaWAN.ApplicationControllerTest do
   @invalid_attrs %{app_eui: "70B3D57ED0000E3"}
 
   setup %{conn: conn} do
+    Appsrv.Mocks.Storage.DB.start_link(Appsrv.Mocks.Storage.DB)
+
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
     token = Token.generate_token
