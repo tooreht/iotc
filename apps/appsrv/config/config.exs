@@ -49,4 +49,5 @@ config :ex_admin,
   modules: [
     Appsrv.ExAdmin.Dashboard,
     Appsrv.ExAdmin.User,
+    Appsrv.ExAdmin.LoRaWAN.Application,
   ]
