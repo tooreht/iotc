@@ -8,31 +8,31 @@ defmodule Core.Storage.DB.LoRaWAN.ApplicationTest do
   setup do
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
-    valid_attrs = %{app_eui: "70B3D57ED0000E42", user_id: user.id}
+    valid_attrs = %{app_eui: "70B3D57ED0000E42", user__email: user.email}
 
-    {:ok, valid_attrs: valid_attrs}
+    {:ok, user: user, valid_attrs: valid_attrs}
   end
 
-  test "get", %{valid_attrs: valid_attrs} do
-    application = Repo.insert! Application.changeset(%Application{}, valid_attrs)
+  test "get", %{user: user, valid_attrs: valid_attrs} do
+    application = Repo.insert! %Application{app_eui: "70B3D57ED0000E42", user_id: user.id}
     assert application == Storage.DB.LoRaWAN.Application.get(valid_attrs)
   end
 
-  test "create", %{valid_attrs: valid_attrs} do
+  test "create", %{user: _, valid_attrs: valid_attrs} do
     {:ok, created} = Storage.DB.LoRaWAN.Application.create(valid_attrs)
     assert created == Repo.get_by(Application, app_eui: valid_attrs.app_eui)
   end
 
-  test "update", %{valid_attrs: valid_attrs} do
-    application = Repo.insert! Application.changeset(%Application{}, valid_attrs)
-    params = %{app_eui: "FFFFFFFFFFFFFFFF", user_id: valid_attrs.user_id}
+  test "update", %{user: user, valid_attrs: _} do
+    application = Repo.insert! %Application{app_eui: "70B3D57ED0000E42", user_id: user.id}
+    params = %{app_eui: "FFFFFFFFFFFFFFFF", user_id: user.id}
     {:ok, updated} = Storage.DB.LoRaWAN.Application.update(%{app_eui: application.app_eui}, params)
     assert application.id == updated.id
     assert application.app_eui != updated.app_eui
   end
 
-  test "delete", %{valid_attrs: valid_attrs} do
-    application = Repo.insert! Application.changeset(%Application{}, valid_attrs)
+  test "delete", %{user: user, valid_attrs: valid_attrs} do
+    application = Repo.insert! %Application{app_eui: "70B3D57ED0000E42", user_id: user.id}
     Storage.DB.LoRaWAN.Application.delete(valid_attrs)
     refute Repo.get(Application, application.id)
   end
