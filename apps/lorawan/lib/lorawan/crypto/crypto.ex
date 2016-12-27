@@ -3,7 +3,8 @@ defmodule LoRaWAN.Crypto do
   This module is responsible for the crypto part of LoRaWAN.
   """
   alias LoRaWAN.Crypto.AesCmac
-  alias LoRaWAN.Packet
+  alias Core.Storage
+  alias Core.Storage.Utils
   require Logger
 
   @doc """
@@ -62,40 +63,40 @@ defmodule LoRaWAN.Crypto do
 
         msg = IO.iodata_to_binary [mhdr_raw, fhdr_raw, f_port, frm_payload]
         b0 = IO.iodata_to_binary [0x49, 0, 0, 0, 0, 0, fhdr.dev_addr, <<fhdr.f_cnt::little-unsigned-integer-size(32)>>, 0, <<byte_size(msg)::8>>]
+        data = IO.iodata_to_binary [b0, msg]
 
-        {nws_key, dev_eui} = get_nws_key(fhdr.dev_addr)
+        nodes = get_nodes(fhdr.dev_addr, fhdr.f_cnt)
 
-        cmac = AesCmac.aes_cmac(nws_key, IO.iodata_to_binary [b0, msg])
-        <<computed_mic::binary-size(4), _::binary>> = cmac
-
-        mic_check = computed_mic == mic_raw
-
-        packet = if mic_check do
-          # packet = putpacket.node.dev_eui = dev_eui
-          # packet = Map.put(%LoRaWAN.Packet.Node{}, :dev_eui, <<0>>)
-          Map.put(packet, :node, %LoRaWAN.Packet.Node{dev_eui: <<0>>})
-        end
-
-        {mic_check, packet}
+        try_mic(nodes, data, mic_raw)
       _ ->
         Logger.warn "no valid m_type"
         {false, nil}
     end
   end
 
-  defp get_nws_key(dev_addr) do
-    # TODO: lookup dev_addr in DB and get nws_key
-    case dev_addr do
-      <<121, 210, 161, 70>> ->
-        {<<131, 132, 1, 172,  17, 228, 225, 223, 76, 106, 213, 106, 7,  71, 210, 196>>, <<0>>}
-      <<208, 246, 125, 29>> ->
-        {<<121, 91, 177, 245, 56, 223, 79, 142, 120, 116, 172, 170, 82, 95, 205, 204>>, <<0>>}
-      <<70, 161, 210, 121>> ->
-        {<<131, 132, 1, 172, 17, 228, 225, 223, 76, 106, 213, 106, 7, 71, 210, 196>>, <<0>>}
-      _ ->
-        Logger.warn "No NwkSKey found!"
-        {<<0x00000000000000000000000000000000::128>>, <<0>>}
+  defp get_nodes(rev_dev_addr, f_cnt) do
+    dev_addr = Utils.rev_bytes_to_base16(rev_dev_addr)
+    nodes = Storage.LoRaWAN.Node.get_nodes(%{dev_addr: dev_addr, f_cnt: f_cnt})
+    if nodes == [] do
+      Logger.warn "no device with dev_addr " <> inspect(dev_addr) <> " found!"
+      nodes
+    else
+      nodes
     end
+  end
+
+  def try_mic([node | tail], data, mic) do
+    cmac = AesCmac.aes_cmac(Utils.rev_bytes_from_base16(node.nwk_s_key), data)
+    <<computed_mic::binary-size(4), _::binary>> = cmac
+    if computed_mic == mic do
+      {true, node}
+    else
+      try_mic(tail, data, mic)
+    end
+  end
+
+  def try_mic([], data, mic) do
+    {false, nil}
   end
 
   defp get_app_key(app_eui, dev_eui) do
