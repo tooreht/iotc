@@ -15,7 +15,7 @@ defmodule Appsrv.Mocks.Storage.DB.LoRaWAN.Application do
   # CREATE
   #
 
-  def create(%{app_eui: _} = params) do
+  def create(%{app_eui: _, user__email: _}) do
     {:ok, nil} # We don't care about the returned application for now
   end
 
