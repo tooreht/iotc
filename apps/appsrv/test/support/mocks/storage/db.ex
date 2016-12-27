@@ -4,6 +4,8 @@ defmodule Appsrv.Mocks.Storage.DB do
   """
   use GenServer
 
+  @crud_actions [:get, :create, :update, :delete]
+
   ## Client API
 
   @doc """
@@ -14,10 +16,17 @@ defmodule Appsrv.Mocks.Storage.DB do
   end
 
   @doc """
-  Stores lorawan `packet`.
+  CRUD for `LoRaWAN.Application`.
   """
   def application(server, action, params) do
     GenServer.call(server, {:application, action, params})
+  end
+
+  @doc """
+  CRUD for `LoRaWAN.Node`.
+  """
+  def node(server, action, params) do
+    GenServer.call(server, {:node, action, params})
   end
 
   ## Server Callbacks
@@ -26,8 +35,13 @@ defmodule Appsrv.Mocks.Storage.DB do
     {:ok, {}}
   end
 
-  def handle_call({:application, action, params}, _from, state) when action in [:get, :create, :update, :delete] do
+  def handle_call({:application, action, params}, _from, state) when action in @crud_actions do
     response = apply(Appsrv.Mocks.Storage.DB.LoRaWAN.Application, action, params)
+    {:reply, response, state}
+  end
+
+  def handle_call({:node, action, params}, _from, state) when action in @crud_actions do
+    response = apply(Appsrv.Mocks.Storage.DB.LoRaWAN.Node, action, params)
     {:reply, response, state}
   end
 end

@@ -3,6 +3,8 @@ defmodule Appsrv.LoRaWAN.NodeController do
 
   alias Appsrv.LoRaWAN.Node
 
+  @core_api Application.get_env(:appsrv, :core_api)
+
   def index(conn, _params) do
     lorawan_nodes = Repo.all(Node)
     render(conn, "index.json", lorawan_nodes: lorawan_nodes)
@@ -11,16 +13,28 @@ defmodule Appsrv.LoRaWAN.NodeController do
   def create(conn, %{"node" => node_params}) do
     changeset = Node.changeset(%Node{}, node_params)
 
-    case Repo.insert(changeset) do
-      {:ok, node} ->
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.insert(:node, changeset)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           node = Repo.preload(csf.node, [:application, :user])
+           @core_api.node(@core_api, :create,
+             [%{dev_eui: node.dev_eui, nwk_s_key: node.nwk_s_key,
+                application__app_eui: node.application.app_eui, user__email: node.user.email}])
+         end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{node: node, core_api: _}} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", node_path(conn, :show, node))
         |> render("show.json", node: node)
-      {:error, changeset} ->
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -30,26 +44,51 @@ defmodule Appsrv.LoRaWAN.NodeController do
   end
 
   def update(conn, %{"id" => id, "node" => node_params}) do
-    node = Repo.get!(Node, id)
-    changeset = Node.changeset(node, node_params)
+    old = Repo.get!(Node, id)
+    changeset = Node.changeset(old, node_params)
 
-    case Repo.update(changeset) do
-      {:ok, node} ->
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.update(:node, changeset)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           node = Repo.preload(csf.node, [:application, :user])
+           @core_api.node(@core_api, :update,
+             [%{dev_eui: old.dev_eui}, %{dev_eui: node.dev_eui, nwk_s_key: node.nwk_s_key,
+                application__app_eui: node.application.app_eui, user__email: node.user.email}])
+         end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{node: node, core_api: _}} ->
         render(conn, "show.json", node: node)
-      {:error, changeset} ->
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     node = Repo.get!(Node, id)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(node)
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.delete(:node, node)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           @core_api.node(@core_api, :delete,
+             [%{dev_eui: csf.node.dev_eui}])
+         end)
 
-    send_resp(conn, :no_content, "")
+    case Repo.transaction(multi) do
+      {:ok, %{node: node, core_api: _}} ->
+        send_resp(conn, :no_content, "")
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+    end
   end
 end
