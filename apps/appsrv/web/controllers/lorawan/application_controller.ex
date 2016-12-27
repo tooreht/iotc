@@ -12,21 +12,28 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
 
   def create(conn, %{"application" => application_params}) do
     changeset = Application.changeset(%Application{}, application_params)
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
 
-    with {:ok, application} <- Repo.insert(changeset),
-         {:ok, _} <- @core_api.application(@core_api, :create,
-                       [%{app_eui: application.app_eui, user_id: user_id}])
-    do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", application_path(conn, :show, application))
-      |> render("show.json", application: application)
-    else
-      {:error, changeset} ->
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.insert(:application, changeset)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           application = Repo.preload(csf.application, [:user])
+           @core_api.application(@core_api, :create,
+             [%{app_eui: application.app_eui, user__email: application.user.email}])
+         end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{application: application, core_api: _}} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", application_path(conn, :show, application))
+        |> render("show.json", application: application)
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -38,30 +45,49 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
   def update(conn, %{"id" => id, "application" => application_params}) do
     old = Repo.get!(Application, id)
     changeset = Application.changeset(old, application_params)
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
 
-    with {:ok, new} <- Repo.update(changeset),
-         {:ok, _} <- @core_api.application(@core_api, :update,
-                       [%{app_eui: old.app_eui}, %{app_eui: new.app_eui, user_id: user_id}])
-    do
-      render(conn, "show.json", application: new)
-    else
-      {:error, changeset} ->
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.update(:application, changeset)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           application = Repo.preload(csf.application, [:user])
+           @core_api.application(@core_api, :update,
+             [%{app_eui: old.app_eui},
+              %{app_eui: application.app_eui, user__email: application.user.email}])
+         end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{application: application, core_api: _}} ->
+        render(conn, "show.json", application: application)
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     application = Repo.get!(Application, id)
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(application)
-    @core_api.application(@core_api, :delete, [%{app_eui: application.app_eui, user_id: user_id}])
+    # TODO: Maybe outsource multi to NodeService module?
+    multi =
+      Ecto.Multi.new
+      |> Ecto.Multi.delete(:application, application)
+      |> Ecto.Multi.run(:core_api, fn csf ->
+           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+           @core_api.application(@core_api, :delete,
+             [%{app_eui: csf.application.app_eui}])
+         end)
 
-    send_resp(conn, :no_content, "")
+    case Repo.transaction(multi) do
+      {:ok, %{application: application, core_api: _}} ->
+        send_resp(conn, :no_content, "")
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+    end
   end
 end
