@@ -13,6 +13,8 @@ defmodule LoRaWAN.MACHandler do
         packet.mac_payload.fhdr.f_ctrl.f_opts_len == 0 and packet.mac_payload.f_port == 0 ->
           IO.puts "MAC commands in FRMPayload"
           decode_mac_command(packet.mac_payload.frm_payload)
+        packet.mac_payload.fhdr.f_ctrl.f_opts_len == 0 and packet.mac_payload.f_port > 0 ->
+          IO.puts "No MAC commands in Packet"
         true ->
           Logger.warn "Malformed packet, mac commands ca be either present in FOpts OR FRMPayload but not in both"
           exit :normal
