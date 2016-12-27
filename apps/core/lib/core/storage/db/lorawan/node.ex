@@ -6,8 +6,10 @@ defmodule Core.Storage.DB.LoRaWAN.Node do
 
   import Ecto.Query, only: [from: 2]
 
+  alias Core.LoRaWAN.Application
   alias Core.LoRaWAN.DeviceAddress
   alias Core.LoRaWAN.Node
+  alias Core.User
   alias Core.Repo
 
   #
@@ -31,12 +33,12 @@ defmodule Core.Storage.DB.LoRaWAN.Node do
   #
 
   def create(%{
-    dev_eui: _,
-    nwk_s_key: _,
-    application_id: _,
-    user_id: _} = params)
+    dev_eui: dev_eui,
+    nwk_s_key: nwk_s_key,
+    application__app_eui: app_eui,
+    user__email: email} = params)
   do
-    get(params) ||
+    params = clean_params(params)
     changeset(%Node{}, params)
     |> Repo.insert
   end
@@ -46,6 +48,7 @@ defmodule Core.Storage.DB.LoRaWAN.Node do
   #
 
   def update(%{dev_eui: dev_eui}, params) do
+    params = clean_params(params)
     get(%{dev_eui: dev_eui})
     |> changeset(params)
     |> Repo.update
@@ -73,5 +76,20 @@ defmodule Core.Storage.DB.LoRaWAN.Node do
       # preload: [:device_address],
       select: n)
     |> Repo.all
+  end
+
+  defp clean_params(params) do
+    params = if Map.has_key?(params, :application__app_eui) do
+      {param, params} = Map.pop(params, :application__app_eui)
+      Map.put(params, :application_id, from(a in Application, where: a.app_eui == ^param, select: a.id) |> Repo.one)
+    else
+      params
+    end
+    params = if Map.has_key?(params, :user__email) do
+      {param, params} = Map.pop(params, :user__email)
+      Map.put(params, :user_id, from(u in User, where: u.email == ^param, select: u.id) |> Repo.one)
+    else
+      params
+    end
   end
 end
