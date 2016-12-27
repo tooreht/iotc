@@ -48,6 +48,7 @@ config :ex_admin,
     Appsrv.ExAdmin.Dashboard,
     Appsrv.ExAdmin.User,
     Appsrv.ExAdmin.LoRaWAN.Application,
+    Appsrv.ExAdmin.LoRaWAN.Node,
   ]
 
 # Import environment specific config. This must remain at the bottom
