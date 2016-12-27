@@ -49,9 +49,6 @@ defmodule LoRaWAN.Decoder do
       mac_payload: mac_payload,
       mic: mic,
       raw: phy_payload,
-      node: %Packet.Node{
-        dev_eui: nil
-      }
     }
   end
 
