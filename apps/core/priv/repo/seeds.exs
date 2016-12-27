@@ -23,14 +23,19 @@ Core.User.changeset(%Core.User{}, %{name: "Admin", email: "admin@example.net", u
 
 %{id: tresh_application_id} = Core.Storage.LoRaWAN.Application.create(%{app_eui: "70B3D57ED000177C", user_id: user_id})
 %{id: allo_application_id} = Core.Storage.LoRaWAN.Application.create(%{app_eui: "70B3D57ED0000E36", user_id: user_id})
+%{id: other_application_id} = Core.Storage.LoRaWAN.Application.create(%{app_eui: "AAAAAAAAD0111E11", user_id: user_id})
+
 
 %{id: dev_addr70} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "79D2A146"})
-%{id: dev_addr232} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "054AEAE8"})
+%{id: dev_addr232} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "2601135F"})
+%{id: dev_addr208} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "1D7DF6D0"})
 %{id: dev_addr1} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "01010101"})
 %{id: dev_addr2} = Core.Storage.LoRaWAN.DeviceAddress.create(%{dev_addr: "00000002"})
 
+
 Core.Storage.LoRaWAN.Node.create(%{dev_eui: "0000000079D2A146", device_address_id: dev_addr70, nwk_s_key: "838401AC11E4E1DF4C6AD56A0747D2C4", application_id: allo_application_id, user_id: user_id})
-Core.Storage.LoRaWAN.Node.create(%{dev_eui: "00000000054AEAE8", device_address_id: dev_addr232, nwk_s_key: "7A395AB2BE17D4B5305FE913ACBF2AA1", application_id: tresh_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "00000000054AEAE8", device_address_id: dev_addr232, nwk_s_key: "DCBB2BDE00339EBA7D288FF95FF419A2", application_id: tresh_application_id, user_id: user_id})
+Core.Storage.LoRaWAN.Node.create(%{dev_eui: "0000000011111111", device_address_id: dev_addr208, nwk_s_key: "CCCD5F52AAAC74788E4FDF38F5B15B79", application_id: other_application_id, user_id: user_id})
 Core.Storage.LoRaWAN.Node.create(%{dev_eui: "2A2B3D4E5F66778B", device_address_id: dev_addr1, nwk_s_key: "DF40926674B8D287C6F9BF581CF11E11", application_id: allo_application_id, user_id: user_id})
 Core.Storage.LoRaWAN.Node.create(%{dev_eui: "2A2B3D4E5F66778A", device_address_id: dev_addr2, nwk_s_key: "54C90E4A5174CBC18423213153B97A62", application_id: allo_application_id, user_id: user_id})
 Core.Storage.LoRaWAN.Node.create(%{dev_eui: "0101010101010101", device_address_id: dev_addr2, nwk_s_key: "44C01B3B2171BAC334123231BA5221DF", application_id: allo_application_id, user_id: user_id})
