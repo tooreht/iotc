@@ -4,21 +4,21 @@ defmodule LoRaWAN.Dedup do
   """
   require Logger
 
-  def dedup_packet(packet) do
+  def dedup_packet(packet, node) do
     case packet.mhdr.m_type do
       n when n in [0, 1] ->
-        dedup_join_packet(packet)
+        dedup_join_packet(packet, node)
       n when n in [2, 3, 4, 5] ->
-        dedup_data_packet(packet)
+        dedup_data_packet(packet, node)
       6 ->
-        dedup_proprietary_packet(packet)
+        dedup_proprietary_packet(packet, node)
       _ ->
         Logger.warn "Received packet with MType not defined -> Drop"
         exit :normal
     end
   end
 
-  defp dedup_join_packet(packet) do
+  defp dedup_join_packet(packet, node) do
     meta = %{}
     packet_id = exists_this_join_packet(packet.mac_payload.dev_eui, packet.mac_payload.dev_nonce)
     if packet_id > 0 do
@@ -30,19 +30,19 @@ defmodule LoRaWAN.Dedup do
     store_packet_meta(packet_id, meta)
   end
 
-  defp dedup_data_packet(packet) do
+  defp dedup_data_packet(packet, node) do
     meta = %{}
-    packet_id = exists_this_data_packet(packet.node.dev_eui, packet.mac_payload.fhdr.f_cnt)
+    packet_id = exists_this_data_packet(node.dev_eui, packet.mac_payload.fhdr.f_cnt)
     if packet_id > 0 do
       store_packet_meta(packet_id, meta)
-      Logger.info "Duplicate Data packet from " <> packet.node.dev_eui <> " with number " <> packet.mac_payload.fhdr.f_cnt
+      Logger.info "Duplicate Data packet from " <> node.dev_eui <> " with number " <> packet.mac_payload.fhdr.f_cnt
       exit :normal
     end
     packet_id = store_packet(packet)
     store_packet_meta(packet_id, meta)
   end
 
-   defp dedup_proprietary_packet(packet) do
+   defp dedup_proprietary_packet(packet, node) do
      # TODO Implement
      0
    end
