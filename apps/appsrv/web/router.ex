@@ -90,4 +90,9 @@ defmodule Appsrv.Router do
     resources "/lorawan/nodes", LoRaWAN.NodeController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
   end
+
+  # Forward to core API (TODO: Remove this hack ;-)
+  scope "/core", Core do
+    forward "/", Router
+  end
 end
