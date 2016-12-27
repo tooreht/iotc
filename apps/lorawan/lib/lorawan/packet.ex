@@ -105,5 +105,92 @@ defmodule LoRaWAN.Packet do
       mic:          nil,
       raw:          nil,
     ]
+
+
+  end
+
+  defimpl Inspect, for: LoRaWAN.Packet.PHYPayload do
+    def inspect(%LoRaWAN.Packet.PHYPayload{
+                     mac_payload: mac_payload,
+                     mhdr: mhdr,
+                     mic: mic,
+                     raw: raw}, _) do
+      mhdr = inspect(mhdr)
+      mac_payload = inspect(mac_payload)
+      mic = inspect(mic)
+      raw = inspect(raw)
+      """
+      #LoRaWAN.Packet.PHYPayload<
+      mhdr: #{mhdr} mac_payload: #{mac_payload} mic: #{mic}
+      raw: #{raw}
+      >
+      """
+    end
+  end
+
+  defimpl Inspect, for: LoRaWAN.Packet.DataMACPayload do
+    def inspect(%LoRaWAN.Packet.DataMACPayload{
+                     fhdr: fhdr,
+                     f_port: f_port,
+                     frm_payload: frm_payload,
+                     raw: raw}, _) do
+      fhdr = inspect(fhdr)
+      f_port = inspect(f_port)
+      frm_payload = inspect(frm_payload)
+      """
+      DataMACPayload{
+        fhdr: #{fhdr} f_port: #{f_port}, frm_payload: #{frm_payload}
+      }
+      """
+    end
+  end
+
+  defimpl Inspect, for: LoRaWAN.Packet.MHDR do
+    def inspect(%LoRaWAN.Packet.MHDR{
+                     m_type: m_type,
+                     rfu: rfu,
+                     major: major,
+                     raw: raw}, _) do
+      m_type = inspect(m_type)
+      rfu = inspect(rfu)
+      major = inspect(major)
+      """
+      MHDR{m_type: #{m_type}, rfu: #{rfu}, major: #{major}}
+      """
+    end
+  end
+
+  defimpl Inspect, for: LoRaWAN.Packet.FHDR do
+    def inspect(%LoRaWAN.Packet.FHDR{
+                dev_addr: dev_addr,
+                f_ctrl:   f_ctrl,
+                f_cnt:    f_cnt,
+                f_opts:   f_opts,
+                raw:      raw}, _) do
+      dev_addr = inspect(dev_addr)
+      f_ctrl = inspect(f_ctrl)
+      f_cnt = inspect(f_cnt)
+      f_opts = inspect(f_opts)
+      """
+      FHDR{dev_addr: #{dev_addr}, f_ctrl: #{f_ctrl}  f_cnt: #{f_cnt}, f_opts: #{f_opts}}
+      """
+    end
+  end
+
+  defimpl Inspect, for: LoRaWAN.Packet.FCtrl do
+    def inspect(%LoRaWAN.Packet.FCtrl{
+                adr: adr,
+                adr_ack_req: adr_ack_req,
+                ack: ack,
+                f_opts_len:   f_opts_len,
+                raw:      raw}, _) do
+      adr = inspect(adr)
+      adr_ack_req = inspect(adr_ack_req)
+      ack = inspect(ack)
+      f_opts_len = inspect(f_opts_len)
+      """
+      FCtrl{adr: #{adr}, adr_ack_req: #{adr_ack_req}, ack: #{ack}, f_opts_len: #{f_opts_len}}
+      """
+    end
   end
 end
