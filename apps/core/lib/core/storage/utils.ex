@@ -63,7 +63,7 @@ defmodule Core.Storage.Utils do
   end
 
   def get_gateway_stats_cache do
-    get_or_create_cache("gateway_registry", "stats", [])
+    get_or_create_cache("gateway_registry", "stats", %{})
   end
 
   def get_gateway_eui_cache do

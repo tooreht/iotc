@@ -74,11 +74,11 @@ defmodule Core.Storage.DB.LoRaWAN.Gateway do
   def store_meta(gw) do
     if Map.has_key?(gw, :meta) and gw.meta do
       # Gateway
-      gateway = %Gateway{
+      gateway = %{
         adapter: gw.adapter,
         gw_eui: gw.eui,
-        ip: gw.ip,
-        last_seen: gw.meta.time,
+        ip: to_string(:inet_parse.ntoa(gw.ip)),
+        last_seen: Timex.parse!(gw.meta.time, "%Y-%m-%d %T %Z", :strftime),
         latitude: gw.meta.lat,
         longitude: gw.meta.lng,
         altitude: gw.meta.alt
@@ -91,7 +91,7 @@ defmodule Core.Storage.DB.LoRaWAN.Gateway do
           gateway
         )
       )
-      gateway_stat = %Gateway.Statistics{
+      gateway_stats = %{
         ack_rate: gw.meta.ack_rate,
         latitude: gw.meta.lat,
         longitude: gw.meta.lng,
@@ -100,10 +100,15 @@ defmodule Core.Storage.DB.LoRaWAN.Gateway do
         rx_total: gw.meta.rx.total,
         rx_valid: gw.meta.rx.valid,
         tx_emitted: gw.meta.tx.emitted,
-        tx_received: gw.meta.tx.received
+        tx_received: gw.meta.tx.received,
+        inserted_at: Ecto.DateTime.utc,
+        updated_at: Ecto.DateTime.utc
       }
+
+      # Append gateway statistics to specific gateway
+      stats = KV.Bucket.get(Storage.Utils.get_gateway_stats_cache, "stats")
       KV.Bucket.put(Storage.Utils.get_gateway_stats_cache, "stats",
-        [gateway_stat | KV.Bucket.get(Storage.Utils.get_gateway_stats_cache, "stats")]
+        Map.put(stats, gw.eui, [gateway_stats | Map.get(stats, gw.eui, [])])
       )
     end
   end

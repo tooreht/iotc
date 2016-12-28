@@ -37,6 +37,7 @@ defmodule Core.Storage.Scheduler do
     # TODO: More flexible task handling, maybe in config or dynamically
     cond do
       rem(beats, 10) == 0 -> run_task(&Storage.Tasks.refresh_gateway_euis_from_db/0)
+      rem(beats, 10) == 5 -> run_task(&Storage.Tasks.persist_gateways_to_db/0)
       true -> nil
     end
     {:noreply, {beats + 1}}
