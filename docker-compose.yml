@@ -7,6 +7,7 @@ services:
       - "4242:4242"
       - "4369:4369"
       - "4000:4000"
+      - "8000:8000"
     environment:
       - POSTGRES_HOST=db
     depends_on:
@@ -22,11 +23,12 @@ services:
      - "5432"
     environment:
       LC_ALL: C.UTF-8
-      POSTGRES_DB: "core_prod"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      # POSTGRES_DB: "postgres"
+      # POSTGRES_USER: "postgres"
+      # POSTGRES_PASSWORD: "postgres"
     volumes:
       - postgres-db-volume:/data/postgres
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - backend
   # prometheus:
