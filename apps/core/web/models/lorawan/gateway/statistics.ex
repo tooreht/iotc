@@ -2,6 +2,7 @@ defmodule Core.LoRaWAN.Gateway.Statistics do
   use Core.Web, :model
 
   schema "lorawan_gateway_statistics" do
+    # TODO: Some kind of timestamp is missing!
     field :latitude, :decimal
     field :longitude, :decimal
     field :altitude, :decimal
