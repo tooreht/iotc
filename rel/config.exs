@@ -34,6 +34,7 @@ end
 release :iotc do
   set version: "0.1.0"
   set applications: [
+    appsrv: :permanent,
     core: :permanent,
     kv: :permanent,
     lorawan: :permanent,

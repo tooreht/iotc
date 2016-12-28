@@ -1,4 +1,4 @@
-defmodule Release.Tasks do  
+defmodule Core.Release.Tasks do
   def migrate do
     {:ok, _} = Application.ensure_all_started(:core)
 

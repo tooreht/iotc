@@ -16,6 +16,10 @@ done
 
 set -e
 
-echo "Running migrations"
-bin/iotc rpc Elixir.Release.Tasks migrate
-echo "Migrations run successfully"
+echo "Running migrations for core"
+bin/iotc rpc Elixir.Core.Release.Tasks migrate
+echo "Migrations for core run successfully"
+
+echo "Running migrations for appsrv"
+bin/iotc rpc Elixir.Appsrv.Release.Tasks migrate
+echo "Migrations for appsrv run successfully"
