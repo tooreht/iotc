@@ -14,6 +14,7 @@ defmodule Appsrv do
       supervisor(Appsrv.Endpoint, []),
       # Start your own worker by calling: Appsrv.Worker.start_link(arg1, arg2, arg3)
       # worker(Appsrv.Worker, [arg1, arg2, arg3]),
+      worker(Appsrv.LoRaWAN.Handler, [Appsrv.LoRaWAN.Handler]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
