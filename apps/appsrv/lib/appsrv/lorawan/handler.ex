@@ -6,6 +6,9 @@ defmodule Appsrv.LoRaWAN.Handler do
 
   require Logger
 
+  alias Appsrv.LoRaWAN.Crypto
+  alias Appsrv.LoRaWAN.Utils
+
   ## Client API
 
   @doc """
@@ -40,7 +43,10 @@ defmodule Appsrv.LoRaWAN.Handler do
 
   def handle_call({:receive, {packet, dev_eui}}, _from, state) do
 
-    # TODO: Implement receiving messages to network server
+    node = Utils.get_node(dev_eui)
+    key = Utils.get_key(node, packet.mac_payload.f_port)
+    bytes = Crypto.decrypt(packet, key)
+    Logger.debug "Decrypted data: #{inspect(bytes)}"
 
     {:reply, :ok, state}
   end
