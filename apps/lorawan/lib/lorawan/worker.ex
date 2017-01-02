@@ -30,7 +30,7 @@
 
     {mic_check, node} = LoRaWAN.Crypto.valid_mic(packet)
     if mic_check do
-      Logger.debug("MIC of Device passed") #<> node.dev_addr <> " passed!")
+      Logger.debug("MIC passed")
     else
       Logger.warn "MIC failed!"
       exit :normal
@@ -39,6 +39,8 @@
     LoRaWAN.MACHandler.handle_mac_commands(packet)
 
     LoRaWAN.Dedup.dedup_packet(packet, node)
+
+    Appsrv.LoRaWAN.Handler.receive(Appsrv.LoRaWAN.Handler, packet, node.dev_eui)
     
     {:reply, packet, state}
   end
