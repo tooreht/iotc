@@ -33,14 +33,26 @@ defmodule Core.Storage.Utils do
     # TODO: Store gateway_packets
   end
 
+
   # LORAWAN HELPERS
 
-  def rev_bytes_to_base16(bytes) do
-    String.reverse(bytes) |> Base.encode16
+  def reverse_bytes(bytes) do
+    bytes
+    |> :erlang.bitstring_to_list
+    |> Enum.reverse
+    |> :erlang.list_to_bitstring
   end
 
-  def rev_bytes_from_base16(bytes) do
-     Base.decode16!(bytes) |> String.reverse
+  def rev_bytes_to_base16(bytes) do
+    bytes
+    |> reverse_bytes
+    |> Base.encode16
+  end
+
+  def rev_bytes_from_base16(base16) do
+    base16
+    |> Base.decode16!
+    |> reverse_bytes
   end
 
 
