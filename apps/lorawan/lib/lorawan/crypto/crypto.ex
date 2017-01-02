@@ -47,9 +47,9 @@ defmodule LoRaWAN.Crypto do
         mhdr_raw = packet.mhdr.raw
         mic_raw = packet.mic
 
-        msg = mhdr_raw <> app_eui <> dev_eui <> dev_nonce
+        msg = IO.iodata_to_binary [mhdr_raw, app_eui, dev_eui, dev_nonce]
         cmac = AesCmac.aes_cmac(app_key, msg)
-        <<computed_mic::binary-size(4), _::binary>> = cmac
+        computed_mic = :erlang.binary_part(cmac, 0, 4)
 
         {computed_mic == mic_raw, packet}
       n when n in [0x02, 0x04] -> # Unconfirmed Data Up
@@ -86,8 +86,8 @@ defmodule LoRaWAN.Crypto do
   end
 
   def try_mic([node | tail], data, mic) do
-    cmac = AesCmac.aes_cmac(Utils.rev_bytes_from_base16(node.nwk_s_key), data)
-    <<computed_mic::binary-size(4), _::binary>> = cmac
+    cmac = AesCmac.aes_cmac(Base.decode16!(node.nwk_s_key), data)
+    computed_mic = :erlang.binary_part(cmac, 0, 4)
     if computed_mic == mic do
       {true, node}
     else
