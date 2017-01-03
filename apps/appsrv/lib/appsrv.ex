@@ -17,6 +17,7 @@ defmodule Appsrv do
       worker(Appsrv.LoRaWAN.Handler, [Appsrv.LoRaWAN.Handler]),
       # TODO: Add adapters dynamically with configurable options
       worker(Appsrv.Adapters.MQTT, [[name: Appsrv.Adapters.MQTT, host: "localhost"]]),
+      worker(Appsrv.Adapters.SIOT, [[name: Appsrv.Adapters.SIOT, host: "localhost"]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

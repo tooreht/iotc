@@ -20,7 +20,8 @@ config :appsrv, Appsrv.Endpoint,
 config :appsrv, :core_api, Core.Storage.DB
 
 config :appsrv, Appsrv.Adapters,
-  [Appsrv.Adapters.MQTT]
+  [Appsrv.Adapters.MQTT,
+   Appsrv.Adapters.SIOT]
 
 # Configures Elixir's Logger
 config :logger, :console,
