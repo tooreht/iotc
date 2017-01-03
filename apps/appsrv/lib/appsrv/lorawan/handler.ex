@@ -21,8 +21,8 @@ defmodule Appsrv.LoRaWAN.Handler do
   @doc """
   Send LoRaWAN application data.
   """
-  def send(pid, packet, dev_eui) do
-    GenServer.call(pid, {:receive, {packet, dev_eui}})
+  def send(pid, message, dev_eui) do
+    GenServer.call(pid, {:send, {message, dev_eui}})
   end
 
   @doc """
@@ -34,9 +34,18 @@ defmodule Appsrv.LoRaWAN.Handler do
 
   ## Server Callbacks
 
-  def handle_call({:send, {packet, dev_eui}}, _from, state) do
+  def handle_call({:send, {_message, _dev_eui}}, _from, state) do
 
-    # TODO: Implement sending messages to network server
+    # TODO: Implement sending messages to network server.
+    # 1. Encrypt message
+    # 2. Send it to the downlink handler of the network server
+    #    e.g.: Core.LoRaWAN.DownlinkHandler.push(dev_eui, packet)
+    #
+    # The downlink handler does the following:
+    # 1. Compute MIC
+    # 2. Assemble packet
+    # 3. Add to downlink queue for sending the message to the node over the
+    #    optimal gateway within the nodes next possible receive window.
 
     {:reply, :ok, state}
   end
@@ -46,7 +55,10 @@ defmodule Appsrv.LoRaWAN.Handler do
     node = Utils.get_node(dev_eui)
     key = Utils.get_key(node, packet.mac_payload.f_port)
     bytes = Crypto.decrypt(packet, key)
-    Logger.debug "Decrypted data: #{inspect(bytes)}"
+
+    for adapter <- Application.get_env(:appsrv, Appsrv.Adapters) do
+      adapter.send(bytes, node)
+    end
 
     {:reply, :ok, state}
   end

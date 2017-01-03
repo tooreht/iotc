@@ -15,6 +15,8 @@ defmodule Appsrv do
       # Start your own worker by calling: Appsrv.Worker.start_link(arg1, arg2, arg3)
       # worker(Appsrv.Worker, [arg1, arg2, arg3]),
       worker(Appsrv.LoRaWAN.Handler, [Appsrv.LoRaWAN.Handler]),
+      # TODO: Add adapters dynamically with configurable options
+      worker(Appsrv.Adapters.MQTT, [[name: Appsrv.Adapters.MQTT, host: "localhost"]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

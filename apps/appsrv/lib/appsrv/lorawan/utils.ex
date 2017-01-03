@@ -9,6 +9,7 @@ defmodule Appsrv.LoRaWAN.Utils do
       select: n,
       where: n.dev_eui == ^dev_eui)
     |> Appsrv.Repo.one
+    |> Appsrv.Repo.preload([:application])
   end
 
   def get_key(node, f_port) do

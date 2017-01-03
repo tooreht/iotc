@@ -47,7 +47,8 @@ defmodule Appsrv.Mixfile do
       # Appsrv
       {:coherence, "~> 0.3"},
       {:ex_admin, github: "smpallen99/ex_admin"},
-      {:core, in_umbrella: true}
+      {:core, in_umbrella: true},
+      {:gen_mqtt, "~> 0.3.1"}
     ]
   end
 
