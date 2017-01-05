@@ -11,18 +11,20 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
   end
 
   def create(conn, %{"application" => application_params}) do
+    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    application_params = Map.put(application_params, "user_id", user_id)
+
     changeset = Application.changeset(%Application{}, application_params)
 
     # TODO: Maybe outsource multi to NodeService module?
     multi =
       Ecto.Multi.new
-      |> Ecto.Multi.insert(:application, changeset)
-      |> Ecto.Multi.run(:core_api, fn csf ->
-           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
-           application = Repo.preload(csf.application, [:user])
-           @core_api.application(@core_api, :create,
-             [%{app_eui: application.app_eui, user__email: application.user.email}])
-         end)
+      |>  Ecto.Multi.insert(:application, changeset)
+      |>  Ecto.Multi.run(:core_api, fn csf ->
+            application = Repo.preload(csf.application, [:user])
+            @core_api.application(@core_api, :create,
+              [%{app_eui: application.app_eui, user__email: application.user.email}])
+          end)
 
     case Repo.transaction(multi) do
       {:ok, %{application: application, core_api: _}} ->
@@ -43,20 +45,22 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
   end
 
   def update(conn, %{"id" => id, "application" => application_params}) do
+    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    application_params = Map.put(application_params, "user_id", user_id)
+
     old = Repo.get!(Application, id)
     changeset = Application.changeset(old, application_params)
 
     # TODO: Maybe outsource multi to NodeService module?
     multi =
       Ecto.Multi.new
-      |> Ecto.Multi.update(:application, changeset)
-      |> Ecto.Multi.run(:core_api, fn csf ->
-           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
-           application = Repo.preload(csf.application, [:user])
-           @core_api.application(@core_api, :update,
-             [%{app_eui: old.app_eui},
+      |>  Ecto.Multi.update(:application, changeset)
+      |>  Ecto.Multi.run(:core_api, fn csf ->
+            application = Repo.preload(csf.application, [:user])
+            @core_api.application(@core_api, :update,
+              [%{app_eui: old.app_eui},
               %{app_eui: application.app_eui, user__email: application.user.email}])
-         end)
+          end)
 
     case Repo.transaction(multi) do
       {:ok, %{application: application, core_api: _}} ->
@@ -74,15 +78,14 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
     # TODO: Maybe outsource multi to NodeService module?
     multi =
       Ecto.Multi.new
-      |> Ecto.Multi.delete(:application, application)
-      |> Ecto.Multi.run(:core_api, fn csf ->
-           # %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
-           @core_api.application(@core_api, :delete,
-             [%{app_eui: csf.application.app_eui}])
-         end)
+      |>  Ecto.Multi.delete(:application, application)
+      |>  Ecto.Multi.run(:core_api, fn csf ->
+            @core_api.application(@core_api, :delete,
+              [%{app_eui: csf.application.app_eui}])
+          end)
 
     case Repo.transaction(multi) do
-      {:ok, %{application: application, core_api: _}} ->
+      {:ok, %{application: _, core_api: _}} ->
         send_resp(conn, :no_content, "")
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
