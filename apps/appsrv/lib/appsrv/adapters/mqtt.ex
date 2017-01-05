@@ -5,6 +5,8 @@ defmodule Appsrv.Adapters.MQTT do
   ## Transport
   The data is exchanged over [MQTT](http://mqtt.org/).
   """
+  @behaviour Appsrv.Adapter
+
   use GenMQTT
 
   require Logger
@@ -31,5 +33,9 @@ defmodule Appsrv.Adapters.MQTT do
   def send(bytes, node) do
     Logger.info "(MQTT) Publish decrypted data #{inspect(bytes)} on MQTT topic tx/app/#{node.application.app_eui}/node/#{node.dev_eui}"
     GenMQTT.publish(__MODULE__, "tx/app/#{node.application.app_eui}/node/#{node.dev_eui}", bytes, 0)
+  end
+
+  def register(_application, _node) do
+    Logger.info "(MQTT) No registration needed for MQTT adapter"
   end
 end
