@@ -38,5 +38,7 @@ defmodule Appsrv.Endpoint do
     key: "_appsrv_key",
     signing_salt: "18UDgoi9"
 
+  plug Appsrv.CORS
+
   plug Appsrv.Router
 end

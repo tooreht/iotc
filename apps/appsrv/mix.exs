@@ -23,7 +23,7 @@ defmodule Appsrv.Mixfile do
   def application do
     [mod: {Appsrv, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :ex_admin]]
+                    :phoenix_ecto, :postgrex, :coherence, :ex_admin, :corsica]]
   end
 
   # Specifies which paths to compile per environment.
@@ -48,7 +48,8 @@ defmodule Appsrv.Mixfile do
       {:coherence, "~> 0.3"},
       {:ex_admin, github: "smpallen99/ex_admin"},
       {:core, in_umbrella: true},
-      {:gen_mqtt, "~> 0.3.1"}
+      {:gen_mqtt, "~> 0.3.1"},
+      {:corsica, "~> 0.5"},
     ]
   end
 
