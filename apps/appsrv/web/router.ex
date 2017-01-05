@@ -89,6 +89,8 @@ defmodule Appsrv.Router do
     resources "/lorawan/applications", LoRaWAN.ApplicationController, except: [:new, :edit]
     resources "/lorawan/nodes", LoRaWAN.NodeController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
+
+    get       "/lorawan/nodes/application/:application_id", LoRaWAN.NodeController, :assoc_application
   end
 
   # Forward to core API (TODO: Remove this hack ;-)

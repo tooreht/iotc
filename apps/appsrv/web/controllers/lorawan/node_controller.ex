@@ -1,6 +1,8 @@
 defmodule Appsrv.LoRaWAN.NodeController do
   use Appsrv.Web, :controller
 
+  import Ecto.Query, only: [from: 2]
+
   alias Appsrv.LoRaWAN.Node
 
   @core_api Application.get_env(:appsrv, :core_api)
@@ -107,5 +109,15 @@ defmodule Appsrv.LoRaWAN.NodeController do
         |> put_status(:unprocessable_entity)
         |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
     end
+  end
+
+  def assoc_application(conn, %{"application_id" => application_id}) do
+    render(conn, "index.json", lorawan_nodes: from(n in Node,
+                                                select: n,
+                                                join: a in Appsrv.LoRaWAN.Application,
+                                                on: n.application_id == a.id,
+                                                where: n.application_id == ^application_id,
+                                                preload: [:application])
+                                              |> Repo.all)
   end
 end
