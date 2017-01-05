@@ -17,11 +17,34 @@ config :appsrv, Appsrv.Endpoint,
   pubsub: [name: Appsrv.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+# Configures the Storage API
 config :appsrv, :core_api, Core.Storage.DB
 
+# Configures the available adapters
 config :appsrv, Appsrv.Adapters,
   [Appsrv.Adapters.MQTT,
    Appsrv.Adapters.SIOT]
+
+# Configures the MQTT adapter
+config :appsrv, Appsrv.Adapters.MQTT,
+  connection: [
+    name: Appsrv.Adapters.MQTT,
+    host: "localhost",
+    reconnect_timeout: 10,
+    keepalive_interval: 60,
+    retry_interval: 30
+  ]
+
+# Configures the SIOT adapter
+config :appsrv, Appsrv.Adapters.SIOT,
+  connection: [
+    name: Appsrv.Adapters.SIOT,
+    host: "siot.net",
+    reconnect_timeout: 10,
+    keepalive_interval: 60,
+    retry_interval: 30
+  ],
+  licence: "9A8A-BC30-D22B-4F9B-BF39-927C-008B-15EA"
 
 # Configures Elixir's Logger
 config :logger, :console,
