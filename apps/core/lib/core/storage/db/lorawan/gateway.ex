@@ -101,6 +101,7 @@ defmodule Core.Storage.DB.LoRaWAN.Gateway do
         rx_valid: gw.meta.rx.valid,
         tx_emitted: gw.meta.tx.emitted,
         tx_received: gw.meta.tx.received,
+        time: Timex.parse!(gw.meta.time, "%Y-%m-%d %T %Z", :strftime) |> Timex.to_erlang_datetime |> Ecto.DateTime.from_erl,
         inserted_at: Ecto.DateTime.utc,
         updated_at: Ecto.DateTime.utc
       }

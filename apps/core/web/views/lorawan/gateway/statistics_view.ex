@@ -11,6 +11,7 @@ defmodule Core.LoRaWAN.Gateway.StatisticsView do
 
   def render("statistics.json", %{statistics: statistics}) do
     %{id: statistics.id,
+      time: statistics.time,
       latitude: statistics.latitude,
       longitude: statistics.longitude,
       altitude: statistics.altitude,

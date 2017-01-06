@@ -6,6 +6,7 @@ defmodule Core.LoRaWAN.Gateway.StatisticsControllerTest do
   alias Coherence.Authentication.Token
 
   @valid_attrs %{
+    time: Ecto.DateTime.utc,
     ack_rate: "120.5",
     altitude: "120.5",
     latitude: "120.5",
@@ -38,7 +39,9 @@ defmodule Core.LoRaWAN.Gateway.StatisticsControllerTest do
   test "shows chosen resource", %{conn: conn, user: _} do
     statistics = Repo.insert! %Statistics{}
     conn = get conn, statistics_path(conn, :show, statistics)
-    assert json_response(conn, 200)["data"] == %{"id" => statistics.id,
+    assert json_response(conn, 200)["data"] == %{
+      "id" => statistics.id,
+      "time" => statistics.time,
       "latitude" => statistics.latitude,
       "longitude" => statistics.longitude,
       "altitude" => statistics.altitude,

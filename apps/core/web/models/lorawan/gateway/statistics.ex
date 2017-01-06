@@ -2,7 +2,7 @@ defmodule Core.LoRaWAN.Gateway.Statistics do
   use Core.Web, :model
 
   schema "lorawan_gateway_statistics" do
-    # TODO: Some kind of timestamp is missing!
+    field :time, Ecto.DateTime
     field :latitude, :decimal
     field :longitude, :decimal
     field :altitude, :decimal
@@ -22,7 +22,7 @@ defmodule Core.LoRaWAN.Gateway.Statistics do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:latitude, :longitude, :altitude, :rx_total, :rx_valid, :rx_forwarded, :tx_received, :tx_emitted, :ack_rate])
-    |> validate_required([:latitude, :longitude, :altitude, :rx_total, :rx_valid, :rx_forwarded, :tx_received, :tx_emitted, :ack_rate])
+    |> cast(params, [:time, :latitude, :longitude, :altitude, :rx_total, :rx_valid, :rx_forwarded, :tx_received, :tx_emitted, :ack_rate])
+    |> validate_required([:time, :latitude, :longitude, :altitude, :rx_total, :rx_valid, :rx_forwarded, :tx_received, :tx_emitted, :ack_rate])
   end
 end

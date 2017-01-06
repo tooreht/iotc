@@ -3,6 +3,7 @@ defmodule Core.Repo.Migrations.CreateLoRaWAN.Gateway.Statistics do
 
   def change do
     create table(:lorawan_gateway_statistics) do
+      add :time, :datetime
       add :latitude, :decimal
       add :longitude, :decimal
       add :altitude, :decimal
