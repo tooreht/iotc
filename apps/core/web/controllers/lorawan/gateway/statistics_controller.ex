@@ -3,9 +3,14 @@ defmodule Core.LoRaWAN.Gateway.StatisticsController do
 
   alias Core.LoRaWAN.Gateway.Statistics
 
-  def index(conn, _params) do
-    lorawan_gateway_statistics = Repo.all(Statistics)
-    render(conn, "index.json", lorawan_gateway_statistics: lorawan_gateway_statistics)
+  def index(conn, params) do
+    page = Repo.paginate(Statistics, params)
+    render(conn, "index.json",
+      lorawan_gateway_statistics: page.entries,
+      page_number: page.page_number,
+      page_size: page.page_size,
+      total_pages: page.total_pages,
+      total_entries: page.total_entries)
   end
 
   def create(conn, %{"statistics" => statistics_params}) do

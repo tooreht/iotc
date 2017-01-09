@@ -1,8 +1,18 @@
 defmodule Core.LoRaWAN.Gateway.StatisticsView do
   use Core.Web, :view
 
-  def render("index.json", %{lorawan_gateway_statistics: lorawan_gateway_statistics}) do
-    %{data: render_many(lorawan_gateway_statistics, Core.LoRaWAN.Gateway.StatisticsView, "statistics.json")}
+  def render("index.json", %{
+    lorawan_gateway_statistics: lorawan_gateway_statistics,
+    page_number: page_number,
+    page_size: page_size,
+    total_pages: total_pages,
+    total_entries: total_entries})
+  do
+    %{data: render_many(lorawan_gateway_statistics, Core.LoRaWAN.Gateway.StatisticsView, "statistics.json"),
+      page_number: page_number,
+      page_size: page_size,
+      total_pages: total_pages,
+      total_entries: total_entries}
   end
 
   def render("show.json", %{statistics: statistics}) do
