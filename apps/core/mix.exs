@@ -24,7 +24,8 @@ defmodule Core.Mixfile do
     [mod: {Core, []},
      applications: [
       :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger,
-      :gettext, :phoenix_ecto, :postgrex, :coherence, :ex_admin, :decimal]]
+      :gettext, :phoenix_ecto, :postgrex, :kv, :lorawan, :poolboy,
+      :coherence, :ex_admin, :decimal]]
   end
 
   # Specifies which paths to compile per environment.
@@ -46,9 +47,11 @@ defmodule Core.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       # Core
+      {:kv, in_umbrella: true},
+      {:lorawan, in_umbrella: true},
+      {:poolboy, "~> 1.5"},
       {:coherence, "~> 0.3"},
-      {:ex_admin, github: "smpallen99/ex_admin"},
-      {:kv, in_umbrella: true}
+      {:ex_admin, github: "smpallen99/ex_admin"}
     ]
   end
 

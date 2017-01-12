@@ -1,10 +1,9 @@
- defmodule LoRaWAN.Worker do
+ defmodule Core.Worker do
   @moduledoc """
-  This module implements the LoRaWAN communication protocol between LoRa mote and server.
+  This module implements part of the interface between the NwkSrv and AppSrv application.
   """
   use GenServer
   require Logger
-  alias Core.Storage
 
   ## Client API
 

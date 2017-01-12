@@ -1,11 +1,11 @@
-defmodule LoRaWAN.Gateway.Handler.Supervisor do
+defmodule Core.Gateway.Handler.Supervisor do
   @moduledoc """
   This module supervises gateway handlers.
   """
   use Supervisor
 
   # A simple module attribute that stores the supervisor name
-  @name LoRaWAN.Gateway.Handler.Supervisor
+  @name Core.Gateway.Handler.Supervisor
 
   def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: @name)
@@ -17,7 +17,7 @@ defmodule LoRaWAN.Gateway.Handler.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(LoRaWAN.Gateway.Handler, [], restart: :temporary)
+      worker(Core.Gateway.Handler, [], restart: :temporary)
     ]
 
     supervise(children, strategy: :simple_one_for_one)

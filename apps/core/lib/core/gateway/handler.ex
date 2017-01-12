@@ -1,4 +1,4 @@
- defmodule LoRaWAN.Gateway.Handler do
+ defmodule Core.Gateway.Handler do
   @moduledoc """
   This module handles LoRaWAN gateways.
 
@@ -51,7 +51,7 @@
     if in_system do
       if %LoRaWAN.Gateway.Packet{} = packet do
         # Send all packets coming from this gateway to the pool.
-        LoRaWAN.parallel_pool(packet.lorawan, &LoRaWAN.Worker.receive/2)
+        Core.parallel_pool(packet.lorawan, &Core.Worker.receive/2)
         Storage.DB.LoRaWAN.Gateway.store_meta(packet.gateway)
       end
     else
