@@ -23,7 +23,7 @@ defmodule Core.LoRaWAN.Gateway do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:gw_eui, :ip, :last_seen, :adapter, :latitude, :longitude, :altitude, :user_id])
-    |> validate_required([:gw_eui, :adapter, :user_id])
+    |> validate_required([:gw_eui, :adapter])
     |> unique_constraint(:gw_eui)
   end
 end
