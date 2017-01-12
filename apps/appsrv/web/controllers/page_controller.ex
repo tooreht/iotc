@@ -1,5 +1,5 @@
-defmodule Appsrv.PageController do
-  use Appsrv.Web, :controller
+defmodule AppSrv.PageController do
+  use AppSrv.Web, :controller
 
   def index(conn, _params) do
     render conn, "index.html"

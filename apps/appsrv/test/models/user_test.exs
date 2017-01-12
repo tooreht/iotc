@@ -1,7 +1,7 @@
-defmodule Appsrv.UserTest do
-  use Appsrv.ModelCase
+defmodule AppSrv.UserTest do
+  use AppSrv.ModelCase
 
-  alias Appsrv.User
+  alias AppSrv.User
 
   @valid_attrs %{name: "Me", email: "me@example.net", username: "me", password: "secret", is_active: true, is_superuser: true}
   @invalid_attrs %{}

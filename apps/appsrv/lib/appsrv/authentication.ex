@@ -1,6 +1,6 @@
 defimpl ExAdmin.Authentication, for: Plug.Conn do
-  alias Appsrv.Router.Helpers
-  alias Appsrv.Authentication, as: Auth
+  alias AppSrv.Router.Helpers
+  alias AppSrv.Authentication, as: Auth
 
   def use_authentication?(_), do: true
   def current_user(conn), do: Auth.current_user(conn)
@@ -9,7 +9,7 @@ defimpl ExAdmin.Authentication, for: Plug.Conn do
   def session_path(conn, action), do: Helpers.session_path(conn, action)
 end
 
-defmodule Appsrv.Authentication do
+defmodule AppSrv.Authentication do
   def current_user(conn) do
     Coherence.current_user(conn)
   end

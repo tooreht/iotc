@@ -1,4 +1,4 @@
-defmodule Appsrv.LoRaWAN.Handler do
+defmodule AppSrv.LoRaWAN.Handler do
   @moduledoc """
   This module is responsible for handling LoRaWAN application data.
   """
@@ -6,8 +6,8 @@ defmodule Appsrv.LoRaWAN.Handler do
 
   require Logger
 
-  alias Appsrv.LoRaWAN.Crypto
-  alias Appsrv.LoRaWAN.Utils
+  alias AppSrv.LoRaWAN.Crypto
+  alias AppSrv.LoRaWAN.Utils
 
   ## Client API
 
@@ -39,7 +39,7 @@ defmodule Appsrv.LoRaWAN.Handler do
     # TODO: Implement sending messages to network server.
     # 1. Encrypt message
     # 2. Send it to the downlink handler of the network server
-    #    e.g.: Core.LoRaWAN.DownlinkHandler.push(dev_eui, packet)
+    #    e.g.: AppSrv.LoRaWAN.DownlinkHandler.push(dev_eui, packet)
     #
     # The downlink handler does the following:
     # 1. Compute MIC
@@ -56,7 +56,7 @@ defmodule Appsrv.LoRaWAN.Handler do
     key = Utils.get_key(node, packet.mac_payload.f_port)
     bytes = Crypto.decrypt(packet, key)
 
-    for adapter <- Application.get_env(:appsrv, Appsrv.Adapters) do
+    for adapter <- Application.get_env(:appsrv, AppSrv.Adapters) do
       adapter.send(bytes, node)
     end
 

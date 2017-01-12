@@ -1,7 +1,7 @@
-defmodule Appsrv.LoRaWAN.NodeTest do
-  use Appsrv.ModelCase
+defmodule AppSrv.LoRaWAN.NodeTest do
+  use AppSrv.ModelCase
 
-  alias Appsrv.LoRaWAN.Node
+  alias AppSrv.LoRaWAN.Node
 
   @valid_attrs %{
       name: "AlloAllo",

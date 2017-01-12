@@ -1,4 +1,4 @@
-defmodule Appsrv.ChannelCase do
+defmodule AppSrv.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -20,22 +20,22 @@ defmodule Appsrv.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
-      alias Appsrv.Repo
+      alias AppSrv.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
 
       # The default endpoint for testing
-      @endpoint Appsrv.Endpoint
+      @endpoint AppSrv.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Appsrv.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(AppSrv.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Appsrv.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(AppSrv.Repo, {:shared, self()})
     end
 
     :ok

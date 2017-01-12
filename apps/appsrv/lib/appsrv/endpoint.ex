@@ -1,7 +1,7 @@
-defmodule Appsrv.Endpoint do
+defmodule AppSrv.Endpoint do
   use Phoenix.Endpoint, otp_app: :appsrv
 
-  socket "/socket", Appsrv.UserSocket
+  socket "/socket", AppSrv.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -38,7 +38,7 @@ defmodule Appsrv.Endpoint do
     key: "_appsrv_key",
     signing_salt: "18UDgoi9"
 
-  plug Appsrv.CORS
+  plug AppSrv.CORS
 
-  plug Appsrv.Router
+  plug AppSrv.Router
 end

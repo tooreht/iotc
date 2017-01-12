@@ -1,9 +1,9 @@
-defmodule Appsrv.LoRaWAN.ApplicationController do
-  use Appsrv.Web, :controller
+defmodule AppSrv.LoRaWAN.ApplicationController do
+  use AppSrv.Web, :controller
 
-  @core_api Application.get_env(:appsrv, :core_api)
+  @nwksrv_api Application.get_env(:appsrv, :nwksrv_api)
 
-  alias Appsrv.LoRaWAN.Application
+  alias AppSrv.LoRaWAN.Application
 
   def index(conn, _params) do
     lorawan_applications = Repo.all(Application)
@@ -11,7 +11,7 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
   end
 
   def create(conn, %{"application" => application_params}) do
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    %{uid: user_id} = AppSrv.Authentication.get_user_data(conn)
     application_params = Map.put(application_params, "user_id", user_id)
 
     changeset = Application.changeset(%Application{}, application_params)
@@ -20,14 +20,14 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.insert(:application, changeset)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
             application = Repo.preload(csf.application, [:user])
-            @core_api.application(@core_api, :create,
+            @nwksrv_api.application(@nwksrv_api, :create,
               [%{app_eui: application.app_eui, user__email: application.user.email}])
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{application: application, core_api: _}} ->
+      {:ok, %{application: application, nwksrv_api: _}} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", application_path(conn, :show, application))
@@ -35,7 +35,7 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -45,7 +45,7 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
   end
 
   def update(conn, %{"id" => id, "application" => application_params}) do
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    %{uid: user_id} = AppSrv.Authentication.get_user_data(conn)
     application_params = Map.put(application_params, "user_id", user_id)
 
     old = Repo.get!(Application, id)
@@ -55,20 +55,20 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.update(:application, changeset)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
             application = Repo.preload(csf.application, [:user])
-            @core_api.application(@core_api, :update,
+            @nwksrv_api.application(@nwksrv_api, :update,
               [%{app_eui: old.app_eui},
               %{app_eui: application.app_eui, user__email: application.user.email}])
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{application: application, core_api: _}} ->
+      {:ok, %{application: application, nwksrv_api: _}} ->
         render(conn, "show.json", application: application)
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -79,18 +79,18 @@ defmodule Appsrv.LoRaWAN.ApplicationController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.delete(:application, application)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
-            @core_api.application(@core_api, :delete,
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
+            @nwksrv_api.application(@nwksrv_api, :delete,
               [%{app_eui: csf.application.app_eui}])
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{application: _, core_api: _}} ->
+      {:ok, %{application: _, nwksrv_api: _}} ->
         send_resp(conn, :no_content, "")
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 end

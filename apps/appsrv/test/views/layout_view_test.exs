@@ -1,3 +1,3 @@
-defmodule Appsrv.LayoutViewTest do
-  use Appsrv.ConnCase, async: true
+defmodule AppSrv.LayoutViewTest do
+  use AppSrv.ConnCase, async: true
 end

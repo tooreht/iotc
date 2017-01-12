@@ -1,8 +1,8 @@
-defmodule Appsrv.UserSocket do
+defmodule AppSrv.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", Appsrv.RoomChannel
+  # channel "room:*", AppSrv.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -30,7 +30,7 @@ defmodule Appsrv.UserSocket do
   # Would allow you to broadcast a "disconnect" event and terminate
   # all active sockets and channels for a given user:
   #
-  #     Appsrv.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
+  #     AppSrv.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil

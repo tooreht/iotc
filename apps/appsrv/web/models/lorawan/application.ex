@@ -1,11 +1,11 @@
-defmodule Appsrv.LoRaWAN.Application do
-  use Appsrv.Web, :model
+defmodule AppSrv.LoRaWAN.Application do
+  use AppSrv.Web, :model
 
   schema "lorawan_applications" do
     field :name, :string
     field :app_eui, :string
     field :app_root_key, :string
-    belongs_to :user, Appsrv.User
+    belongs_to :user, AppSrv.User
 
     timestamps()
   end

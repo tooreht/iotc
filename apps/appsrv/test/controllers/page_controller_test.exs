@@ -1,5 +1,5 @@
-defmodule Appsrv.PageControllerTest do
-  use Appsrv.ConnCase
+defmodule AppSrv.PageControllerTest do
+  use AppSrv.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

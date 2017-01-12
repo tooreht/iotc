@@ -1,6 +1,6 @@
-defmodule Appsrv.LoRaWAN.Utils do
+defmodule AppSrv.LoRaWAN.Utils do
 
-  alias Appsrv.LoRaWAN.Node
+  alias AppSrv.LoRaWAN.Node
   
   import Ecto.Query
 
@@ -8,8 +8,8 @@ defmodule Appsrv.LoRaWAN.Utils do
     from(n in Node,
       select: n,
       where: n.dev_eui == ^dev_eui)
-    |> Appsrv.Repo.one
-    |> Appsrv.Repo.preload([:application])
+    |> AppSrv.Repo.one
+    |> AppSrv.Repo.preload([:application])
   end
 
   def get_key(node, f_port) do

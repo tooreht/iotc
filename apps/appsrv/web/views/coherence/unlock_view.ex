@@ -1,5 +1,5 @@
 defmodule Coherence.UnlockView do
-  use Appsrv.Coherence.Web, :view
+  use AppSrv.Coherence.Web, :view
 
 
 end

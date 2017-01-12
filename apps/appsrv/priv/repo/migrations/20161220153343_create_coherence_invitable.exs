@@ -1,4 +1,4 @@
-defmodule Appsrv.Repo.Migrations.CreateCoherenceInvitable do
+defmodule AppSrv.Repo.Migrations.CreateCoherenceInvitable do
   use Ecto.Migration
   def change do
     create table(:invitations) do

@@ -1,12 +1,12 @@
-defmodule Appsrv.Web do
+defmodule AppSrv.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use Appsrv.Web, :controller
-      use Appsrv.Web, :view
+      use AppSrv.Web, :controller
+      use AppSrv.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -30,12 +30,12 @@ defmodule Appsrv.Web do
     quote do
       use Phoenix.Controller
 
-      alias Appsrv.Repo
+      alias AppSrv.Repo
       import Ecto
       import Ecto.Query
 
-      import Appsrv.Router.Helpers
-      import Appsrv.Gettext
+      import AppSrv.Router.Helpers
+      import AppSrv.Gettext
     end
   end
 
@@ -49,9 +49,9 @@ defmodule Appsrv.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Appsrv.Router.Helpers
-      import Appsrv.ErrorHelpers
-      import Appsrv.Gettext
+      import AppSrv.Router.Helpers
+      import AppSrv.ErrorHelpers
+      import AppSrv.Gettext
     end
   end
 
@@ -65,10 +65,10 @@ defmodule Appsrv.Web do
     quote do
       use Phoenix.Channel
 
-      alias Appsrv.Repo
+      alias AppSrv.Repo
       import Ecto
       import Ecto.Query
-      import Appsrv.Gettext
+      import AppSrv.Gettext
     end
   end
 

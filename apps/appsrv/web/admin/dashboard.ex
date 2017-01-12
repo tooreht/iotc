@@ -1,4 +1,4 @@
-defmodule Appsrv.ExAdmin.Dashboard do
+defmodule AppSrv.ExAdmin.Dashboard do
   use ExAdmin.Register
 
   register_page "Dashboard" do

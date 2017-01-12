@@ -1,4 +1,4 @@
-# Appsrv
+# AppSrv
 
 To start your Phoenix app:
 

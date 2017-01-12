@@ -1,5 +1,5 @@
-defmodule Appsrv.ErrorView do
-  use Appsrv.Web, :view
+defmodule AppSrv.ErrorView do
+  use AppSrv.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

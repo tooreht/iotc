@@ -3,7 +3,7 @@ defmodule UDP.Server do
   This module dispatches UDP packets.
   """
   use GenServer
-  alias Core.Config
+  alias UDP.Config
   require Logger
 
   ## Client API

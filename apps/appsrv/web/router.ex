@@ -1,5 +1,5 @@
-defmodule Appsrv.Router do
-  use Appsrv.Web, :router
+defmodule AppSrv.Router do
+  use AppSrv.Web, :router
   use Coherence.Router
   use ExAdmin.Router
 
@@ -57,14 +57,14 @@ defmodule Appsrv.Router do
     coherence_routes :protected
   end
 
-  scope "/", Appsrv do
+  scope "/", AppSrv do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
   # Session Auth routes
-  scope "/", Appsrv do
+  scope "/", AppSrv do
     pipe_through :session
   end
 
@@ -75,7 +75,7 @@ defmodule Appsrv.Router do
   end
 
   # API
-  scope "/api", Appsrv do
+  scope "/api", AppSrv do
     pipe_through :api
 
     post    "/auth/token", TokenController, :create
@@ -83,7 +83,7 @@ defmodule Appsrv.Router do
   end
 
   # API Token
-  scope "/api", Appsrv do
+  scope "/api", AppSrv do
     pipe_through :token
 
     resources "/lorawan/applications", LoRaWAN.ApplicationController, except: [:new, :edit]
@@ -94,7 +94,7 @@ defmodule Appsrv.Router do
   end
 
   # Forward to core API (TODO: Remove this hack ;-)
-  scope "/core", Core do
+  scope "/nwksrv", NwkSrv do
     forward "/", Router
   end
 end

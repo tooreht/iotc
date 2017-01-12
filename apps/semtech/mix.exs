@@ -39,7 +39,7 @@ defmodule Semtech.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:core, in_umbrella: true},
+      {:nwksrv, in_umbrella: true},
       {:lorawan, in_umbrella: true},
       {:poison, "~> 2.0"},
     ]

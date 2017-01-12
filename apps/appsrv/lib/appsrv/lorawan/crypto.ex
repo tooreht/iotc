@@ -1,4 +1,4 @@
-defmodule Appsrv.LoRaWAN.Crypto do
+defmodule AppSrv.LoRaWAN.Crypto do
 
   use Bitwise
 

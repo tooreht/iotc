@@ -1,8 +1,8 @@
-defmodule Appsrv.TokenController do
+defmodule AppSrv.TokenController do
   @moduledoc """
   Controller responsible for API auth tokens.
   """
-  use Appsrv.Web, :controller
+  use AppSrv.Web, :controller
 
   import Ecto.Query
 

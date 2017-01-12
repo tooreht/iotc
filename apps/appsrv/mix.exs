@@ -1,4 +1,4 @@
-defmodule Appsrv.Mixfile do
+defmodule AppSrv.Mixfile do
   use Mix.Project
 
   def project do
@@ -21,7 +21,7 @@ defmodule Appsrv.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Appsrv, []},
+    [mod: {AppSrv, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :coherence, :ex_admin, :corsica]]
   end
@@ -44,10 +44,10 @@ defmodule Appsrv.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      # Appsrv
+      # AppSrv
       {:coherence, "~> 0.3"},
       {:ex_admin, github: "smpallen99/ex_admin"},
-      {:core, in_umbrella: true},
+      {:nwksrv, in_umbrella: true},
       {:gen_mqtt, "~> 0.3.1"},
       {:corsica, "~> 0.5"},
     ]

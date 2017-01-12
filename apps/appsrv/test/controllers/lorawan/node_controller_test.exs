@@ -1,14 +1,14 @@
-defmodule Appsrv.LoRaWAN.NodeControllerTest do
-  use Appsrv.ConnCase
+defmodule AppSrv.LoRaWAN.NodeControllerTest do
+  use AppSrv.ConnCase
 
-  alias Appsrv.LoRaWAN.Node
-  alias Appsrv.User
+  alias AppSrv.LoRaWAN.Node
+  alias AppSrv.User
   alias Coherence.Authentication.Token
 
   @invalid_attrs %{}
 
   setup %{conn: conn} do
-    Appsrv.Mocks.Storage.DB.start_link(Appsrv.Mocks.Storage.DB)
+    AppSrv.Mocks.Storage.DB.start_link(AppSrv.Mocks.Storage.DB)
 
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 
@@ -18,10 +18,13 @@ defmodule Appsrv.LoRaWAN.NodeControllerTest do
     conn = put_req_header(conn, "accept", "application/json")
     conn = put_req_header(conn, "x-auth-token", token)
 
-    application = Repo.insert! %Core.LoRaWAN.Application{
-                                  app_eui: "70B3D57ED0000E42",
-                                  user_id: user.id}
-
+    application = Repo.insert! %AppSrv.LoRaWAN.Application{
+      app_eui: "70B3D57ED0000E36",
+      app_root_key: "9056E66E691EC92131DC6A16DB533C42",
+      name: "AlloAllo",
+      user_id: user.id
+    }
+    
     valid_attrs = %{
       name: "AlloAllo",
       dev_eui: "2A2B3D4E5F66778A",

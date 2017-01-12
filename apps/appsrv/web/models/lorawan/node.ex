@@ -1,5 +1,5 @@
-defmodule Appsrv.LoRaWAN.Node do
-  use Appsrv.Web, :model
+defmodule AppSrv.LoRaWAN.Node do
+  use AppSrv.Web, :model
 
   schema "lorawan_nodes" do
     field :name, :string
@@ -13,8 +13,8 @@ defmodule Appsrv.LoRaWAN.Node do
     field :rx_delay, :integer
     field :rx1_dr_offset, :integer
     field :rx2_dr, :integer
-    belongs_to :application, Appsrv.LoRaWAN.Application
-    belongs_to :user, Appsrv.User
+    belongs_to :application, AppSrv.LoRaWAN.Application
+    belongs_to :user, AppSrv.User
 
     timestamps()
   end

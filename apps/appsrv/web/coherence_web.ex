@@ -1,4 +1,4 @@
-defmodule Appsrv.Coherence.Web do
+defmodule AppSrv.Coherence.Web do
 
   def view do
     quote do
@@ -9,10 +9,10 @@ defmodule Appsrv.Coherence.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Appsrv.Router.Helpers
-      import Appsrv.ErrorHelpers
-      import Appsrv.Gettext
-      import Appsrv.Coherence.ViewHelpers
+      import AppSrv.Router.Helpers
+      import AppSrv.ErrorHelpers
+      import AppSrv.Gettext
+      import AppSrv.Coherence.ViewHelpers
 
     end
   end

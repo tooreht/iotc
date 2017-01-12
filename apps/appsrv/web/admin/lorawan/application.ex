@@ -1,7 +1,7 @@
-defmodule Appsrv.ExAdmin.LoRaWAN.Application do
+defmodule AppSrv.ExAdmin.LoRaWAN.Application do
   use ExAdmin.Register
 
-  register_resource Appsrv.LoRaWAN.Application do
+  register_resource AppSrv.LoRaWAN.Application do
 
   end
 end

@@ -1,7 +1,7 @@
-defmodule Appsrv.UserControllerTest do
-  use Appsrv.ConnCase
+defmodule AppSrv.UserControllerTest do
+  use AppSrv.ConnCase
 
-  alias Appsrv.User
+  alias AppSrv.User
   alias Coherence.Authentication.Token
 
   @valid_attrs %{name: "Me", email: "me@example.net", username: "me", password: "secret"}

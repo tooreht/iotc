@@ -35,7 +35,7 @@ release :iotc do
   set version: "0.1.0"
   set applications: [
     appsrv: :permanent,
-    core: :permanent,
+    nwksrv: :permanent,
     kv: :permanent,
     lorawan: :permanent,
     semtech: :permanent

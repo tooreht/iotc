@@ -1,6 +1,6 @@
-defmodule Appsrv.Mocks.Storage.DB.LoRaWAN.Node do
+defmodule AppSrv.Mocks.Storage.DB.LoRaWAN.Node do
   @moduledoc """
-  Mock for CRUD operations of `Core.Storage.DB.LoRaWAN.Node`.
+  Mock for CRUD operations of `NwkSrv.Storage.DB.LoRaWAN.Node`.
   """
 
   #

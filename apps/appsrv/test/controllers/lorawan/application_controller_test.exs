@@ -1,14 +1,14 @@
-defmodule Appsrv.LoRaWAN.ApplicationControllerTest do
-  use Appsrv.ConnCase
+defmodule AppSrv.LoRaWAN.ApplicationControllerTest do
+  use AppSrv.ConnCase
 
-  alias Appsrv.LoRaWAN.Application
-  alias Appsrv.User
+  alias AppSrv.LoRaWAN.Application
+  alias AppSrv.User
   alias Coherence.Authentication.Token
 
   @invalid_attrs %{app_eui: "70B3D57ED0000E3"}
 
   setup %{conn: conn} do
-    Appsrv.Mocks.Storage.DB.start_link(Appsrv.Mocks.Storage.DB)
+    AppSrv.Mocks.Storage.DB.start_link(AppSrv.Mocks.Storage.DB)
 
     user = Repo.insert! %User{name: "You", email: "you@example.net", username: "you", password: "secret"}
 

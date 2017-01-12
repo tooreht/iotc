@@ -43,7 +43,7 @@ defmodule Coherence.Redirects do
   """
   use Redirects
   # Uncomment the import below if adding overrides
-  # import Appsrv.Router.Helpers
+  # import AppSrv.Router.Helpers
 
   # Add function overrides below
 

@@ -3,8 +3,8 @@ defmodule LoRaWAN.Crypto do
   This module is responsible for the crypto part of LoRaWAN.
   """
   alias LoRaWAN.Crypto.AesCmac
-  alias Core.Storage
-  alias Core.Storage.Utils
+  alias NwkSrv.Storage
+  alias NwkSrv.Storage.Utils
   require Logger
 
   @doc """

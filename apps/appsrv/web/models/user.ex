@@ -1,5 +1,5 @@
-defmodule Appsrv.User do
-  use Appsrv.Web, :model
+defmodule AppSrv.User do
+  use AppSrv.Web, :model
   use Coherence.Schema
 
   schema "users" do

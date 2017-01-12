@@ -1,12 +1,12 @@
-defmodule Appsrv.UserView do
-  use Appsrv.Web, :view
+defmodule AppSrv.UserView do
+  use AppSrv.Web, :view
 
   def render("index.json", %{users: users}) do
-    %{data: render_many(users, Appsrv.UserView, "user.json")}
+    %{data: render_many(users, AppSrv.UserView, "user.json")}
   end
 
   def render("show.json", %{user: user}) do
-    %{data: render_one(user, Appsrv.UserView, "user.json")}
+    %{data: render_one(user, AppSrv.UserView, "user.json")}
   end
 
   def render("user.json", %{user: user}) do

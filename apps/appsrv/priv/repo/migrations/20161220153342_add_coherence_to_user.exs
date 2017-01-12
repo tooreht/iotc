@@ -1,4 +1,4 @@
-defmodule Appsrv.Repo.Migrations.AddCoherenceToUser do
+defmodule AppSrv.Repo.Migrations.AddCoherenceToUser do
   use Ecto.Migration
   def change do
     alter table(:users) do

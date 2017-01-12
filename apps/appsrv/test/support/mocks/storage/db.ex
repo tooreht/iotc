@@ -1,6 +1,6 @@
-defmodule Appsrv.Mocks.Storage.DB do
+defmodule AppSrv.Mocks.Storage.DB do
   @moduledoc """
-  Mock for the `Core.Storage.DB` module.
+  Mock for the `NwkSrv.Storage.DB` module.
   """
   use GenServer
 
@@ -36,12 +36,12 @@ defmodule Appsrv.Mocks.Storage.DB do
   end
 
   def handle_call({:application, action, params}, _from, state) when action in @crud_actions do
-    response = apply(Appsrv.Mocks.Storage.DB.LoRaWAN.Application, action, params)
+    response = apply(AppSrv.Mocks.Storage.DB.LoRaWAN.Application, action, params)
     {:reply, response, state}
   end
 
   def handle_call({:node, action, params}, _from, state) when action in @crud_actions do
-    response = apply(Appsrv.Mocks.Storage.DB.LoRaWAN.Node, action, params)
+    response = apply(AppSrv.Mocks.Storage.DB.LoRaWAN.Node, action, params)
     {:reply, response, state}
   end
 end

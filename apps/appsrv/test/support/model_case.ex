@@ -1,4 +1,4 @@
-defmodule Appsrv.ModelCase do
+defmodule AppSrv.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -16,20 +16,20 @@ defmodule Appsrv.ModelCase do
 
   using do
     quote do
-      alias Appsrv.Repo
+      alias AppSrv.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Appsrv.ModelCase
+      import AppSrv.ModelCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Appsrv.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(AppSrv.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Appsrv.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(AppSrv.Repo, {:shared, self()})
     end
 
     :ok
@@ -59,7 +59,7 @@ defmodule Appsrv.ModelCase do
   """
   def errors_on(struct, data) do
     struct.__struct__.changeset(struct, data)
-    |> Ecto.Changeset.traverse_errors(&Appsrv.ErrorHelpers.translate_error/1)
+    |> Ecto.Changeset.traverse_errors(&AppSrv.ErrorHelpers.translate_error/1)
     |> Enum.flat_map(fn {key, errors} -> for msg <- errors, do: {key, msg} end)
   end
 end

@@ -1,7 +1,7 @@
-defmodule Appsrv.ExAdmin.User do
+defmodule AppSrv.ExAdmin.User do
   use ExAdmin.Register
 
-  register_resource Appsrv.User do
+  register_resource AppSrv.User do
 
   end
 end

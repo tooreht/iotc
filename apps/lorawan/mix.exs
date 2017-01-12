@@ -20,7 +20,7 @@ defmodule LoRaWAN.Mixfile do
   def application do
     [
       mod: {LoRaWAN, []},
-      applications: [:logger, :crypto, :poolboy, :kv]
+      applications: [:logger, :crypto]
     ]
   end
 
@@ -38,9 +38,6 @@ defmodule LoRaWAN.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [
-      {:poolboy, "~> 1.5"},
-      {:core, in_umbrella: true}
-    ]
+    []
   end
 end

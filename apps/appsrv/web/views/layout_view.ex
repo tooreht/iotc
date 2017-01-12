@@ -1,3 +1,3 @@
-defmodule Appsrv.LayoutView do
-  use Appsrv.Web, :view
+defmodule AppSrv.LayoutView do
+  use AppSrv.Web, :view
 end

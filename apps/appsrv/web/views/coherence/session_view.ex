@@ -1,5 +1,5 @@
 defmodule Coherence.SessionView do
-  use Appsrv.Coherence.Web, :view
+  use AppSrv.Coherence.Web, :view
 
 
 end

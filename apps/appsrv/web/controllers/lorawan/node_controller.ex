@@ -1,11 +1,11 @@
-defmodule Appsrv.LoRaWAN.NodeController do
-  use Appsrv.Web, :controller
+defmodule AppSrv.LoRaWAN.NodeController do
+  use AppSrv.Web, :controller
 
   import Ecto.Query, only: [from: 2]
 
-  alias Appsrv.LoRaWAN.Node
+  alias AppSrv.LoRaWAN.Node
 
-  @core_api Application.get_env(:appsrv, :core_api)
+  @nwksrv_api Application.get_env(:appsrv, :nwksrv_api)
 
   def index(conn, _params) do
     lorawan_nodes = Repo.all(Node)
@@ -13,7 +13,7 @@ defmodule Appsrv.LoRaWAN.NodeController do
   end
 
   def create(conn, %{"node" => node_params}) do
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    %{uid: user_id} = AppSrv.Authentication.get_user_data(conn)
     node_params = Map.put(node_params, "user_id", user_id)
 
     changeset = Node.changeset(%Node{}, node_params)
@@ -22,22 +22,22 @@ defmodule Appsrv.LoRaWAN.NodeController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.insert(:node, changeset)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
             node = Repo.preload(csf.node, [:application, :user])
-            @core_api.node(@core_api, :create,
+            @nwksrv_api.node(@nwksrv_api, :create,
               [%{dev_eui: node.dev_eui, nwk_s_key: node.nwk_s_key,
                 application__app_eui: node.application.app_eui, user__email: node.user.email}])
             end)
       |>  Ecto.Multi.run(:adapter_registration, fn csf ->
             node = Repo.preload(csf.node, [:application])
-            for adapter <- Application.get_env(:appsrv, Appsrv.Adapters) do
+            for adapter <- Application.get_env(:appsrv, AppSrv.Adapters) do
               adapter.register(node.application, node)
             end
             {:ok, node}
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{node: node, core_api: _, adapter_registration: _}} ->
+      {:ok, %{node: node, nwksrv_api: _, adapter_registration: _}} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", node_path(conn, :show, node))
@@ -45,7 +45,7 @@ defmodule Appsrv.LoRaWAN.NodeController do
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -55,7 +55,7 @@ defmodule Appsrv.LoRaWAN.NodeController do
   end
 
   def update(conn, %{"id" => id, "node" => node_params}) do
-    %{uid: user_id} = Appsrv.Authentication.get_user_data(conn)
+    %{uid: user_id} = AppSrv.Authentication.get_user_data(conn)
     node_params = Map.put(node_params, "user_id", user_id)
 
     old = Repo.get!(Node, id)
@@ -65,27 +65,27 @@ defmodule Appsrv.LoRaWAN.NodeController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.update(:node, changeset)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
             node = Repo.preload(csf.node, [:application, :user])
-            @core_api.node(@core_api, :update,
+            @nwksrv_api.node(@nwksrv_api, :update,
               [%{dev_eui: old.dev_eui}, %{dev_eui: node.dev_eui, nwk_s_key: node.nwk_s_key,
                 application__app_eui: node.application.app_eui, user__email: node.user.email}])
           end)
       |>  Ecto.Multi.run(:adapter_registration, fn csf ->
             node = Repo.preload(csf.node, [:application])
-            for adapter <- Application.get_env(:appsrv, Appsrv.Adapters) do
+            for adapter <- Application.get_env(:appsrv, AppSrv.Adapters) do
               adapter.register(node.application, node)
             end
             {:ok, node}
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{node: node, core_api: _, adapter_registration: _}} ->
+      {:ok, %{node: node, nwksrv_api: _, adapter_registration: _}} ->
         render(conn, "show.json", node: node)
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
@@ -96,25 +96,25 @@ defmodule Appsrv.LoRaWAN.NodeController do
     multi =
       Ecto.Multi.new
       |>  Ecto.Multi.delete(:node, node)
-      |>  Ecto.Multi.run(:core_api, fn csf ->
-            @core_api.node(@core_api, :delete,
+      |>  Ecto.Multi.run(:nwksrv_api, fn csf ->
+            @nwksrv_api.node(@nwksrv_api, :delete,
               [%{dev_eui: csf.node.dev_eui}])
           end)
 
     case Repo.transaction(multi) do
-      {:ok, %{node: _, core_api: _}} ->
+      {:ok, %{node: _, nwksrv_api: _}} ->
         send_resp(conn, :no_content, "")
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: failed_value)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: failed_value)
     end
   end
 
   def assoc_application(conn, %{"application_id" => application_id}) do
     render(conn, "index.json", lorawan_nodes: from(n in Node,
                                                 select: n,
-                                                join: a in Appsrv.LoRaWAN.Application,
+                                                join: a in AppSrv.LoRaWAN.Application,
                                                 on: n.application_id == a.id,
                                                 where: n.application_id == ^application_id,
                                                 preload: [:application])

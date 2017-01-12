@@ -1,4 +1,4 @@
-defmodule Appsrv.Repo.Migrations.CreateLoRaWAN.Application do
+defmodule AppSrv.Repo.Migrations.CreateLoRaWAN.Application do
   use Ecto.Migration
 
   def change do

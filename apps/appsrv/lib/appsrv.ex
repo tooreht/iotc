@@ -1,4 +1,4 @@
-defmodule Appsrv do
+defmodule AppSrv do
   use Application
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
@@ -9,27 +9,27 @@ defmodule Appsrv do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(Appsrv.Repo, []),
+      supervisor(AppSrv.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Appsrv.Endpoint, []),
-      # Start your own worker by calling: Appsrv.Worker.start_link(arg1, arg2, arg3)
-      # worker(Appsrv.Worker, [arg1, arg2, arg3]),
-      worker(Appsrv.LoRaWAN.Handler, [Appsrv.LoRaWAN.Handler]),
+      supervisor(AppSrv.Endpoint, []),
+      # Start your own worker by calling: AppSrv.Worker.start_link(arg1, arg2, arg3)
+      # worker(AppSrv.Worker, [arg1, arg2, arg3]),
+      worker(AppSrv.LoRaWAN.Handler, [AppSrv.LoRaWAN.Handler]),
       # TODO: Add adapters dynamically with configurable options
-      worker(Appsrv.Adapters.MQTT, [Application.get_env(:appsrv, Appsrv.Adapters.MQTT)[:connection]]),
-      worker(Appsrv.Adapters.SIOT, [Application.get_env(:appsrv, Appsrv.Adapters.SIOT)[:connection]]),
+      worker(AppSrv.Adapters.MQTT, [Application.get_env(:appsrv, AppSrv.Adapters.MQTT)[:connection]]),
+      worker(AppSrv.Adapters.SIOT, [Application.get_env(:appsrv, AppSrv.Adapters.SIOT)[:connection]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Appsrv.Supervisor]
+    opts = [strategy: :one_for_one, name: AppSrv.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Appsrv.Endpoint.config_change(changed, removed)
+    AppSrv.Endpoint.config_change(changed, removed)
     :ok
   end
 end

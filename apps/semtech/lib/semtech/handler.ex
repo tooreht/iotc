@@ -42,7 +42,7 @@ defmodule Semtech.Handler do
   ## Server Callbacks
 
   def init({:ok, gateway_ip}) do
-    {:ok, handler} = LoRaWAN.Gateway.Handler.Supervisor.start_handler(gateway_ip)
+    {:ok, handler} = NwkSrv.Gateway.Handler.Supervisor.start_handler(gateway_ip)
     ref = Process.monitor(handler)
 
     {:ok, {handler, ref, gateway_ip}}
@@ -65,7 +65,7 @@ defmodule Semtech.Handler do
     packet = Semtech.Harmonizer.harmonize(rx_packet, gateway_ip)
 
     # Let the gateway handler validate the packet.
-    response = LoRaWAN.Gateway.Handler.receive(handler, packet)
+    response = NwkSrv.Gateway.Handler.receive(handler, packet)
 
     case response do
       {:ok, true} ->

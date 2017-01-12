@@ -1,4 +1,4 @@
-defmodule Appsrv.ErrorHelpers do
+defmodule AppSrv.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule Appsrv.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(Appsrv.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(AppSrv.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(Appsrv.Gettext, "errors", msg, opts)
+      Gettext.dgettext(AppSrv.Gettext, "errors", msg, opts)
     end
   end
 end

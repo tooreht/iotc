@@ -1,4 +1,4 @@
-defmodule Appsrv.Coherence.ViewHelpers do
+defmodule AppSrv.Coherence.ViewHelpers do
   @moduledoc """
   Helper functions for Coherence Views.
   """

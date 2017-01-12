@@ -1,11 +1,11 @@
-defmodule Appsrv.Adapters.SIOT do
+defmodule AppSrv.Adapters.SIOT do
   @moduledoc """
   This module is an adapter for the data distribution to the SIOT platform.
 
   ## Transport
   The data is exchanged over [MQTT](http://mqtt.org/).
   """
-  @behaviour Appsrv.Adapter
+  @behaviour AppSrv.Adapter
 
   use GenMQTT
 
@@ -24,7 +24,7 @@ defmodule Appsrv.Adapters.SIOT do
 
   # def on_publish(["siot", "?", dev_eui], message, state) do
   #   Logger.info "(SIOT) Receive unencrypted data #{inspect(message)} on MQTT topic: ?"
-  #   Appsrv.LoRaWAN.Handler.send(Appsrv.LoRaWAN.Handler, message, dev_eui)
+  #   AppSrv.LoRaWAN.Handler.send(AppSrv.LoRaWAN.Handler, message, dev_eui)
   #   {:ok, state}
   # end
 

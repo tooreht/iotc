@@ -7,28 +7,28 @@ use Mix.Config
 
 # General application configuration
 config :appsrv,
-  ecto_repos: [Appsrv.Repo]
+  ecto_repos: [AppSrv.Repo]
 
 # Configures the endpoint
-config :appsrv, Appsrv.Endpoint,
+config :appsrv, AppSrv.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "NTI35mTHIXaPfRS9HjGl2CFujS6q4grWI6PRPiMkoLLfNekgrIU+6m4INENu7CUT",
-  render_errors: [view: Appsrv.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Appsrv.PubSub,
+  render_errors: [view: AppSrv.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: AppSrv.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures the Storage API
-config :appsrv, :core_api, Core.Storage.DB
+config :appsrv, :nwksrv_api, NwkSrv.Storage.DB
 
 # Configures the available adapters
-config :appsrv, Appsrv.Adapters,
-  [Appsrv.Adapters.MQTT,
-   Appsrv.Adapters.SIOT]
+config :appsrv, AppSrv.Adapters,
+  [AppSrv.Adapters.MQTT,
+   AppSrv.Adapters.SIOT]
 
 # Configures the MQTT adapter
-config :appsrv, Appsrv.Adapters.MQTT,
+config :appsrv, AppSrv.Adapters.MQTT,
   connection: [
-    name: Appsrv.Adapters.MQTT,
+    name: AppSrv.Adapters.MQTT,
     host: "localhost",
     reconnect_timeout: 10,
     keepalive_interval: 60,
@@ -36,9 +36,9 @@ config :appsrv, Appsrv.Adapters.MQTT,
   ]
 
 # Configures the SIOT adapter
-config :appsrv, Appsrv.Adapters.SIOT,
+config :appsrv, AppSrv.Adapters.SIOT,
   connection: [
-    name: Appsrv.Adapters.SIOT,
+    name: AppSrv.Adapters.SIOT,
     host: "siot.net",
     reconnect_timeout: 10,
     keepalive_interval: 60,
@@ -55,27 +55,27 @@ config :xain, :after_callback, {Phoenix.HTML, :raw}
 
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,
-  user_schema: Appsrv.User,
-  repo: Appsrv.Repo,
-  module: Appsrv,
+  user_schema: AppSrv.User,
+  repo: AppSrv.Repo,
+  module: AppSrv,
   logged_out_url: "/",
   email_from_name: "tooreht",
   email_from_email: "tooreht@gmail.com",
   opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
 
-config :coherence, Appsrv.Coherence.Mailer,
+config :coherence, AppSrv.Coherence.Mailer,
   adapter: Swoosh.Adapters.Local
   # api_key: "your api key here"
 # %% End Coherence Configuration %%
 
 config :ex_admin,
-  repo: Appsrv.Repo,
-  module: Appsrv,
+  repo: AppSrv.Repo,
+  module: AppSrv,
   modules: [
-    Appsrv.ExAdmin.Dashboard,
-    Appsrv.ExAdmin.User,
-    Appsrv.ExAdmin.LoRaWAN.Application,
-    Appsrv.ExAdmin.LoRaWAN.Node,
+    AppSrv.ExAdmin.Dashboard,
+    AppSrv.ExAdmin.User,
+    AppSrv.ExAdmin.LoRaWAN.Application,
+    AppSrv.ExAdmin.LoRaWAN.Node,
   ]
 
 # Import environment specific config. This must remain at the bottom

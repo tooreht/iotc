@@ -1,7 +1,7 @@
-defmodule Appsrv.UserController do
-  use Appsrv.Web, :controller
+defmodule AppSrv.UserController do
+  use AppSrv.Web, :controller
 
-  alias Appsrv.User
+  alias AppSrv.User
 
   plug :scrub_params, "user" when action in [:create]
 
@@ -22,7 +22,7 @@ defmodule Appsrv.UserController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule Appsrv.UserController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Appsrv.ChangesetView, "error.json", changeset: changeset)
+        |> render(AppSrv.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

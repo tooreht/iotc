@@ -17,7 +17,7 @@ done
 set -e
 
 echo "Running migrations for core"
-bin/iotc rpc Elixir.Core.Release.Tasks migrate
+bin/iotc rpc Elixir.NwkSrv.Release.Tasks migrate
 echo "Migrations for core run successfully"
 
 echo "Running migrations for appsrv"

@@ -1,4 +1,4 @@
-defmodule Appsrv.CORS do
+defmodule AppSrv.CORS do
   use Corsica.Router,
     # TODO: Add real CORS handling, not just "*"
     origins: "*",
@@ -6,7 +6,7 @@ defmodule Appsrv.CORS do
     max_age: 600
 
   resource "/api/*"
-  resource "/core/api/*"
+  resource "/nwksrv/api/*"
   # We can override single settings as well.
   # resource "/public/*", allow_credentials: false
 end

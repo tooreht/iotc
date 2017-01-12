@@ -1,12 +1,12 @@
-defmodule Appsrv.LoRaWAN.NodeView do
-  use Appsrv.Web, :view
+defmodule AppSrv.LoRaWAN.NodeView do
+  use AppSrv.Web, :view
 
   def render("index.json", %{lorawan_nodes: lorawan_nodes}) do
-    %{data: render_many(lorawan_nodes, Appsrv.LoRaWAN.NodeView, "node.json")}
+    %{data: render_many(lorawan_nodes, AppSrv.LoRaWAN.NodeView, "node.json")}
   end
 
   def render("show.json", %{node: node}) do
-    %{data: render_one(node, Appsrv.LoRaWAN.NodeView, "node.json")}
+    %{data: render_one(node, AppSrv.LoRaWAN.NodeView, "node.json")}
   end
 
   def render("node.json", %{node: node}) do
