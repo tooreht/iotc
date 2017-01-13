@@ -52,7 +52,7 @@ defmodule Appsrv.Adapters.SIOT do
     Logger.info "(SIOT) Register sensor values for node #{node.dev_eui}"
     # TODO: Let the user define the SIOT manifestation of his nodes
     dst_manifest = %{
-      name: "Distance",
+      name: "#{node.name} Distance",
       type: "sensor",
       zone: %{
         name: "#{application.name}",
@@ -62,7 +62,7 @@ defmodule Appsrv.Adapters.SIOT do
       valueType: "int"
     }
     soc_manifest = %{
-      name: "State of charge",
+      name: "#{node.name} State of charge",
       type: "sensor",
       zone: %{
         name: "#{application.name}",
@@ -72,7 +72,7 @@ defmodule Appsrv.Adapters.SIOT do
       valueType: "int"
     }
     tmp_manifest = %{
-      name: "Temperature",
+      name: "#{node.name} Temperature",
       type: "sensor",
       zone: %{
         name: "#{application.name}",
