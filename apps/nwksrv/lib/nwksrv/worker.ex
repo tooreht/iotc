@@ -39,8 +39,15 @@
 
     LoRaWAN.Dedup.dedup_packet(packet, node)
 
-    AppSrv.LoRaWAN.Handler.receive(AppSrv.LoRaWAN.Handler, packet, node.dev_eui)
-    
+    case packet.mhdr.m_type do
+      0x00 -> # Join Request
+        Logger.warn "OTAA not implemented"
+      n when n in [0x02, 0x04] -> # Unconfirmed Data Up
+        AppSrv.LoRaWAN.Handler.receive(AppSrv.LoRaWAN.Handler, packet, node.dev_eui)
+      _ ->
+        exit :normal # Should never occur, because the m_type is already checked in MIC check.
+    end
+
     {:reply, packet, state}
   end
 
