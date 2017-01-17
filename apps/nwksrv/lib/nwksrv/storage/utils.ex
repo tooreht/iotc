@@ -5,6 +5,29 @@ defmodule NwkSrv.Storage.Utils do
   - Ecto queries for persistence
   - KV store for caching
   """
+  require Logger
+
+  def get_nodes(rev_dev_addr, f_cnt) do
+    dev_addr = rev_bytes_to_base16(rev_dev_addr)
+    nodes = NwkSrv.Storage.DB.LoRaWAN.Node.get_nodes(%{dev_addr: dev_addr, f_cnt: f_cnt})
+    if nodes == [] do
+      Logger.warn "no device with dev_addr " <> inspect(dev_addr) <> " found!"
+      nodes
+    else
+      nodes
+    end
+  end
+
+  def get_app_key(app_eui, dev_eui) do
+    # TODO: Delegate DB lookup of app_key to AppSrv
+    case {app_eui, dev_eui} do
+      {<<54, 14, 0, 208, 126, 213, 179, 112>>, <<139, 119, 102, 95, 78, 61, 43, 42>>} ->
+        <<191, 185, 219, 229, 78, 139, 209, 131, 24, 59, 112, 168, 106, 103, 175, 73>>
+      _ ->
+        Logger.warn "No combination of AppEUI + DevEUI found -> no AppKey Found!"
+        <<0x00000000000000000000000000000000::128>>
+    end
+  end
 
   def insert_existing_device(dev_eui, dev_addr, nw_key) do
     # Insert Device 1 <<70, 161, 210, 121>>

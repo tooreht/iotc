@@ -6,7 +6,7 @@ defmodule AppSrv.LoRaWAN.Handler do
 
   require Logger
 
-  alias AppSrv.LoRaWAN.Crypto
+  alias LoRaWAN.Crypto
   alias AppSrv.LoRaWAN.Utils
 
   ## Client API
