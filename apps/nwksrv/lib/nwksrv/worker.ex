@@ -1,4 +1,4 @@
- defmodule NwkSrv.Worker do
+defmodule NwkSrv.Worker do
   @moduledoc """
   This module implements part of the interface between the NwkSrv and AppSrv application.
   """
@@ -50,5 +50,4 @@
 
     {:reply, packet, state}
   end
-
 end

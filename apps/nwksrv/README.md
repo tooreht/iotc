@@ -1,6 +1,6 @@
 # NwkSrv
 
-**TODO: Add description**
+Implements the network component of the LoRaWAN Network Server. Abstracts away most of the LoRaWAN protocol without the decryption and encryption part. So it is responsible for the communication to the nodes over gateways, implements the MAC layer of the LoRaWAN protocol and routes the still encrypted payload to the application component(s).
 
 ## Installation
 

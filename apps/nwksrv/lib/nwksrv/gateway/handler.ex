@@ -1,4 +1,4 @@
- defmodule NwkSrv.Gateway.Handler do
+defmodule NwkSrv.Gateway.Handler do
   @moduledoc """
   This module handles LoRaWAN gateways.
 
@@ -7,7 +7,7 @@
   The gateway handler checks for every packet if the gateway is registered
   in the system to drop falsy packets as early as possible.
   The gateway handler is also responsible for the dispatching of gateway packets
-  whithin the lorawan app.
+  whithin the lorawan worker pool.
   """
   use GenServer
   require Logger
@@ -41,16 +41,13 @@
 
   @doc """
   Process gateway packets.
-
-  1. Check if the `gateway_eui` in the packets is registred in the system.
-  2. Send the packet to worker pool (async) if in system else drop the packet and log it.
+  1. Verify that only gateways registered in the system can submit packets. Log and drop other packets.
+  2. Send the packet to lorawan worker pool (async)
   """
   def handle_call({:receive, packet}, _from, state) do
-    # Verify that the gateway is registered in the system.
     in_system = Storage.KV.LoRaWAN.Gateway.lookup_by_eui(packet.gateway.eui)
     if in_system do
       if %LoRaWAN.Gateway.Packet{} = packet do
-        # Send all packets coming from this gateway to the pool.
         NwkSrv.parallel_pool(packet.lorawan, &NwkSrv.Worker.receive/2)
         Storage.KV.LoRaWAN.Gateway.store_meta(packet.gateway)
       end
