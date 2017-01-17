@@ -43,6 +43,7 @@ defmodule NwkSrv do
     :ok
   end
 
+  # LoRaWAN Worker Pool
   def parallel_pool(pkts, f) do
     Enum.each(
       pkts,

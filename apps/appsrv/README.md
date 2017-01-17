@@ -1,6 +1,6 @@
 # AppSrv
 
-**TODO: Add description**
+Implements the application component of the LoRaWAN Network Server. It is mainly responsible for the decryption and encryption of LoRaWAN packets and distribution of data to the applications.
 
 ## Installation
 

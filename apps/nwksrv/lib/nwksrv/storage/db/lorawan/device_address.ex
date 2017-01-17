@@ -1,6 +1,6 @@
 defmodule NwkSrv.Storage.DB.LoRaWAN.DeviceAddress do
   @moduledoc """
-  CRUD operations for LoRaWAN.Node
+  CRUD operations for LoRaWAN.DeviceAddress
   """
   @behaviour NwkSrv.Storage
 

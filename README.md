@@ -1,6 +1,18 @@
 # IoTc
 
-**TODO: Add description**
+IoTc (Internet of Things commander) is a LoRaWAN network server implementation in elixir.
+
+## Setup
+
+    $ git clone https://github.com/tooreht/iotc
+    $ cd iotc
+    $ mix deps.get
+    $ mix ecto.setup
+    $ (cd apps/appsrv && npm install)
+    $ (cd apps/nwksrv && npm install)
+    $ mix phoenix.server
+    $ open http://localhost:4000
+    $ open http://localhost:8000
 
 ## Docker
 

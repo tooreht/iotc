@@ -1,6 +1,6 @@
 # LoRaWAN
 
-**TODO: Add description**
+A LoRaWAN protocol library according to the [specification](https://www.lora-alliance.org/portals/0/specs/LoRaWAN%20Specification%201R0.pdf). Implements packet structures of all packet types, encoding, decoding, crypto functions, etc. It is used by both, the network server and the application server component.
 
 ## Installation
 

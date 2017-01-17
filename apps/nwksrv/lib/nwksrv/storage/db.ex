@@ -1,6 +1,6 @@
 defmodule NwkSrv.Storage.DB do
   @moduledoc """
-  Storage API for LoRaWAN related data.
+  Storage API for LoRaWAN related data in RDBMS.
 
   ## Behaviour
 

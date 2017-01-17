@@ -1,6 +1,6 @@
 # KV
 
-**TODO: Add description**
+Simple in memory Key-Value store.
 
 ## Installation
 

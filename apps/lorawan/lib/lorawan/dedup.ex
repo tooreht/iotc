@@ -1,6 +1,6 @@
 defmodule LoRaWAN.Dedup do
   @moduledoc """
-    This module deduplicates LoRaWAN-Packets.
+  This module deduplicates LoRaWAN packets.
   """
   require Logger
 

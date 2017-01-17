@@ -7,7 +7,7 @@
   The gateway handler checks for every packet if the gateway is registered
   in the system to drop falsy packets as early as possible.
   The gateway handler is also responsible for the dispatching of gateway packets
-  whithin the lorawan app.
+  whithin the lorawan worker pool.
   """
   use GenServer
   require Logger

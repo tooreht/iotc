@@ -1,6 +1,6 @@
 defmodule LoRaWAN.MACHandler do
   @moduledoc """
-    This module handles MAC commands which arrive with packets.
+  This module handles MAC commands which arrive with packets.
   """
   require Logger
 
