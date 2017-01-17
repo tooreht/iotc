@@ -96,5 +96,7 @@ defmodule NwkSrv.Router do
     resources "/lorawan/gateways_packets", LoRaWAN.GatewayPacketController, except: [:new, :edit]
     resources "/lorawan/packets", LoRaWAN.PacketController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
+
+    get       "/lorawan/gateway/latest/statistics", LoRaWAN.Gateway.StatisticsController, :latest
   end
 end

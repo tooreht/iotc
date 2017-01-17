@@ -57,4 +57,13 @@ defmodule NwkSrv.LoRaWAN.Gateway.StatisticsController do
 
     send_resp(conn, :no_content, "")
   end
+
+  def latest(conn, _params) do
+    render(conn, "index.json",
+      lorawan_gateway_statistics: from(s in Statistics,
+                                    distinct: s.gateway_id,
+                                    order_by: [s.gateway_id, desc: s.time],
+                                    select: s)
+                                  |> Repo.all)
+  end
 end

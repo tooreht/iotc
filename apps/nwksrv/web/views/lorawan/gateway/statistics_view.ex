@@ -1,6 +1,10 @@
 defmodule NwkSrv.LoRaWAN.Gateway.StatisticsView do
   use NwkSrv.Web, :view
 
+  def render("index.json", %{lorawan_gateway_statistics: lorawan_gateway_statistics}) do
+    %{data: render_many(lorawan_gateway_statistics, NwkSrv.LoRaWAN.Gateway.StatisticsView, "statistics.json")}
+  end
+
   def render("index.json", %{
     lorawan_gateway_statistics: lorawan_gateway_statistics,
     page_number: page_number,
