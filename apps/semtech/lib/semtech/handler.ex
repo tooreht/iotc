@@ -54,8 +54,7 @@ defmodule Semtech.Handler do
   end
 
   def handle_cast({:receive, {socket, gateway_ip, port}, data}, state = {handler, _, _}) do
-    import Semtech.Encoder
-    import Semtech.Decoder
+    import Semtech.{Encoder, Decoder}
 
     # Decode the packet received from the gateway.
     rx_packet = decode(data)
