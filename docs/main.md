@@ -1,6 +1,6 @@
 # IoTc Documentation
 
-IoTc (Internet of Things commander) is a LoRaWAN network server implementation in elixir.
+IoTc (Internet of Things commander) is a LoRaWAN server implementation in elixir.
 
 ## LoRaWAN
 
@@ -24,12 +24,12 @@ LoRaWAN has several different classes of end-point devices to address the differ
 
 ## Apps
 
-This section describes the different apps which the the LoRaWAN network server consists of. First all applications at a glance:
+This section describes the different apps which the the LoRaWAN server consists of. First all applications at a glance:
 
 | App         | Description                                       |
 | ------------| ------------------------------------------------- |
-| `appsrv`    | LoRaWAN application server                        |
-| `nwksrv`    | LoRaWAN network server                            |
+| `appsrv`    | Application server                                |
+| `nwksrv`    | Network server                                    |
 | `lorawan`   | LoRaWAN protocol implementation                   |
 | `semtech`   | Adapter for the semtech packet forwarder protocol |
 | `kv`        | Key-Value Store                                   |

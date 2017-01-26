@@ -1,6 +1,6 @@
 # IoTc
 
-IoTc (Internet of Things commander) is a LoRaWAN network server implementation in elixir.
+IoTc (Internet of Things commander) is a LoRaWAN server implementation in elixir.
 
 ## Setup
 
@@ -20,7 +20,7 @@ This section describes how to setup the IoTc development environment with docker
 
 | Service      | Description                     |
 | -------------| ------------------------------- |
-| `iotc`       | LoRaWAN network server          |
+| `iotc`       | LoRaWAN server          |
 | `prometheus` | Monitoring and alerting toolkit |
 | `vernemq0`   | VerneMQ MQTT message broker #1  |
 | `vernemq1`   | VerneMQ MQTT message broker #2  |
